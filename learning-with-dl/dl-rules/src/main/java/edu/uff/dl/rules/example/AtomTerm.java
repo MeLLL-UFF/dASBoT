@@ -16,9 +16,9 @@ import org.dllearner.prolog.Atom;
  */
 public class AtomTerm {
     private Atom atom;
+    private static PrologParser pp = new PrologParser();
+    
     public AtomTerm(String atomString) throws ParseException {
-        PrologParser pp = new PrologParser();
-        
         atom = pp.parseAtom(atomString);
     }
 

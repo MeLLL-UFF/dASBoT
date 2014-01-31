@@ -94,26 +94,4 @@ public class PosNegLPRules extends PosNegLPStandard {
         this.uncoveredPositiveAtoms = atomPositiveAtoms;
     }
 
-    /**
-     * Declare possible options for this component. This methods can be used by
-     * <code>org.dllearner.scripts.ConfigJavaGenerator</code> to generate the
-     * configuration. However, in the current learner, the configuration file
-     * was created manually
-     *
-     * @return
-     */
-    /*
-    public static Collection<ConfigOption<?>> createConfigOptions() {
-        Collection<ConfigOption<?>> options = new LinkedList<ConfigOption<?>>();
-        options.add(new StringSetConfigOption("positiveExamples", "positive examples", null, true,
-                false));
-        options.add(new StringSetConfigOption("negativeExamples", "negative examples", null, true,
-                false));
-        options.add(new StringSetConfigOption("positiveAtoms", "positive atoms", null, true,
-                false));
-        options.add(new StringSetConfigOption("negativeAtoms", "negative atoms", null, true,
-                false));
-        return options;
-    }
-    */
 }

@@ -101,7 +101,7 @@ public class CLICV extends CLI {
     // context from a conf file without actually running it
     public void init() throws IOException {
         if (context == null) {
-            AnnComponentManager.addComponentClassName("uff.dl.rules.PosNegLPRules");
+            AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
             Resource confFileR = new FileSystemResource(confFile);
             List<Resource> springConfigResources = new ArrayList<Resource>();
 

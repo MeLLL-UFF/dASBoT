@@ -13,10 +13,11 @@ import org.dllearner.core.ReasoningMethodUnsupportedException;
 public class App {
 
     public static void main(String[] args) throws ParseException, org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
-        //String[] arg = {"/Users/Victor/Dropbox/Iniciação Científica/dl/oldConf/facultynearOld2.conf"};
-        //org.dllearner.algorithms.celoe.CELOE
-        //uff.dl.rules.CLI.main(arg);
-        
+        testCLI();
+        //test1();
+    }
+    
+    public static void testCLICV() throws org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
         String[] arg = new String[5];
         String path = "/Users/Victor/Dropbox/Iniciação Científica/dl/trainTest/";
         String prefixFile = "facultynear";
@@ -30,12 +31,15 @@ public class App {
 
         
         CLICV.main(arg);
-        
-        //uff.dl.rules.CLI.main(arg); //Meu CLI, usando o ParcelPosNegLPRules
-        //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
-        test1();
     }
 
+    public static void testCLI() throws org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
+        String[] arg = {"/Users/Victor/Dropbox/Iniciação Científica/dl/oldConf/facultynearOld.conf"};
+        CLI.main(arg);
+        //uff.dl.rules.CLI.main(arg); //Meu CLI, usando o ParcelPosNegLPRules
+        //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
+    }
+    
     public static void test1() throws ParseException {
         PrologParser pp = new PrologParser();
         String atomString = "couple('joao', joao).";

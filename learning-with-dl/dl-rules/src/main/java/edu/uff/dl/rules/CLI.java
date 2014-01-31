@@ -188,7 +188,7 @@ public class CLI {
 
         try {
             //DL-Learner Configuration Object
-            AnnComponentManager.addComponentClassName("ParCEL.ParCELPosNegLPRules");
+            
             IConfiguration configuration = new ConfParserConfiguration(confFile);
 
             ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
