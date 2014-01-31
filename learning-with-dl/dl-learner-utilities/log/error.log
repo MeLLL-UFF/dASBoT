@@ -1,0 +1,3 @@
+java.lang.NullPointerException
+	at edu.uff.dllearnerUtil.cliCV.CliCV.init(CliCV.java:112)
+	at edu.uff.dllearnerUtil.cliCV.CliCV.main(CliCV.java:246)

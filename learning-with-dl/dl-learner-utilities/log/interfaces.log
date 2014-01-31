@@ -1,0 +1,57 @@
+0    [main] ERROR org.dllearner.configuration.spring.DefaultApplicationContextBuilder  - There was a problem initializing the components...shutting down.
+61   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+61   [main] ERROR org.dllearner.cli.CLI  - rulesLP
+61   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+63   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+63   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+0    [main] ERROR org.dllearner.configuration.spring.DefaultApplicationContextBuilder  - There was a problem initializing the components...shutting down.
+24   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+24   [main] ERROR org.dllearner.cli.CLI  - rulesLP
+24   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+26   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+26   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+1    [main] ERROR org.dllearner.configuration.spring.DefaultApplicationContextBuilder  - There was a problem initializing the components...shutting down.
+36   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+36   [main] ERROR org.dllearner.cli.CLI  - rulesLP
+36   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+38   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+38   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+0    [main] ERROR org.dllearner.configuration.spring.DefaultApplicationContextBuilder  - There was a problem initializing the components...shutting down.
+40   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+41   [main] ERROR org.dllearner.cli.CLI  - rulesLP
+41   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+42   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+43   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+0    [main] ERROR org.dllearner.configuration.spring.DefaultApplicationContextBuilder  - There was a problem initializing the components...shutting down.
+29   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+30   [main] ERROR org.dllearner.cli.CLI  - rulesLP
+30   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+32   [main] ERROR org.dllearner.cli.CLI  - An Error Has Occurred During Processing.
+32   [main] ERROR org.dllearner.cli.CLI  - Terminating DL-Learner...and writing stacktrace to: log/error.log
+1    [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "KB File"... OK (293ms)
+2711 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "fast instance checker"... OK (2s 673ms)
+2716 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "RulesLPStandard"... OK (0ms)
+2785 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "PCELOE"... OK (39ms)
+3138 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (5,49%) class expression found: Thing
+3269 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (23,08%) class expression found: http://localhost/foo#sameInstitution some Thing
+3286 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (23,63%) class expression found: http://localhost/foo#sharePublication some Thing
+3302 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (78,02%) class expression found: http://localhost/foo#wasAdvised some Thing
+3419 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (87,91%) class expression found: http://localhost/foo#wasAdvised some (http://localhost/foo#researcher and http://localhost/foo#sameExaminationBoard some Thing)
+3491 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (89,56%) class expression found: (http://localhost/foo#sharePublication some Thing and http://localhost/foo#wasAdvised some http://localhost/foo#researcher)
+4052 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (90,11%) class expression found: http://localhost/foo#wasAdvised some http://localhost/foo#advises only http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+4521 [pool-1-thread-2] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (91,21%) class expression found: http://localhost/foo#wasAdvised some http://localhost/foo#sameExaminationBoard some http://localhost/foo#sharePublication only http://localhost/foo#sameInstitution some Thing
+5106 [pool-1-thread-1] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (91,76%) class expression found: (http://localhost/foo#sharePublication some http://localhost/foo#advises some Thing and http://localhost/foo#wasAdvised some http://localhost/foo#researcher)
+5907 [pool-1-thread-2] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (92,31%) class expression found: http://localhost/foo#wasAdvised some http://localhost/foo#sameExaminationBoard some http://localhost/foo#sharePublication only http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+11565 [pool-1-thread-2] INFO  org.dllearner.algorithms.celoe.PCELOE  - more accurate (92,86%) class expression found: (http://localhost/foo#sharePublication some http://localhost/foo#sameExaminationBoard max 2 Thing and http://localhost/foo#wasAdvised some http://localhost/foo#researcher)
+12938 [main] INFO  org.dllearner.algorithms.celoe.PCELOE  - Algorithm terminated successfully (time: 10s 8ms, 12056 descriptions tested, 6800 nodes in the search tree).
+
+12938 [main] INFO  org.dllearner.algorithms.celoe.PCELOE  - number of retrievals: 2
+retrieval reasoning time: 1ms ( 0ms per retrieval)
+number of instance checks: 1299947 (0 multiple)
+instance check reasoning time: 8s 931ms ( 0ms per instance check)
+(complex) subsumption checks: 1 (0 multiple)
+subsumption reasoning time: 61ms ( 61ms per subsumption check)
+overall reasoning time: 8s 999ms
+
+12943 [main] INFO  org.dllearner.algorithms.celoe.PCELOE  - solutions:
+
