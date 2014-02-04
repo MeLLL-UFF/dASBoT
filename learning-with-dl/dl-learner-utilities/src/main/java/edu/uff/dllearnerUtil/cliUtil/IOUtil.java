@@ -25,7 +25,7 @@ public class IOUtil {
         tempFile.deleteOnExit();
         FileOutputStream out = new FileOutputStream(tempFile);
         IOUtils.copy(in, out);
-
+        in.close();
         return tempFile;
     }
 }
