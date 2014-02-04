@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
 import java.util.ArrayList;
 //import java.util.LinkedList;
 import java.util.List;
@@ -131,7 +132,7 @@ public class CLICV extends CLI {
             rs = context.getBean(AbstractReasonerComponent.class);
             la = context.getBean(AbstractCELA.class);
 
-			//TODO Parcel e também posonly
+            //TODO Parcel e também posonly
             //this test is added for PDLL algorithm since it does not use the PosNegLP			
             //try {
             //	lp = (ParCELPosNegLP)context.getBean(ParCELPosNegLP.class);
@@ -144,7 +145,7 @@ public class CLICV extends CLI {
             for (AtomTerm atom : s) {
                 System.out.println(atom.toString());
             }
-            
+
             System.out.println("Negativo");
             s = ((PosNegLPRules) lp).getNegativeAtoms();
             for (AtomTerm atom : s) {

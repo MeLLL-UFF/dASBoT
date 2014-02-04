@@ -5,19 +5,20 @@ package edu.uff.dl.rules;
  *
  */
 import java.io.IOException;
-import org.dllearner.parser.ParseException;
+//import org.dllearner.parser.ParseException;
 import org.dllearner.parser.PrologParser;
+import org.dllearner.confparser3.ParseException;
 import org.dllearner.prolog.Atom;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
 
 public class App {
 
-    public static void main(String[] args) throws ParseException, org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
-        testCLI();
+    public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException {
+        testCLICV();
         //test1();
     }
     
-    public static void testCLICV() throws org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
+    public static void testCLICV() throws ParseException, IOException, ReasoningMethodUnsupportedException {
         String[] arg = new String[5];
         String path = "/Users/Victor/Dropbox/Iniciação Científica/dl/trainTest/";
         String prefixFile = "facultynear";
@@ -33,14 +34,14 @@ public class App {
         CLICV.main(arg);
     }
 
-    public static void testCLI() throws org.dllearner.confparser3.ParseException, IOException, ReasoningMethodUnsupportedException {
+    public static void testCLI() throws ParseException, IOException, ReasoningMethodUnsupportedException {
         String[] arg = {"/Users/Victor/Dropbox/Iniciação Científica/dl/oldConf/facultynearOld.conf"};
         CLI.main(arg);
         //uff.dl.rules.CLI.main(arg); //Meu CLI, usando o ParcelPosNegLPRules
         //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
     }
     
-    public static void test1() throws ParseException {
+    public static void test1() throws ParseException, org.dllearner.parser.ParseException {
         PrologParser pp = new PrologParser();
         String atomString = "couple('joao', joao).";
         Atom atom = pp.parseAtom(atomString);

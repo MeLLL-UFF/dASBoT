@@ -1,0 +1,5 @@
+java.lang.NullPointerException
+	at edu.uff.dl.rules.CLICV.init(CLICV.java:131)
+	at edu.uff.dl.rules.CLICV.main(CLICV.java:250)
+	at edu.uff.dl.rules.App.testCLICV(App.java:34)
+	at edu.uff.dl.rules.App.main(App.java:17)
