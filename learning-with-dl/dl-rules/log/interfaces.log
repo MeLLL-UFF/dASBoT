@@ -501,3 +501,592 @@ overall reasoning time: 89s 168ms
 9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 81,11%, F-measure: 72,58%)
 10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 81,11%, F-measure: 72,58%)
 
+0    [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "KB File"... OK (144ms)
+1167 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "fast instance checker"... OK (1s 145ms)
+1178 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "PosNegLPRules"... OK (0ms)
+1198 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "CELOE"... OK (17ms)
+1267 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+1418 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+1523 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+1578 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+1595 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+2563 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+2581 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+3622 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,02%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+5935 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+5937 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+7571 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,77%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing)
+7575 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (81,32%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing)
+11263 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 34737 descriptions tested, 18058 nodes in the search tree).
+
+11263 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 3446278 (0 multiple)
+instance check reasoning time: 8s 362ms ( 0ms per instance check)
+(complex) subsumption checks: 1 (0 multiple)
+subsumption reasoning time: 28ms ( 28ms per subsumption check)
+overall reasoning time: 8s 391ms
+
+11275 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 81,32%, F-measure: 72,13%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 81,32%, F-measure: 72,13%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 81,32%, F-measure: 72,13%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 81,32%, F-measure: 72,13%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 80,77%, F-measure: 71,54%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 80,77%, F-measure: 71,54%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,77%, F-measure: 71,54%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,77%, F-measure: 71,54%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,77%, F-measure: 71,54%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,77%, F-measure: 71,54%)
+
+11297 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+11304 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+11322 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+11332 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+11335 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,63%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+11488 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+11508 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+11511 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+11697 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+13567 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+13569 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+14968 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+14970 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+21300 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 3ms, 46384 descriptions tested, 25483 nodes in the search tree).
+
+21300 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 8261550 (0 multiple)
+instance check reasoning time: 17s 261ms ( 0ms per instance check)
+(complex) subsumption checks: 2 (0 multiple)
+subsumption reasoning time: 28ms ( 14ms per subsumption check)
+overall reasoning time: 17s 291ms
+
+21307 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+21315 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+21320 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+21327 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,43%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+21331 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+21332 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+21430 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,27%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+21432 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+21552 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+22964 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+22966 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+24154 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+24156 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+31316 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 1ms, 54520 descriptions tested, 30681 nodes in the search tree).
+
+31316 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 14045318 (0 multiple)
+instance check reasoning time: 26s 244ms ( 0ms per instance check)
+(complex) subsumption checks: 3 (0 multiple)
+subsumption reasoning time: 28ms ( 9ms per subsumption check)
+overall reasoning time: 26s 274ms
+
+31327 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+31386 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+31389 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+31397 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,43%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+31401 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+31402 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+31474 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+31479 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+31480 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+31616 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (77,47%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+31652 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#sharePublication some http://localhost/foo#wasAdvised some Thing
+33427 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+33431 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+36365 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+41386 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 39906 descriptions tested, 21420 nodes in the search tree).
+
+41386 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 18126476 (0 multiple)
+instance check reasoning time: 35s 172ms ( 0ms per instance check)
+(complex) subsumption checks: 4 (0 multiple)
+subsumption reasoning time: 29ms ( 7ms per subsumption check)
+overall reasoning time: 35s 202ms
+
+41395 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+
+41455 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+41461 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (66,48%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+41468 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+41473 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (72,53%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+41474 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+41567 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,27%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+41568 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+41675 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+43348 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+43349 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+44681 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+44682 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+51455 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 47567 descriptions tested, 26449 nodes in the search tree).
+
+51455 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 23121235 (0 multiple)
+instance check reasoning time: 44s 147ms ( 0ms per instance check)
+(complex) subsumption checks: 5 (0 multiple)
+subsumption reasoning time: 29ms ( 5ms per subsumption check)
+overall reasoning time: 44s 177ms
+
+51462 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+51469 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+51474 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+51482 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+51486 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+51487 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+51560 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+51567 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+51568 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+53211 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+53212 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+54916 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+61481 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 12ms, 45219 descriptions tested, 24605 nodes in the search tree).
+
+61481 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 27786512 (0 multiple)
+instance check reasoning time: 53s 65ms ( 0ms per instance check)
+(complex) subsumption checks: 6 (0 multiple)
+subsumption reasoning time: 29ms ( 4ms per subsumption check)
+overall reasoning time: 53s 95ms
+
+61489 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,12%, F-measure: 69,84%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,12%, F-measure: 69,84%)
+
+61547 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+61552 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,03%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+61563 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,33%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+61568 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+61569 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,63%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+61648 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+61660 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+61661 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+63485 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+65053 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+65056 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+71581 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 34ms, 49354 descriptions tested, 27222 nodes in the search tree).
+
+71581 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 32947951 (0 multiple)
+instance check reasoning time: 62s 50ms ( 0ms per instance check)
+(complex) subsumption checks: 7 (0 multiple)
+subsumption reasoning time: 29ms ( 4ms per subsumption check)
+overall reasoning time: 62s 80ms
+
+71587 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameExaminationBoard max 4 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+71593 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+71598 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (66,48%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+71606 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+71610 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (72,53%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+71611 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+71706 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+71707 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+71848 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+72160 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+72161 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+74321 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+74323 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,77%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+81600 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 6ms, 46272 descriptions tested, 25472 nodes in the search tree).
+
+81600 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 37759144 (0 multiple)
+instance check reasoning time: 70s 957ms ( 0ms per instance check)
+(complex) subsumption checks: 8 (0 multiple)
+subsumption reasoning time: 29ms ( 3ms per subsumption check)
+overall reasoning time: 70s 987ms
+
+81611 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,77%, F-measure: 71,54%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,77%, F-measure: 71,54%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,77%, F-measure: 71,54%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,77%, F-measure: 71,54%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+
+81637 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+81640 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+81651 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+81659 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+81661 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+81767 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (77,47%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+81768 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,02%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+81884 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+83341 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,77%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+83343 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (81,32%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+84530 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (81,87%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+84532 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (82,42%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+91637 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 51877 descriptions tested, 29183 nodes in the search tree).
+
+91637 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 43264541 (0 multiple)
+instance check reasoning time: 79s 923ms ( 0ms per instance check)
+(complex) subsumption checks: 9 (0 multiple)
+subsumption reasoning time: 30ms ( 3ms per subsumption check)
+overall reasoning time: 79s 953ms
+
+91647 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 82,42%, F-measure: 73,33%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 82,42%, F-measure: 73,33%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 82,42%, F-measure: 73,33%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 82,42%, F-measure: 73,33%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 81,87%, F-measure: 72,73%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 81,87%, F-measure: 72,73%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 81,87%, F-measure: 72,73%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 81,87%, F-measure: 72,73%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 81,87%, F-measure: 72,73%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 81,87%, F-measure: 72,73%)
+
+91672 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (25,00%) class expression found: Thing
+91677 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (69,44%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+91685 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,89%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+91689 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,56%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+91690 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,67%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+91788 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (77,22%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 (not http://localhost/foo#wasAdvised some Thing)
+91919 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,33%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+93641 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,56%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+93643 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (81,11%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+94869 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (81,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing)
+101672 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 50803 descriptions tested, 28408 nodes in the search tree).
+
+101673 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 48569161 (0 multiple)
+instance check reasoning time: 88s 941ms ( 0ms per instance check)
+(complex) subsumption checks: 10 (0 multiple)
+subsumption reasoning time: 30ms ( 3ms per subsumption check)
+overall reasoning time: 88s 972ms
+
+101680 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 81,67%, F-measure: 73,17%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 81,67%, F-measure: 73,17%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 81,67%, F-measure: 73,17%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 81,67%, F-measure: 73,17%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 81,67%, F-measure: 73,17%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 81,67%, F-measure: 73,17%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 81,67%, F-measure: 73,17%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 81,67%, F-measure: 73,17%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 81,11%, F-measure: 72,58%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 81,11%, F-measure: 72,58%)
+
+5    [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "KB File"... OK (292ms)
+0    [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "KB File"... OK (323ms)
+0    [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "KB File"... OK (315ms)
+2188 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "fast instance checker"... OK (2s 175ms)
+2256 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "PosNegLPRules"... OK (0ms)
+2310 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "CELOE"... OK (47ms)
+2417 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+2719 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+2179 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "fast instance checker"... OK (2s 174ms)
+2202 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "PosNegLPRules"... OK (0ms)
+2243 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "CELOE"... OK (36ms)
+2947 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+2300 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+3056 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+3096 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+2563 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+2203 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "fast instance checker"... OK (2s 198ms)
+2308 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "PosNegLPRules"... OK (0ms)
+2363 [main] INFO  org.dllearner.configuration.spring.ComponentInitializationBeanPostProcessor  - Initializing Component "CELOE"... OK (36ms)
+2824 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+2456 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+2993 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+3030 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+2739 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (68,68%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+3081 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+3216 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+3240 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+5050 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+5087 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+4859 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+4891 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+5072 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+5110 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+7035 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,02%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+6944 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,02%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+7086 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,02%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+11322 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+11325 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+10968 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+10972 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+10983 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+10987 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+12392 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 8801 descriptions tested, 4937 nodes in the search tree).
+
+12393 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 960056 (0 multiple)
+instance check reasoning time: 8s 258ms ( 0ms per instance check)
+(complex) subsumption checks: 1 (0 multiple)
+subsumption reasoning time: 35ms ( 35ms per subsumption check)
+overall reasoning time: 8s 294ms
+
+12412 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+12440 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+12448 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+12474 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+12485 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+12489 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,63%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+12755 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+12775 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+12778 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+12285 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 9005 descriptions tested, 5083 nodes in the search tree).
+
+12285 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 987039 (0 multiple)
+instance check reasoning time: 8s 475ms ( 0ms per instance check)
+(complex) subsumption checks: 1 (0 multiple)
+subsumption reasoning time: 51ms ( 51ms per subsumption check)
+overall reasoning time: 8s 527ms
+
+12303 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+12322 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+12332 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+12352 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+12364 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+12366 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,63%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+13097 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+12550 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+12573 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+12576 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+12396 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 9051 descriptions tested, 5110 nodes in the search tree).
+
+12396 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 992011 (0 multiple)
+instance check reasoning time: 8s 391ms ( 0ms per instance check)
+(complex) subsumption checks: 1 (0 multiple)
+subsumption reasoning time: 54ms ( 54ms per subsumption check)
+overall reasoning time: 8s 446ms
+
+12856 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+12414 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution some http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+12423 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+12430 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+12448 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (70,88%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+12459 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,98%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+12462 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,63%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+12700 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,18%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution some Thing)
+12720 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+12732 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+12985 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,92%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+16384 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+16387 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+16161 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+16164 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+16287 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+16290 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18884 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18888 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18618 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18622 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18750 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+18753 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+22437 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 26915 descriptions tested, 14095 nodes in the search tree).
+
+22437 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 3654876 (0 multiple)
+instance check reasoning time: 17s 268ms ( 0ms per instance check)
+(complex) subsumption checks: 2 (0 multiple)
+subsumption reasoning time: 35ms ( 17ms per subsumption check)
+overall reasoning time: 17s 304ms
+
+22452 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+22457 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+22465 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+22481 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,43%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+22492 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+22494 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+22792 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,27%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+22794 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+22321 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 1ms, 26929 descriptions tested, 14106 nodes in the search tree).
+
+22322 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 3683864 (0 multiple)
+instance check reasoning time: 17s 503ms ( 0ms per instance check)
+(complex) subsumption checks: 2 (0 multiple)
+subsumption reasoning time: 51ms ( 25ms per subsumption check)
+overall reasoning time: 17s 556ms
+
+22336 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+22345 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+22352 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+22369 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,43%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+22380 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+22382 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+23050 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+22683 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,27%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+22686 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+22423 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - Algorithm terminated successfully (time: 10s 0ms, 26422 descriptions tested, 13819 nodes in the search tree).
+
+22423 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - number of retrievals: 2
+retrieval reasoning time: 0ms ( 0ms per retrieval)
+number of instance checks: 3633835 (0 multiple)
+instance check reasoning time: 17s 439ms ( 0ms per instance check)
+(complex) subsumption checks: 2 (0 multiple)
+subsumption reasoning time: 54ms ( 27ms per subsumption check)
+overall reasoning time: 17s 495ms
+
+22437 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - solutions:
+1: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+2: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+3: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 80,22%, F-measure: 70,97%)
+4: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 80,22%, F-measure: 70,97%)
+5: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+6: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 Thing and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+7: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+8: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+9: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 Thing) (pred. acc.: 79,67%, F-measure: 70,40%)
+10: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher) (pred. acc.: 79,67%, F-measure: 70,40%)
+
+22447 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (24,18%) class expression found: Thing
+22456 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (67,58%) class expression found: http://localhost/foo#sameExaminationBoard some Thing
+22474 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (71,43%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing
+22482 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (73,08%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher
+22484 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (74,73%) class expression found: http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher
+22964 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+22704 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,27%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+22707 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (75,82%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+22989 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (76,37%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some Thing and http://localhost/foo#sameInstitution some http://localhost/foo#researcher)
+26545 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+26548 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+26338 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+26341 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+26305 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (78,57%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher)
+26308 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,12%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution some http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+29446 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+29450 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+29295 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (79,67%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 2 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
+29297 [main] INFO  org.dllearner.algorithms.celoe.CELOE  - more accurate (80,22%) class expression found: (http://localhost/foo#sameExaminationBoard some http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher and http://localhost/foo#sameInstitution min 3 http://localhost/foo#researcher)
