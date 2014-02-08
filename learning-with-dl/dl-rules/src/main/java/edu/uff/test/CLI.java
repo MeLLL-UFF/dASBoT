@@ -16,7 +16,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package edu.uff.dl.rules;
+package edu.uff.test;
 
 import java.io.File;
 import java.io.FileOutputStream;

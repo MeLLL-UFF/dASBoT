@@ -1,4 +1,4 @@
-package edu.uff.dl.rules;
+package edu.uff.test;
 
 import edu.uff.dl.rules.example.PosNegLPRules;
 import edu.uff.dl.rules.example.AtomTerm;
