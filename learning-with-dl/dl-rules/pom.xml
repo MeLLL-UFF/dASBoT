@@ -65,5 +65,10 @@
             <artifactId>drew</artifactId>
             <version>0.3-beta-3</version>
         </dependency>
+        <dependency>
+            <groupId>edu.uff.semantic-learning-DL</groupId>
+            <artifactId>dl-learner-utilities</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

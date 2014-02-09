@@ -5,20 +5,37 @@ package edu.uff.test;
  *
  */
 import edu.uff.dl.rules.BKRules;
+import edu.uff.dl.rules.example.AtomTerm;
+import edu.uff.dl.rules.example.PosNegLPRules;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.dllearner.configuration.IConfiguration;
+import org.dllearner.configuration.spring.ApplicationContextBuilder;
+import org.dllearner.configuration.spring.DefaultApplicationContextBuilder;
+import org.dllearner.confparser3.ConfParserConfiguration;
 //import org.dllearner.parser.ParseException;
 import org.dllearner.parser.PrologParser;
 import org.dllearner.confparser3.ParseException;
+import org.dllearner.core.AnnComponentManager;
 import org.dllearner.prolog.Atom;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
+import org.dllearner.learningproblems.PosNegLP;
 import org.semanticweb.drew.dlprogram.model.Clause;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import edu.uff.dllearnerUtil.cliUtil.IOUtil;
+import java.util.Set;
 
 public class App {
 
     public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException {
-        testBKRules(true);
+        //testBKRules(true);
         //testCLICV();
         //test1();
+        testBeans();
     }
 
     public static void testCLICV() throws ParseException, IOException, ReasoningMethodUnsupportedException {
@@ -79,5 +96,44 @@ public class App {
                 System.out.println(c);
             }
         }
+    }
+
+    public static void testBeans() throws IOException {
+
+        PosNegLP lp;
+        IConfiguration configuration;
+        ApplicationContext context;
+
+        String initialConf = "/Users/Victor/Desktop/initialConf.txt";
+        String fold = "/Users/Victor/Desktop/fold.txt";
+        String paths[] = {initialConf, fold};
+
+        AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
+        Resource confFileR = new FileSystemResource(IOUtil.stringToFile(IOUtil.readFile(paths), "fold"));
+        //Resource confFileR = new FileSystemResource("/Users/Victor/Desktop/fold.txt");
+        //Resource confFileR = new FileSystemResource("/Users/Victor/Dropbox/Iniciação Científica/dl/trainTest/facultynear/facultynear.conf");
+        List<Resource> springConfigResources = new ArrayList<Resource>();
+
+        configuration = new ConfParserConfiguration(confFileR);
+        ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
+        context = builder.buildApplicationContext(configuration, springConfigResources);
+
+        lp = context.getBean(PosNegLP.class);
+
+        System.out.println("Positivo");
+        Set<AtomTerm> s = ((PosNegLPRules) lp).getPositiveAtoms();
+        for (AtomTerm atom : s) {
+            System.out.println(atom.toString());
+        }
+
+        System.out.println("Negativo");
+        System.out.println("");
+        s = ((PosNegLPRules) lp).getNegativeAtoms();
+        for (AtomTerm atom : s) {
+            System.out.println(atom.toString());
+        }
+
+        System.out.println("");
+        System.out.println("Done!");
     }
 }
