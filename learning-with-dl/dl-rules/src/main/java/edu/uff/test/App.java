@@ -14,10 +14,10 @@ import java.util.List;
 import org.dllearner.configuration.IConfiguration;
 import org.dllearner.configuration.spring.ApplicationContextBuilder;
 import org.dllearner.configuration.spring.DefaultApplicationContextBuilder;
-import org.dllearner.confparser3.ConfParserConfiguration;
 //import org.dllearner.parser.ParseException;
 import org.dllearner.parser.PrologParser;
 import org.dllearner.confparser3.ParseException;
+import org.dllearner.confparser3.ConfParserConfiguration;
 import org.dllearner.core.AnnComponentManager;
 import org.dllearner.prolog.Atom;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
@@ -27,7 +27,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import edu.uff.dllearnerUtil.cliUtil.IOUtil;
+import java.io.ByteArrayInputStream;
 import java.util.Set;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 
 public class App {
 
@@ -104,17 +107,19 @@ public class App {
         IConfiguration configuration;
         ApplicationContext context;
 
-        String initialConf = "/Users/Victor/Desktop/initialConf.txt";
-        String fold = "/Users/Victor/Desktop/fold.txt";
+        String initialConf = "/Users/Victor/Dropbox/dl.rules/initialConf.txt";
+        String fold = "/Users/Victor/Dropbox/dl.rules/fold.txt";
+        String notFold = "/Users/Victor/Dropbox/dl.rules/notFold.txt";
         String paths[] = {initialConf, fold};
 
         AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
-        Resource confFileR = new FileSystemResource(IOUtil.stringToFile(IOUtil.readFile(paths), "fold"));
-        //Resource confFileR = new FileSystemResource("/Users/Victor/Desktop/fold.txt");
-        //Resource confFileR = new FileSystemResource("/Users/Victor/Dropbox/Iniciação Científica/dl/trainTest/facultynear/facultynear.conf");
-        List<Resource> springConfigResources = new ArrayList<Resource>();
-
-        configuration = new ConfParserConfiguration(confFileR);
+        //Resource confFileR = new FileSystemResource(IOUtil.stringToFile(IOUtil.readFile(paths), "fold")); //Works
+        // /var/folders/zp/xnfn64fx5ln8x0mt4qfvld8w0000gn/T
+        Resource confFileR = new StringSystemResource(notFold, IOUtil.readFile(paths), "UTF-8"); //Works
+        
+        
+        List<Resource> springConfigResources = new ArrayList<>();
+        configuration = new ConfParserConfiguration(confFileR); //Works
         ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
         context = builder.buildApplicationContext(configuration, springConfigResources);
 
