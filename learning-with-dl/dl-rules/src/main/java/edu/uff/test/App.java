@@ -115,7 +115,7 @@ public class App {
         AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
         //Resource confFileR = new FileSystemResource(IOUtil.stringToFile(IOUtil.readFile(paths), "fold")); //Works
         // /var/folders/zp/xnfn64fx5ln8x0mt4qfvld8w0000gn/T
-        Resource confFileR = new StringSystemResource(notFold, IOUtil.readFile(paths), "UTF-8"); //Works
+        Resource confFileR = new StringResource(notFold, IOUtil.readFile(paths), "UTF-8"); //Works
         
         
         List<Resource> springConfigResources = new ArrayList<>();

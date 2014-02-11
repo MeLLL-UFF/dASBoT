@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Victor
  */
-public class StringSystemResource extends AbstractResource implements WritableResource {
+public class StringResource extends AbstractResource implements WritableResource {
     /*
      * Copyright 2002-2012 the original author or authors.
      *
@@ -66,7 +66,7 @@ public class StringSystemResource extends AbstractResource implements WritableRe
      * @param content content to read
      * @param encoding String encoding
      */
-    public StringSystemResource(String baseDir, String content, String encoding) {
+    public StringResource(String baseDir, String content, String encoding) {
         //Assert.notNull(path, "Path must not be null");
         File auxFile;
         auxFile = new File(baseDir);
@@ -167,7 +167,7 @@ public class StringSystemResource extends AbstractResource implements WritableRe
     @Override
     public Resource createRelative(String relativePath) {
         //String pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
-        return new StringSystemResource(relativePath, content, encoding);
+        return new StringResource(relativePath, content, encoding);
     }
 
     /**
@@ -221,7 +221,7 @@ public class StringSystemResource extends AbstractResource implements WritableRe
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final StringSystemResource other = (StringSystemResource) obj;
+        final StringResource other = (StringResource) obj;
         if (!Objects.equals(this.path, other.path))
             return false;
         return Objects.equals(this.content, other.content);
