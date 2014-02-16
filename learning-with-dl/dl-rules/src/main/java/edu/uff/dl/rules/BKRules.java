@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- *
+ * Class to get rules and/or facts from a file.
  * @author Victor
  */
 public class BKRules {

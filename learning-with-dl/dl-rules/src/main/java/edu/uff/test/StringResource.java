@@ -4,7 +4,6 @@
 
 package edu.uff.test;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,8 +13,6 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.xmlbeans.impl.common.ReaderInputStream;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
@@ -23,7 +20,7 @@ import org.springframework.core.io.WritableResource;
 import org.springframework.util.StringUtils;
 
 /**
- *
+ * This class can be used as a FileResource by reading a String as content instead of a file.
  * @author Victor
  */
 public class StringResource extends AbstractResource implements WritableResource {

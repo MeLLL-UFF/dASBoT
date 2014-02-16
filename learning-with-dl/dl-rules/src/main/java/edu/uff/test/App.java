@@ -131,7 +131,7 @@ public class App {
         context = builder.buildApplicationContext(configuration, springConfigResources);
 
         lp = context.getBean(PosNegLP.class);
-
+       
         System.out.println("Positivo");
         Set<AtomTerm> s = ((PosNegLPRules) lp).getPositiveAtoms();
         for (AtomTerm atom : s) {

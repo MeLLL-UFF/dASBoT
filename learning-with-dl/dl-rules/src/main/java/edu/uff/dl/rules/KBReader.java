@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- *
+ * Class to generate a KB from a String as content.
  * @author Victor
  */
 @ComponentAnn(name = "KB Reader", shortName = "kbreader", version = 0.1)
