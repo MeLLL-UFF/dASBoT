@@ -1,3 +1,7 @@
+/*
+ * UFF Project Semantic Learning
+ */
+
 package edu.uff.test;
 
 /**
@@ -35,10 +39,11 @@ import org.springframework.core.io.InputStreamResource;
 public class App {
 
     public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException {
-        //testBKRules(true);
-        //testCLICV();
+        //testBKRules(false);
+        testCLICV();
+        //testCLI();
         //test1();
-        testBeans();
+        //testBeans();
     }
 
     public static void testCLICV() throws ParseException, IOException, ReasoningMethodUnsupportedException {
@@ -48,7 +53,7 @@ public class App {
         String fullPath = path + prefixFile + "/" + prefixFile;
 
         arg[0] = "simpleCV";
-        arg[1] = fullPath + ".conf";
+        arg[1] = fullPath + "2.conf";
         arg[2] = fullPath;
         arg[3] = "10";
         arg[4] = fullPath + "Rule.txt";
@@ -57,7 +62,7 @@ public class App {
     }
 
     public static void testCLI() throws ParseException, IOException, ReasoningMethodUnsupportedException {
-        String[] arg = {"/Users/Victor/Dropbox/Iniciação Científica/dl/oldConf/facultynearOld.conf"};
+        String[] arg = {"/Users/Victor/workspace/trunk/examples/arch/arch_owl.conf"};
         CLI.main(arg);
         //uff.dl.rules.CLI.main(arg); //Meu CLI, usando o ParcelPosNegLPRules
         //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
@@ -75,14 +80,16 @@ public class App {
     }
 
     public static void testBKRules(boolean onlyDatalog) {
-        String myBK = "/Users/Victor/Desktop/bk.pl";
-        String networkBK = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
-        String networkOWL = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
+        String myBK = "/Users/Victor/Dropbox/dl.rules/bk.pl";
+        //String networkBK = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
+        //String networkOWL = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
+        String archKB = "/Users/Victor/workspace/dllearner/examples/arch/arch.kb";
+        String archOWL = "/Users/Victor/workspace/dllearner/examples/arch/arch.owl";
         BKRules bk;
         if (onlyDatalog) {
-            bk = new BKRules(myBK);
+            bk = new BKRules(archOWL);
         } else {
-            bk = new BKRules(networkBK, networkOWL);
+            bk = new BKRules(archKB, archOWL);
         }
 
         if (bk.getFacts() != null) {
@@ -140,5 +147,11 @@ public class App {
 
         System.out.println("");
         System.out.println("Done!");
+    }
+    
+    public static void print(String... strings) {
+        for (String s : strings) {
+            System.out.println(s);
+        }
     }
 }

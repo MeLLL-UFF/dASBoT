@@ -1,5 +1,7 @@
 package edu.uff.test;
 
+import edu.uff.dl.rules.BKRules;
+import edu.uff.dl.rules.KBReader;
 import edu.uff.dl.rules.example.PosNegLPRules;
 import edu.uff.dl.rules.example.AtomTerm;
 import java.io.File;
@@ -39,6 +41,7 @@ import org.dllearner.core.ReasoningMethodUnsupportedException;
 //import org.dllearner.core.owl.Description;
 //import org.dllearner.core.owl.Individual;
 import org.dllearner.learningproblems.PosNegLP;
+import org.dllearner.reasoning.FastInstanceChecker;
 import org.dllearner.utilities.Files;
 //import org.dllearner.utilities.datastructures.Datastructures;
 //import org.dllearner.utilities.statistics.Stat;
@@ -129,7 +132,11 @@ public class CLICV extends CLI {
             }
 
             //knowledgeSource = context.getBean(KnowledgeSource.class);
-            rs = context.getBean(AbstractReasonerComponent.class);
+            //rs = context.getBean(AbstractReasonerComponent.class);
+            
+            BKRules bkRules = new BKRules("/Users/Victor/Dropbox/Iniciação Científica/dl/lattesRules.kb");
+            KBReader reader = new KBReader(bkRules.GetKBContent());
+            rs = new FastInstanceChecker(reader);
             la = context.getBean(AbstractCELA.class);
 
             //TODO Parcel e também posonly

@@ -1,5 +1,6 @@
 java.lang.NullPointerException
-	at edu.uff.dl.rules.CLICV.init(CLICV.java:131)
-	at edu.uff.dl.rules.CLICV.main(CLICV.java:250)
-	at edu.uff.dl.rules.App.testCLICV(App.java:34)
-	at edu.uff.dl.rules.App.main(App.java:17)
+	at edu.uff.dl.rules.BKRules.GetKBContent(BKRules.java:121)
+	at edu.uff.test.CLICV.init(CLICV.java:138)
+	at edu.uff.test.CLICV.main(CLICV.java:258)
+	at edu.uff.test.App.testCLICV(App.java:61)
+	at edu.uff.test.App.main(App.java:43)
