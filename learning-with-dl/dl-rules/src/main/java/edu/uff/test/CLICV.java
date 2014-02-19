@@ -34,6 +34,7 @@ import org.dllearner.core.ComponentInitException;
 //import org.dllearner.core.AbstractLearningProblem;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.AnnComponentManager;
+import org.dllearner.core.KnowledgeSource;
 //import org.dllearner.core.ComponentInitException;
 //import org.dllearner.core.KnowledgeSource;
 //import org.dllearner.core.LearningAlgorithm;
@@ -68,7 +69,9 @@ public class CLICV extends CLI {
     private String outputFile;
 
     //private LearningAlgorithm algorithm;
-    //private KnowledgeSource knowledgeSource;
+    private KnowledgeSource knowledgeSource;
+    private BKRules rules;
+    
     private AbstractReasonerComponent rs;
     private AbstractCELA la;
     // TODO usar a classe pai, para permitir que PosOnly (e outros) tb possam ser usados
@@ -106,6 +109,8 @@ public class CLICV extends CLI {
     public void init() throws IOException {
         if (context == null) {
             AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
+            AnnComponentManager.addComponentClassName(KBReader.class.getName());
+            AnnComponentManager.addComponentClassName(BKRules.class.getName());
             Resource confFileR = new FileSystemResource(confFile);
             List<Resource> springConfigResources = new ArrayList<Resource>();
 
@@ -131,12 +136,18 @@ public class CLICV extends CLI {
                 e.printStackTrace(ps);
             }
 
-            //knowledgeSource = context.getBean(KnowledgeSource.class);
-            //rs = context.getBean(AbstractReasonerComponent.class);
+            //rules = context.getBean(BKRules.class);
             
-            BKRules bkRules = new BKRules("/Users/Victor/Dropbox/Iniciação Científica/dl/lattesRules.kb");
-            KBReader reader = new KBReader(bkRules.GetKBContent());
-            rs = new FastInstanceChecker(reader);
+            //knowledgeSource = context.getBean(KnowledgeSource.class);
+            
+            rs = context.getBean(AbstractReasonerComponent.class);
+            
+            //BKRules bkRules = new BKRules("/Users/Victor/Dropbox/Iniciação Científica/dl/lattesRules.kb");
+            //KBReader reader = new KBReader(bkRules);
+            
+            //rs = new FastInstanceChecker(reader);
+            
+            
             la = context.getBean(AbstractCELA.class);
 
             //TODO Parcel e também posonly

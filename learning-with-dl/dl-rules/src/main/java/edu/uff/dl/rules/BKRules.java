@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.dllearner.core.ComponentAnn;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
@@ -21,24 +22,37 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-
+import org.dllearner.core.Component;
+import org.dllearner.core.ComponentInitException;
 /**
  * Class to get rules and/or facts from a file.
  * @author Victor
  */
-public class BKRules {
+@ComponentAnn(name = "BK Rules", shortName = "bkrules", version = 0.1)
+public class BKRules implements Component {
 
     private Set<Clause> facts;
     private Set<Clause> rules;
     private DLProgram program;
+    
+    private String bkFilePath;
+    private String owlFilePath;
 
+    /**
+     * Default constructor (needed for reflection in ComponentManager).
+     */
+    public BKRules() {   
+    }
+    
     /**
      * This method implements the constructor to get facts and rules from a datalog file without linked OWL data.
      * @param bkFilePath path to datalog file
      * 
      */
+    
     public BKRules(String bkFilePath) {
-        this(bkFilePath, null);
+        this.bkFilePath = bkFilePath;
+        //this(bkFilePath, null);
     }
 
     /**
@@ -47,6 +61,11 @@ public class BKRules {
      * @param owlFilePath path to owl file
      */
     public BKRules(String bkFilePath, String owlFilePath) {
+        this.bkFilePath = bkFilePath;
+        this.owlFilePath = owlFilePath;
+    }
+    
+    public void init() throws ComponentInitException {
         try {
             DLProgramParser parser;
             parser = new DLProgramParser(new FileReader(bkFilePath));
@@ -115,8 +134,12 @@ public class BKRules {
         }
     }
     
-    public String GetKBContent() {
+    public String getKBContent() {
         StringBuilder sb = new StringBuilder();
+        
+        if (getFacts() == null) {
+            return null;
+        }
         
         for (Clause c : getFacts()) {
             sb.append(c);
@@ -125,6 +148,21 @@ public class BKRules {
         
         return sb.toString();
     }
-    
 
+    public String getBkFilePath() {
+        return bkFilePath;
+    }
+
+    public void setBkFilePath(String bkFilePath) {
+        this.bkFilePath = bkFilePath;
+    }
+
+    public String getOwlFilePath() {
+        return owlFilePath;
+    }
+
+    public void setOwlFilePath(String owlFilePath) {
+        this.owlFilePath = owlFilePath;
+    }
+    
 }

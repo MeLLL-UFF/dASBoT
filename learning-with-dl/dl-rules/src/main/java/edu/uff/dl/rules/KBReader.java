@@ -32,7 +32,8 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
 
     private KB kb;
 
-    private String content;
+    private BKRules content;
+    
 
     /**
      * Default constructor (needed for reflection in ComponentManager).
@@ -60,20 +61,19 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
      * KBFile knowledge source.
      * @param content A KB content.
      */
-    public KBReader(String content) {
+    public KBReader(BKRules content) {
         this.content = content;
     }
     
-    
-
     @Override
     public void init() throws ComponentInitException {
         try {
             if (toKB() == null) {
-                if (getContent() == null || getContent().length() == 0) {
+                if (getContent() == null || content.getKBContent().length() == 0) {
                     throw new ComponentInitException("No content or kb object given. Cannot initialise KBReader component.");
                 }
-                kb = KBParser.parseKBFile(content);
+                //content.init();
+                kb = KBParser.parseKBFile(content.getKBContent());
 
                 logger.trace("KB Reader parsed successfully.");
             }
@@ -102,7 +102,7 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
      *
      * @return KB's content
      */
-    public String getContent() {
+    public BKRules getContent() {
         return content;
     }
 
@@ -110,7 +110,7 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
      *
      * @param content KB's content
      */
-    public void setContent(String content) {
+    public void setContent(BKRules content) {
         this.content = content;
     }
 

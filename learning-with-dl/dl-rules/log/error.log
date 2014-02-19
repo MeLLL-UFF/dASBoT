@@ -1,6 +1,9 @@
 java.lang.NullPointerException
-	at edu.uff.dl.rules.BKRules.GetKBContent(BKRules.java:121)
-	at edu.uff.test.CLICV.init(CLICV.java:138)
-	at edu.uff.test.CLICV.main(CLICV.java:258)
+	at edu.uff.test.CrossValidationFromFiles.isClassifiedInstance(CrossValidationFromFiles.java:499)
+	at edu.uff.test.CrossValidationFromFiles.getClassifiedInstances(CrossValidationFromFiles.java:489)
+	at edu.uff.test.CrossValidationFromFiles.outputInfo(CrossValidationFromFiles.java:656)
+	at edu.uff.test.CrossValidationFromFiles.runCVFromFiles(CrossValidationFromFiles.java:119)
+	at edu.uff.test.CLICV.run(CLICV.java:198)
+	at edu.uff.test.CLICV.main(CLICV.java:270)
 	at edu.uff.test.App.testCLICV(App.java:61)
 	at edu.uff.test.App.main(App.java:43)

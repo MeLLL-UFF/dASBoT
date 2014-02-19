@@ -39,11 +39,16 @@ import org.springframework.core.io.InputStreamResource;
 public class App {
 
     public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException {
-        testBKRules(false);
+        //testBKRules(false);
         //testCLICV();
         //testCLI();
         //test1();
         //testBeans();
+        testDrew();
+    }
+    
+    public static void testDrew() {
+        MyCommandLine.main(null);
     }
 
     public static void testCLICV() throws ParseException, IOException, ReasoningMethodUnsupportedException {

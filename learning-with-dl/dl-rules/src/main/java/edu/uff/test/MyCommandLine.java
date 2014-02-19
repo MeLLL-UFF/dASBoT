@@ -4,13 +4,18 @@
 
 package edu.uff.test;
 
+import edu.uff.drew.DReWRLCLILiteral;
+import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
+import org.semanticweb.drew.cli.CommandLine;
 import org.semanticweb.drew.dlprogram.model.CacheManager;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
+import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
@@ -35,17 +40,15 @@ public class MyCommandLine {
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
 
-        String kb = "/Users/Victor/Desktop/kb.pl";
+        //String kb = "/Users/Victor/Desktop/kb.pl";
         try {
             //testDLProgram(arg[2], arg[4]);
-            testDLProgram(arg[2], kb);
-            //CommandLine.main(arg);
-        } catch (OWLOntologyCreationException ex) {
-            System.err.println(ex.getClass().getName());
-        } catch (FileNotFoundException ex) {
-            System.err.println(ex.getClass().getName());
-        } catch (ParseException ex) {
-            System.err.println(ex.getClass().getName());
+            //testDLProgram(arg[2], kb);
+            DReWRLCLILiteral d = DReWRLCLILiteral.run(arg);
+            for (Literal l : d.getLiteralModelHandler().getLiterals()) {
+                System.out.println(l);
+            }
+                   
         } catch (Exception ex) {
             System.err.println(ex.getClass().getName());
         }
