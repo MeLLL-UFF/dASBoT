@@ -415,7 +415,7 @@ public class DReWRLCLI extends CommandLine {
                     }
 
                     System.out.println("}");
-                    System.out.println("Meu teste");
+                    
 
                     dlvHandlerEndTime = System.currentTimeMillis();
                 }

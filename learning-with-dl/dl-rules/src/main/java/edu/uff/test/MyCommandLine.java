@@ -1,15 +1,16 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.test;
 
+import edu.uff.drew.DReWRLCLI;
 import edu.uff.drew.DReWRLCLILiteral;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import org.semanticweb.drew.cli.CommandLine;
 import org.semanticweb.drew.dlprogram.model.CacheManager;
 import org.semanticweb.drew.dlprogram.model.Clause;
@@ -35,20 +36,39 @@ public class MyCommandLine {
         arg[0] = "-rl";
         arg[1] = "-ontology";
         arg[2] = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
+        //arg[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         arg[3] = "-dlp";
         arg[4] = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
+        //arg[4] = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
-
+        boolean printMySets = true;
         //String kb = "/Users/Victor/Desktop/kb.pl";
         try {
             //testDLProgram(arg[2], arg[4]);
             //testDLProgram(arg[2], kb);
-            DReWRLCLILiteral d = DReWRLCLILiteral.run(arg);
-            for (Literal l : d.getLiteralModelHandler().getLiterals()) {
-                System.out.println(l);
+
+            if (printMySets) {
+                System.out.println("My Sets");
+                DReWRLCLILiteral d = DReWRLCLILiteral.run(arg);
+                for (Set<Literal> l : d.getLiteralModelHandler().getAnswerSets()) {
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("{ ");
+                    for (Literal lit : l) {
+                        sb.append(lit);
+                        sb.append(" ");
+                        //System.out.print(lit);
+                    }
+                    //System.out.println("{");
+                    sb.append("}");
+                    System.out.println(sb.toString().trim());
+                    //System.out.println("}\n");
+                }
+            } else {
+                System.out.println("DReW's Sets");
+                DReWRLCLI.main(arg);
             }
-                   
         } catch (Exception ex) {
             System.err.println(ex.getClass().getName());
         }

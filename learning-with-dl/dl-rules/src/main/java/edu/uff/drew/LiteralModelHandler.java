@@ -10,7 +10,9 @@ import it.unical.mat.wrapper.ModelResult;
 import it.unical.mat.wrapper.Predicate;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
@@ -23,14 +25,14 @@ import org.semanticweb.drew.ldlpprogram.reasoner.LDLPProgramQueryResultDecompile
 public class LiteralModelHandler implements ModelHandler {
 
     private String type;
-    private List<Literal> literals;
+    private List<Set<Literal>> answerSets;
     private long dlvHandlerStartTime = 0;
     private long dlvHandlerEndTime = 0;
     private int nModels = 0;
 
     public LiteralModelHandler() {
         this.type = "rl";
-        literals = new ArrayList<>();
+        answerSets = new ArrayList<>();
     }
 
     public void setTypeEL() {
@@ -45,8 +47,8 @@ public class LiteralModelHandler implements ModelHandler {
         return type;
     }
 
-    public List<Literal> getLiterals() {
-        return literals;
+    public List<Set<Literal>> getAnswerSets() {
+        return answerSets;
     }
 
     public long getDlvHandlerStartTime() {
@@ -64,21 +66,21 @@ public class LiteralModelHandler implements ModelHandler {
     public void setDlvHandlerStartTime(long dlvHandlerStartTime) {
         this.dlvHandlerStartTime = dlvHandlerStartTime;
     }
-    
-    
 
     @Override
     public void handleResult(DLVInvocation dlvi, ModelResult mr) {
-        if (type.equals("rl")) {
-            handleResultRL(dlvi, mr);
-        } else if (type.equals("el")) {
-            handleResultEL(dlvi, mr);
+        switch (type) {
+            case "rl":
+                handleResultRL(dlvi, mr);
+                break;
+            case "el":
+                handleResultEL(dlvi, mr);
+                break;
         }
     }
 
     @SuppressWarnings("CallToThreadDumpStack")
-    public void handleResultRL(DLVInvocation paramDLVInvocation,
-            ModelResult modelResult) {
+    public void handleResultRL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
         if (dlvHandlerStartTime == 0)
             dlvHandlerStartTime = System.currentTimeMillis();
 
@@ -88,6 +90,7 @@ public class LiteralModelHandler implements ModelHandler {
         Model model = (Model) modelResult;
         // ATTENTION !!! this is necessary and stupid, should we
         // report a bug to DLVWrapper?
+        Set<Literal> literals = new HashSet<>();
         model.beforeFirst();
         while (model.hasMorePredicates()) {
 
@@ -118,7 +121,8 @@ public class LiteralModelHandler implements ModelHandler {
 
             }
         }
-
+        
+        answerSets.add(literals);
         dlvHandlerEndTime = System.currentTimeMillis();
     }
 
