@@ -2,7 +2,7 @@
  * UFF Project Semantic Learning
  */
 
-package edu.uff.test;
+package edu.uff.util;
 
 import java.io.File;
 import java.io.FileOutputStream;

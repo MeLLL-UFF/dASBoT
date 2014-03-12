@@ -3,7 +3,6 @@
  */
 package edu.uff.test;
 
-import edu.uff.drew.DReWRLCLI;
 import edu.uff.drew.DReWRLCLILiteral;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
