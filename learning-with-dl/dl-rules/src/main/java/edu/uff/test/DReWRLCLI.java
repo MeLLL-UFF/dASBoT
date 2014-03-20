@@ -1,4 +1,4 @@
-package edu.uff.drew;
+package edu.uff.test;
 
 import it.unical.mat.dlv.program.Literal;
 import it.unical.mat.wrapper.DLVError;

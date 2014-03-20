@@ -1,9 +1,8 @@
 /*
  * UFF Project Semantic Learning
  */
-package edu.uff.drew;
+package edu.uff.expansion.set;
 
-import edu.uff.dl.rules.HeadPredicate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +24,7 @@ public class ExpansionAnswerSet implements Component {
     private Set<Literal> answerSet;
 
     private Set<String> individuals;
-    private Set<HeadPredicate> predicates;
+    private Set<DataLogPredicate> predicates;
 
     private List<Literal> expansionSet;
 
@@ -34,7 +33,7 @@ public class ExpansionAnswerSet implements Component {
     public ExpansionAnswerSet() {
     }
 
-    public ExpansionAnswerSet(Set<Literal> answerSet, Set<String> individuals, Set<HeadPredicate> predicates) throws ComponentInitException {
+    public ExpansionAnswerSet(Set<Literal> answerSet, Set<String> individuals, Set<DataLogPredicate> predicates) throws ComponentInitException {
         this.answerSet = answerSet;
         this.individuals = individuals;
         this.predicates = predicates;
@@ -51,7 +50,7 @@ public class ExpansionAnswerSet implements Component {
         
         expansionSet = new ArrayList<>();
         Literal lit;
-        for (HeadPredicate hp : predicates) {
+        for (DataLogPredicate hp : predicates) {
             List<List<Term>> list = permuteIndividuals(individuals, hp.getArity());
             for (List<Term> terms : list) {
                 Term[] t = listToArray(terms);
@@ -125,11 +124,11 @@ public class ExpansionAnswerSet implements Component {
         this.individuals = individuals;
     }
 
-    public Set<HeadPredicate> getPredicates() {
+    public Set<DataLogPredicate> getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(Set<HeadPredicate> predicates) {
+    public void setPredicates(Set<DataLogPredicate> predicates) {
         this.predicates = predicates;
     }
 

@@ -3,6 +3,7 @@
  */
 package edu.uff.drew;
 
+import edu.uff.test.DReWRLCLI;
 import it.unical.mat.wrapper.DLVError;
 import it.unical.mat.wrapper.DLVInputProgram;
 import it.unical.mat.wrapper.DLVInvocation;

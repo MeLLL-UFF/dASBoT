@@ -7,9 +7,10 @@ package edu.uff.test;
  * Hello world!
  *
  */
+import edu.uff.util.StringResource;
 import edu.uff.dl.rules.BKRules;
-import edu.uff.dl.rules.HeadPredicate;
-import edu.uff.dl.rules.SimplePredicate;
+import edu.uff.expansion.set.DataLogPredicate;
+import edu.uff.expansion.set.SimplePredicate;
 import edu.uff.dl.rules.example.AtomTerm;
 import edu.uff.dl.rules.example.PosNegLPRules;
 import java.io.IOException;
@@ -32,9 +33,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import edu.uff.dllearnerUtil.cliUtil.IOUtil;
-import edu.uff.drew.DReWRLCLI;
 import edu.uff.drew.DReWRLCLILiteral;
-import edu.uff.drew.ExpansionAnswerSet;
+import edu.uff.expansion.set.ExpansionAnswerSet;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.HashSet;
@@ -73,19 +73,19 @@ public class App {
         //testOWLFile();
         //testPermutate();
     }
-    
+
     public static void testPermutate() {
-        String[] indS = {"Joao", "Maria", "Jose", "bird" };
+        String[] indS = {"Joao", "Maria", "Jose", "bird"};
         Set<String> ind = new HashSet<>();
-        
+
         for (int i = 0; i < indS.length; i++) {
             ind.add(indS[i]);
         }
-       
+
         ExpansionAnswerSet e = new ExpansionAnswerSet();
         int permute = 3;
         List<List<Term>> resp = e.permuteIndividuals(ind, permute);
-        
+
         for (List<Term> list : resp) {
             System.out.print("{ ");
             for (Term term : list) {
@@ -121,19 +121,18 @@ public class App {
             System.out.println(o.toString());
         }
         System.out.println("\n");
-        
+
         for (Object o : ontology.getObjectPropertiesInSignature()) {
             System.out.println(o.toString());
         }
         System.out.println("\n");
-        
+
         /*
-        for (Object o : ontology.getSignature()) {
-            System.out.println(o.toString());
-        }
-        System.out.println("\n");
-        */
-        
+         for (Object o : ontology.getSignature()) {
+         System.out.println(o.toString());
+         }
+         System.out.println("\n");
+         */
         /*
          for (OWLAxiom a : axioms) {
          Set<OWLNamedIndividual> individual = ontology.getIndividualsInSignature();
@@ -151,10 +150,8 @@ public class App {
         arg[0] = "-rl";
         arg[1] = "-ontology";
         arg[2] = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
-        arg[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         arg[3] = "-dlp";
         arg[4] = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
-        arg[4] = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
         boolean printMySets = true;
@@ -164,31 +161,34 @@ public class App {
             //testDLProgram(arg[2], kb);
 
             if (printMySets) {
+                arg[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
+                arg[4] = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
+
                 System.out.println("My Sets");
                 DReWRLCLILiteral d = DReWRLCLILiteral.run(arg);
                 for (Set<Literal> l : d.getLiteralModelHandler().getAnswerSets()) {
-/*
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("{ ");
-                    for (Literal lit : l) {
-                        sb.append(lit);
-                        sb.append(" ");
-                        //System.out.print(lit);
-                    }
-                    //System.out.println("{");
-                    sb.append("}");
-                    System.out.println(sb.toString().trim());
-                    //System.out.println("}\n");
-                    */
+                    /*
+                     StringBuilder sb = new StringBuilder();
+                     sb.append("{ ");
+                     for (Literal lit : l) {
+                     sb.append(lit);
+                     sb.append(" ");
+                     //System.out.print(lit);
+                     }
+                     //System.out.println("{");
+                     sb.append("}");
+                     System.out.println(sb.toString().trim());
+                     //System.out.println("}\n");
+                     */
                     Set<String> ind = new HashSet<>();
                     ind.add("tweety");
                     ind.add("polly");
-                    
-                    Set<HeadPredicate> pred = new HashSet<>();
+
+                    Set<DataLogPredicate> pred = new HashSet<>();
                     pred.add(new SimplePredicate("penguin", 1));
                     pred.add(new SimplePredicate("bird", 1));
                     pred.add(new SimplePredicate("flies", 1));
-                    
+
                     ExpansionAnswerSet e = new ExpansionAnswerSet(l, ind, pred);
                     //e.init();
                     System.out.println(e);
