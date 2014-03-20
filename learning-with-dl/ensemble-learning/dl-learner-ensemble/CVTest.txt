@@ -1,0 +1,380 @@
+
+################################
+***Fold: 1
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r135, http://localhost/foo#r4, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r86, http://localhost/foo#r203, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r74, http://localhost/foo#r180, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r193, http://localhost/foo#r118, http://localhost/foo#r32, http://localhost/foo#r33, http://localhost/foo#r185, http://localhost/foo#r136, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r69, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 34.0 of 138 negative examples
+
+**********  Accuracy: 81,319% 
+**********  FMeasure: 72,131% 
+**********  Precision: 0,564
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r15, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r151, http://localhost/foo#r121]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r101, http://localhost/foo#r117, http://localhost/foo#r104, http://localhost/foo#r194, http://localhost/foo#r142]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 5.0 of 15 negative examples
+
+**********  Accuracy: 75% 
+**********  FMeasure: 66,667% 
+**********  Precision: 0,5
+**********  Recall: 1
+
+
+################################
+***Fold: 2
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r135, http://localhost/foo#r4, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r203, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r34, http://localhost/foo#r121, http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r54, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r118, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r33, http://localhost/foo#r185, http://localhost/foo#r136, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r69, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r169, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 36.0 of 138 negative examples
+
+**********  Accuracy: 80,22% 
+**********  FMeasure: 70,968% 
+**********  Precision: 0,55
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r120, http://localhost/foo#r74, http://localhost/foo#r182, http://localhost/foo#r86, http://localhost/foo#r21]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r193, http://localhost/foo#r48, http://localhost/foo#r49]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 3.0 of 15 negative examples
+
+**********  Accuracy: 85% 
+**********  FMeasure: 76,923% 
+**********  Precision: 0,625
+**********  Recall: 1
+
+
+################################
+***Fold: 3
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r86, http://localhost/foo#r203, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r144, http://localhost/foo#r74, http://localhost/foo#r180, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r118, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r33, http://localhost/foo#r185, http://localhost/foo#r136, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r69, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 36.0 of 138 negative examples
+
+**********  Accuracy: 80,22% 
+**********  FMeasure: 70,968% 
+**********  Precision: 0,55
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r130, http://localhost/foo#r128, http://localhost/foo#r34, http://localhost/foo#r135, http://localhost/foo#r4]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r132, http://localhost/foo#r169, http://localhost/foo#r72]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 3.0 of 15 negative examples
+
+**********  Accuracy: 85% 
+**********  FMeasure: 76,923% 
+**********  Precision: 0,625
+**********  Recall: 1
+
+
+################################
+***Fold: 4
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.http://localhost/foo#researcher AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r86, http://localhost/foo#r203, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r74, http://localhost/foo#r180, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r7, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r33, http://localhost/foo#r90, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r18, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r11, http://localhost/foo#r124, http://localhost/foo#r129, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r81, http://localhost/foo#r71, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r45, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 36.0 of 138 negative examples
+
+**********  Accuracy: 80,22% 
+**********  FMeasure: 70,968% 
+**********  Precision: 0,55
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.http://localhost/foo#researcher AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r36, http://localhost/foo#r349, http://localhost/foo#r44, http://localhost/foo#r161, http://localhost/foo#r139]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r1, http://localhost/foo#r126, http://localhost/foo#r115, http://localhost/foo#r56, http://localhost/foo#r50]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 5.0 of 15 negative examples
+
+**********  Accuracy: 75% 
+**********  FMeasure: 66,667% 
+**********  Precision: 0,5
+**********  Recall: 1
+
+
+################################
+***Fold: 5
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r86, http://localhost/foo#r203, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r74, http://localhost/foo#r180, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r33, http://localhost/foo#r185, http://localhost/foo#r136, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 36.0 of 138 negative examples
+
+**********  Accuracy: 80,22% 
+**********  FMeasure: 70,968% 
+**********  Precision: 0,55
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r24, http://localhost/foo#r78, http://localhost/foo#r16, http://localhost/foo#r188, http://localhost/foo#r88]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r118, http://localhost/foo#r77, http://localhost/foo#r69]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 3.0 of 15 negative examples
+
+**********  Accuracy: 85% 
+**********  FMeasure: 76,923% 
+**********  Precision: 0,625
+**********  Recall: 1
+
+
+################################
+***Fold: 6
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r195, http://localhost/foo#r86, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r74, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r33, http://localhost/foo#r90, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r18, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r124, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r81, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r56, http://localhost/foo#r50, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 37.0 of 138 negative examples
+
+**********  Accuracy: 79,67% 
+**********  FMeasure: 70,4% 
+**********  Precision: 0,543
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r197, http://localhost/foo#r75, http://localhost/foo#r203]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r11, http://localhost/foo#r71, http://localhost/foo#r45, http://localhost/foo#r129]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 4.0 of 15 negative examples
+
+**********  Accuracy: 80% 
+**********  FMeasure: 71,429% 
+**********  Precision: 0,556
+**********  Recall: 1
+
+
+################################
+***Fold: 7
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r203, http://localhost/foo#r86, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r74, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r104, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r18, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r129, http://localhost/foo#r157, http://localhost/foo#r159, http://localhost/foo#r81, http://localhost/foo#r71, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r45, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r56, http://localhost/foo#r50, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 36.0 of 138 negative examples
+
+**********  Accuracy: 80,22% 
+**********  FMeasure: 70,968% 
+**********  Precision: 0,55
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.<= 4 http://localhost/foo#sameExaminationBoard.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r30, http://localhost/foo#r164, http://localhost/foo#r95, http://localhost/foo#r152, http://localhost/foo#r170]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r90, http://localhost/foo#r7, http://localhost/foo#r124, http://localhost/foo#r33, http://localhost/foo#r156]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 5.0 of 15 negative examples
+
+**********  Accuracy: 75% 
+**********  FMeasure: 66,667% 
+**********  Precision: 0,5
+**********  Recall: 1
+
+
+################################
+***Fold: 8
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r203, http://localhost/foo#r86, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r74, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r118, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r33, http://localhost/foo#r104, http://localhost/foo#r185, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r69, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r160]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 35.0 of 138 negative examples
+
+**********  Accuracy: 80,769% 
+**********  FMeasure: 71,545% 
+**********  Precision: 0,557
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r61, http://localhost/foo#r37, http://localhost/foo#r110, http://localhost/foo#r83, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r136, http://localhost/foo#r157, http://localhost/foo#r162]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 4.0 of 15 negative examples
+
+**********  Accuracy: 80% 
+**********  FMeasure: 71,429% 
+**********  Precision: 0,556
+**********  Recall: 1
+
+
+################################
+***Fold: 9
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r138, http://localhost/foo#r139, http://localhost/foo#r5, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r203, http://localhost/foo#r86, http://localhost/foo#r88, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r39, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r74, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r163, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r26, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r118, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r32, http://localhost/foo#r33, http://localhost/foo#r104, http://localhost/foo#r136, http://localhost/foo#r132, http://localhost/foo#r134, http://localhost/foo#r89, http://localhost/foo#r19, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r69, http://localhost/foo#r81, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r142, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r162]
+
+********** Correctly classified 44.0 of 44 positive examples
+
+********** Incorrectly classified 32.0 of 138 negative examples
+
+**********  Accuracy: 82,418% 
+**********  FMeasure: 73,333% 
+**********  Precision: 0,579
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r54, http://localhost/foo#r195, http://localhost/foo#r76, http://localhost/foo#r12, http://localhost/foo#r46]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r133, http://localhost/foo#r185, http://localhost/foo#r159, http://localhost/foo#r79, http://localhost/foo#r160]
+
+********** Correctly classified 5.0 of 5 positive examples
+
+********** Incorrectly classified 7.0 of 15 negative examples
+
+**********  Accuracy: 65% 
+**********  FMeasure: 58,824% 
+**********  Precision: 0,417
+**********  Recall: 1
+
+
+################################
+***Fold: 10
+
+ ****** Training Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r349, http://localhost/foo#r130, http://localhost/foo#r24, http://localhost/foo#r110, http://localhost/foo#r139, http://localhost/foo#r21, http://localhost/foo#r4, http://localhost/foo#r135, http://localhost/foo#r61, http://localhost/foo#r44, http://localhost/foo#r197, http://localhost/foo#r195, http://localhost/foo#r203, http://localhost/foo#r86, http://localhost/foo#r88, http://localhost/foo#r46, http://localhost/foo#r83, http://localhost/foo#r152, http://localhost/foo#r170, http://localhost/foo#r151, http://localhost/foo#r36, http://localhost/foo#r120, http://localhost/foo#r37, http://localhost/foo#r16, http://localhost/foo#r15, http://localhost/foo#r128, http://localhost/foo#r12, http://localhost/foo#r30, http://localhost/foo#r121, http://localhost/foo#r34, http://localhost/foo#r144, http://localhost/foo#r180, http://localhost/foo#r74, http://localhost/foo#r54, http://localhost/foo#r182, http://localhost/foo#r78, http://localhost/foo#r75, http://localhost/foo#r76, http://localhost/foo#r161, http://localhost/foo#r188, http://localhost/foo#r164, http://localhost/foo#r97, http://localhost/foo#r140, http://localhost/foo#r95, http://localhost/foo#r58]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r27, http://localhost/foo#r1, http://localhost/foo#r7, http://localhost/foo#r115, http://localhost/foo#r117, http://localhost/foo#r193, http://localhost/foo#r118, http://localhost/foo#r194, http://localhost/foo#r101, http://localhost/foo#r33, http://localhost/foo#r104, http://localhost/foo#r185, http://localhost/foo#r136, http://localhost/foo#r132, http://localhost/foo#r133, http://localhost/foo#r13, http://localhost/foo#r10, http://localhost/foo#r126, http://localhost/foo#r11, http://localhost/foo#r157, http://localhost/foo#r156, http://localhost/foo#r159, http://localhost/foo#r69, http://localhost/foo#r73, http://localhost/foo#r72, http://localhost/foo#r77, http://localhost/foo#r79, http://localhost/foo#r142, http://localhost/foo#r48, http://localhost/foo#r49, http://localhost/foo#r169, http://localhost/foo#r162, http://localhost/foo#r160]
+
+********** Correctly classified 45.0 of 45 positive examples
+
+********** Incorrectly classified 33.0 of 135 negative examples
+
+**********  Accuracy: 81,667% 
+**********  FMeasure: 73,171% 
+**********  Precision: 0,577
+**********  Recall: 1
+
+ ****** Test Set
+
+Best Description: (EXISTS http://localhost/foo#sameExaminationBoard.>= 3 http://localhost/foo#sameInstitution.TOP AND >= 3 http://localhost/foo#sameInstitution.TOP)
+
+Correctly Classified Positive Instances: [http://localhost/foo#r39, http://localhost/foo#r138, http://localhost/foo#r163, http://localhost/foo#r5]
+
+Incorrectly Classified Negative Instances: [http://localhost/foo#r26, http://localhost/foo#r19, http://localhost/foo#r81, http://localhost/foo#r32, http://localhost/foo#r134, http://localhost/foo#r89]
+
+********** Correctly classified 4.0 of 4 positive examples
+
+********** Incorrectly classified 6.0 of 18 negative examples
+
+**********  Accuracy: 72,727% 
+**********  FMeasure: 57,143% 
+**********  Precision: 0,4
+**********  Recall: 1
+

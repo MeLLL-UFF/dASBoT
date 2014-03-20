@@ -20,6 +20,7 @@
 package edu.uff.dllearnerensemble.clicv;
 
 //import java.io.File;
+import edu.uff.dllearnerensemble.Bagging;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -150,6 +151,86 @@ public class CrossValidationFromFiles extends CrossValidation {
 		}
 				
 	}
+        
+        public void runBaggingCVFromFiles(int folds, String nameOutput){
+            
+                DecimalFormat df = new DecimalFormat();
+		FileWriter output  = null;
+		try{
+			 output = new FileWriter(nameOutput);
+		}catch (Exception e){
+			System.err.println("Error when opening output file: " + e.getMessage());
+		}
+		
+		//separar entre posonly e pos neg, por enquanto é só PosNeg
+		for (int curFold = 1; curFold <= folds; curFold++){
+			String exFileTr = prefixFile + String.valueOf(curFold) + ".trn";
+						
+			Set<Individual> posExamples = getPosExamples(exFileTr);
+			Set<Individual> negExamples = getNegExamples(exFileTr);
+			
+			//System.out.println(posExamples);
+			
+			//Set<String> pos = Datastructures.individualSetToStringSet(posExamples);
+			//Set<String> neg = Datastructures.individualSetToStringSet(negExamples);
+			
+			lp.setPositiveExamples(posExamples);
+			lp.setNegativeExamples(negExamples);
+			
+			long algorithmStartTime = System.nanoTime();
+			
+                        Bagging bagging = new Bagging(la, lp, 5);
+                        bagging.run();
+			
+                        Description concept = la.getCurrentlyBestDescription();
+			
+			long algorithmDuration = System.nanoTime() - algorithmStartTime;
+			runtime.addNumber(algorithmDuration/(double)1000000000);
+			
+			//log info
+			outputWriter("#############");
+			outputWriter(" *** Fold " + curFold);
+			outputWriter("\n***** Best concept found: " + concept);
+			
+			// Header of output file
+			outputHeader(output, curFold);
+						
+			//outputWriter("\n******* Training Results ");
+			// commented in 09.01, repetido double[] measTrain = outputInfo(concept, posExamples, negExamples);
+			double[] measTrain = outputInfo(concept, posExamples, negExamples, output, "Training");
+			accuracyTraining.addNumber(measTrain[0]);
+			fMeasureTraining.addNumber(measTrain[1]);
+
+			
+			//get test examples
+			String exFileTs = prefixFile + String.valueOf(curFold) + ".tst";
+			Set<Individual> posExamplesTst = getPosExamples(exFileTs);
+			Set<Individual> negExamplesTst = getNegExamples(exFileTs);
+			
+			// write info for test examples
+			//outputWriter("\n******* Training Results ");
+			//double[] measTest = outputInfo(concept, posExamplesTst, negExamplesTst);
+			double[] measTest = outputInfo(concept, posExamplesTst, negExamplesTst, output, "Test");
+			accuracy.addNumber(measTest[0]);
+			fMeasure.addNumber(measTest[1]);
+
+			outputWriter("  runtime: " + df.format(algorithmDuration/(double)1000000000) + "s");
+			
+			//outputInstancesPerConceptTst(concept, posExamplesTst, negExamplesTst, curFold, output);
+					
+		}
+		
+		// write averages
+		writeAveragesTrain(folds);
+		writeAveragesTest(folds);
+		
+		try{
+			output.close();
+		}catch(IOException e){
+			System.err.println("Error when closing file: " + e.getMessage());
+		}
+                
+        }
 	
 	public void runCVFromFilesWithValSet(int folds, String nameOutput) {		
 
