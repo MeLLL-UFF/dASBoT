@@ -68,6 +68,7 @@ public class CLICV extends CLI{
 	private boolean writeSpringConfiguration = false;
 	private boolean simpleCV = true;
 	private boolean internalCV = false;
+        private boolean baggingCV = false;
 	
 		
 	public CLICV(File confFile, String exFile, int kfolds, String outputVal, String algoType) {
@@ -77,8 +78,11 @@ public class CLICV extends CLI{
 		this.outputFile = outputVal;
 		if (algoType.equalsIgnoreCase("CVAndVal")){
 			this.simpleCV = false;
-			
 		}
+                if (algoType.equalsIgnoreCase("BaggingCV")){
+                        this.simpleCV = false;
+                        this.baggingCV = true;
+                }
 	}
 	
 		
@@ -162,6 +166,8 @@ public class CLICV extends CLI{
 		CrossValidationFromFiles cv = new CrossValidationFromFiles(la, lp, rs, prefixExFile);
     	if (simpleCV == true){
     		cv.runCVFromFiles(nOfFolds, outputFile); 
+        } else if (baggingCV == true){
+                cv.runBaggingCVFromFiles(nOfFolds, outputFile);
     	} else if (internalCV == true){
     		cv.runCVInternalVal(nOfFolds, nOfInternalFolds, prefixExFile, measure, outputFile); 
     	} else {
