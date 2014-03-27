@@ -3,9 +3,14 @@
  */
 package edu.uff.expansion.set;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.dllearner.core.ComponentAnn;
+import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 import org.semanticweb.drew.dlprogram.model.Term;
 
@@ -14,7 +19,7 @@ import org.semanticweb.drew.dlprogram.model.Term;
  * @author Victor
  */
 @ComponentAnn(name = "DataLogLiteral", shortName = "datlogliteral", version = 0.1)
-public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogLiteral {
+public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogPredicate, Cloneable {
 
     protected boolean failed;
     protected boolean negative;
@@ -24,7 +29,43 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogLi
         super(head, terms.size());
         this.terms = terms;
     }
-    
+
+    public DataLogLiteral(String head, List<Term> terms, boolean negative) {
+        super(head, terms.size());
+        this.terms = terms;
+        this.negative = negative;
+    }
+
+    public static ConcreteDataLogPredicate getInstanceFromLiteral(Literal lit) {
+        String head = lit.getPredicate().toString();
+        int index = head.indexOf("/");
+        if (index > 0) {
+            head = head.substring(0, index);
+        }
+
+        return new DataLogLiteral(head, lit.getTerms(), lit.isNegative());
+    }
+
+    public static List<ConcreteDataLogPredicate> getListOfLiterals(Collection<? extends Literal> lit) {
+        List<ConcreteDataLogPredicate> resp = new ArrayList<>();
+
+        for (Literal l : lit) {
+            resp.add(DataLogLiteral.getInstanceFromLiteral(l));
+        }
+
+        return resp;
+    }
+
+    public static Set<ConcreteDataLogPredicate> getSetOfLiterals(Collection<? extends Literal> lit) {
+        Set<ConcreteDataLogPredicate> resp = new HashSet<>();
+
+        for (Literal l : lit) {
+            resp.add(DataLogLiteral.getInstanceFromLiteral(l));
+        }
+
+        return resp;
+    }
+
     public boolean hasFailed() {
         return failed;
     }
@@ -44,7 +85,7 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogLi
     public List<Term> getTerms() {
         return terms;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -60,31 +101,41 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogLi
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final DataLogLiteral other = (DataLogLiteral) obj;
-        if (this.failed != other.failed)
-            return false;
-        if (this.negative != other.negative)
-            return false;
-        if (!Objects.equals(this.head, other.head))
-            return false;
-        if (this.arity != other.arity)
-            return false;
-        if (!Objects.equals(this.terms, other.terms))
-            return false;
+
+        if (obj instanceof ConcreteDataLogPredicate) {
+            final ConcreteDataLogPredicate other = (ConcreteDataLogPredicate) obj;
+
+            //if (this.failed != other.failed) return false;
+            if (this.negative != other.isNegative())
+                return false;
+            if (!Objects.equals(this.head, other.getHead()))
+                return false;
+            if (this.arity != other.getArity())
+                return false;
+            if (!Objects.equals(this.terms, other.getTerms()))
+                return false;
+        } else {
+            if (getClass() != obj.getClass())
+                return false;
+
+            final DataLogLiteral other = (DataLogLiteral) obj;
+
+            //if (this.failed != other.failed) return false;
+            if (this.negative != other.negative)
+                return false;
+            if (!Objects.equals(this.head, other.head))
+                return false;
+            if (this.arity != other.arity)
+                return false;
+            if (!Objects.equals(this.terms, other.terms))
+                return false;
+        }
+
         return true;
     }
 
-    public boolean equalsButFailed(final DataLogLiteral lit) {
-        if (this.negative != lit.negative)
-            return false;
-        if (!Objects.equals(this.head, lit.head))
-            return false;
-        if (this.arity != lit.arity)
-            return false;
-
-        return true;
+    public boolean sameAs(final ConcreteDataLogPredicate lit) {
+        return (equals(lit) && lit.hasFailed() == this.hasFailed());
     }
 
     @Override
@@ -115,6 +166,40 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteDataLogLi
         }
 
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        if (this.failed) {
+            sb.append("not ");
+        }
+
+        if (this.negative) {
+            sb.append("-");
+        }
+
+        sb.append(this.head);
+        sb.append("(");
+
+        for (int i = 0; i < terms.size(); i++) {
+            sb.append(terms.get(i).getName());
+            if (i < terms.size() - 1) {
+                sb.append(", ");
+            }
+        }
+
+        sb.append(")");
+        return sb.toString();
+    }
+
+    public DataLogLiteral clone() {
+        DataLogLiteral resp = new DataLogLiteral(head, terms, negative);
+
+        resp.failed = this.failed;
+
+        return resp;
     }
 
 }

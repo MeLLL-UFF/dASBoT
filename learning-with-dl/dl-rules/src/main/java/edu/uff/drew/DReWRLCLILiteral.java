@@ -9,10 +9,25 @@ import it.unical.mat.wrapper.DLVInputProgram;
 import it.unical.mat.wrapper.DLVInvocation;
 import it.unical.mat.wrapper.DLVInvocationException;
 import it.unical.mat.wrapper.DLVWrapper;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.semanticweb.drew.dlprogram.format.DLProgramStorer;
+import org.semanticweb.drew.dlprogram.format.DLProgramStorerImpl;
+import org.semanticweb.drew.dlprogram.model.DLProgram;
+import org.semanticweb.drew.dlprogram.model.DLProgramKB;
+import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+import org.semanticweb.drew.ldlpprogram.reasoner.RLProgramKBCompiler;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  *
@@ -20,7 +35,10 @@ import java.util.List;
  */
 public class DReWRLCLILiteral extends DReWRLCLI {
 
-    private LiteralModelHandler literalModelHandler;
+    private static final Logger LOG = Logger.getLogger(DReWRLCLILiteral.class.getName());
+
+    protected LiteralModelHandler literalModelHandler;
+    protected String dlpContent;
 
     private DReWRLCLILiteral(String[] args) {
         super(args);
@@ -28,11 +46,16 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     }
 
     public static DReWRLCLILiteral run(String... args) {
+        return run(null, args);
+    }
+
+    public static DReWRLCLILiteral run(String dlpContent, String... args) {
         DReWRLCLILiteral result = new DReWRLCLILiteral(args);
+        result.setDlpContent(dlpContent);
         result.go();
         return result;
     }
-    
+
     public static void main(String... args) {
         new DReWRLCLILiteral(args).go();
     }
@@ -40,7 +63,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     public LiteralModelHandler getLiteralModelHandler() {
         return literalModelHandler;
     }
-    
+
     @Override
     @SuppressWarnings({"CallToThreadDumpStack", "null"})
     public void runDLV(DLVInputProgram inputProgram) {
@@ -99,8 +122,81 @@ public class DReWRLCLILiteral extends DReWRLCLI {
                         + "ms");
             }
 
-        } catch (DLVInvocationException | IOException e) {
-            e.printStackTrace();
+        } catch (DLVInvocationException | IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public void handleDLProgram(OWLOntology ontology, DLVInputProgram inputProgram) {
+        try {
+            DLProgramKB kb = new DLProgramKB();
+            kb.setOntology(ontology);
+            DLProgram elprogram = null;
+
+            DLProgramParser parser;
+
+            Reader reader;
+            if (dlpContent != null) {
+                reader = new StringReader(dlpContent);
+            } else {
+                reader = new FileReader(dlpFile);
+            }
+            parser = new DLProgramParser(reader);
+            parser.setOntology(ontology);
+
+            elprogram = parser.program();
+
+            kb.setProgram(elprogram);
+
+            DLProgram datalog;
+
+            long t0 = System.currentTimeMillis();
+
+            RLProgramKBCompiler compiler = new RLProgramKBCompiler();
+            datalog = compiler.rewrite(kb);
+
+            int j = dlpFile.lastIndexOf('/');
+            String dlpTag = dlpFile;
+            if (j >= 0) {
+                dlpTag = dlpFile.substring(j + 1);
+            }
+
+            datalogFile = ontologyFile + "-" + dlpTag + "-rl.dlv";
+
+            double currentMemory = ((double) ((double) (Runtime.getRuntime()
+                    .totalMemory() / 1024) / 1024))
+                    - ((double) ((double) (Runtime.getRuntime().freeMemory() / 1024) / 1024));
+
+            if (verbose) {
+                System.err.println("#current memory = " + currentMemory + "M");
+            }
+
+            FileWriter w = new FileWriter(datalogFile);
+            DLProgramStorer storer = new DLProgramStorerImpl();
+            storer.store(datalog, w);
+            w.close();
+
+            long t1 = System.currentTimeMillis();
+
+            rewritingTime = t1 - t0;
+            if (verbose) {
+                System.err.println("#rewrting time = " + rewritingTime + "ms");
+            }
+
+            inputProgram.addFile(datalogFile);
+
+        } catch (IOException | ParseException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String getDlpContent() {
+        return dlpContent;
+    }
+
+    public void setDlpContent(String dlpContent) {
+        this.dlpContent = dlpContent;
+    }
+
 }

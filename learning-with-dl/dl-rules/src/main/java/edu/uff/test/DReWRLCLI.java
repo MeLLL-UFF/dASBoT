@@ -54,20 +54,20 @@ import com.hp.hpl.jena.query.Syntax;
 
 public class DReWRLCLI extends CommandLine {
 
-    private String ontologyFile;
+    protected String ontologyFile;
     private String sparqlFile;
     protected String dlvPath;
     protected String cqFile;
-    private String dlpFile;
+    protected String dlpFile;
     protected String filter;
-    private String datalogFile;
+    protected String datalogFile;
     private boolean rewriting_only = false;
     private String defaultFile;
     protected String semantics = "asp";
     private String[] args;
 
     protected int nModels = 0;
-    private long rewritingTime;
+    protected long rewritingTime;
     protected long dlvTotalTime;
     protected long dlvHandlerStartTime = 0;
     protected long dlvHandlerEndTime = 0;

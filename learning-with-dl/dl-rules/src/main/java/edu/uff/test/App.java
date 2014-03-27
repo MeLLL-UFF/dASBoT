@@ -9,18 +9,14 @@ package edu.uff.test;
  */
 import edu.uff.util.StringResource;
 import edu.uff.dl.rules.BKRules;
-import edu.uff.expansion.set.DataLogPredicate;
-import edu.uff.expansion.set.SimplePredicate;
 import edu.uff.dl.rules.example.AtomTerm;
 import edu.uff.dl.rules.example.PosNegLPRules;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.dllearner.configuration.IConfiguration;
 import org.dllearner.configuration.spring.ApplicationContextBuilder;
 import org.dllearner.configuration.spring.DefaultApplicationContextBuilder;
-//import org.dllearner.parser.ParseException;
 import org.dllearner.parser.PrologParser;
 import org.dllearner.confparser3.ParseException;
 import org.dllearner.confparser3.ConfParserConfiguration;
@@ -30,119 +26,303 @@ import org.dllearner.core.ReasoningMethodUnsupportedException;
 import org.dllearner.learningproblems.PosNegLP;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import edu.uff.dllearnerUtil.cliUtil.IOUtil;
 import edu.uff.drew.DReWRLCLILiteral;
-import edu.uff.expansion.set.ExpansionAnswerSet;
-import java.io.ByteArrayInputStream;
+import edu.uff.expansion.set.ConcreteDataLogPredicate;
+import edu.uff.expansion.set.DataLogLiteral;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 import org.dllearner.core.ComponentInitException;
-import static org.dllearner.core.OntologyFormat.KB;
-import org.dllearner.core.owl.Individual;
-import org.dllearner.kb.OWLFile;
-import org.dllearner.parser.KBParser;
-import org.dllearner.core.owl.KB;
+import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.Term;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 
 public class App {
 
+    public static String getTime() {
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH); // Note: zero based!
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
+        int second = now.get(Calendar.SECOND);
+        int millis = now.get(Calendar.MILLISECOND);
+
+        return String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
+        //System.out.println("");
+    }
+
     public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException, ComponentInitException, org.dllearner.parser.ParseException {
+        String begin, end;
+        begin = getTime();
+        getTime();
+
         //testBKRules(false);
         //testCLICV();
         //testCLI();
         //test1();
         //testBeans();
         testDReW();
-        //testOWLFile();
-        //testPermutate();
+        System.out.println("");
+        System.out.println("");
+        testDReWReasoner();
+
+        end = getTime();
+        System.out.println("");
+        System.out.println("Begin: " + begin);
+        System.out.println("End:   " + end);
     }
 
-    public static void testPermutate() {
-        String[] indS = {"Joao", "Maria", "Jose", "bird"};
-        Set<String> ind = new HashSet<>();
-
-        for (int i = 0; i < indS.length; i++) {
-            ind.add(indS[i]);
+    public static void testDataLogLiteral(Set<Literal> lits) {
+        ConcreteDataLogPredicate dll;
+        for (Literal l : lits) {
+            dll = DataLogLiteral.getInstanceFromLiteral(l);
+            System.out.println(dll);
         }
-
-        ExpansionAnswerSet e = new ExpansionAnswerSet();
-        int permute = 3;
-        List<List<Term>> resp = e.permuteIndividuals(ind, permute);
-
-        for (List<Term> list : resp) {
-            System.out.print("{ ");
-            for (Term term : list) {
-                System.out.print(term);
-                System.out.print(" ");
-            }
-            System.out.println("}");
-        }
-        System.out.println("Count: " + resp.size());
-        System.out.println((resp.size() == Math.pow(indS.length, permute) ? "Ok." : "Error."));
     }
 
-    public static void testOWLFile() throws ComponentInitException, org.dllearner.parser.ParseException {
-        File file = new File("/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl");
-        OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-        OWLOntology ontology;
-        try {
-            ontology = man.loadOntologyFromOntologyDocument(file);
-        } catch (OWLOntologyCreationException e) {
-            throw new RuntimeException(e);
+    public static void testDReWReasoner() throws ComponentInitException, FileNotFoundException {
+        String owlFilePath = "/Users/Victor/Dropbox/dl.rules/sample.owl";
+        String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/sample.owl";
+        dlpFilePath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules.dlp";
+        Set<Literal> samples = new HashSet<>();
+
+        boolean isNetwork = false;
+        //isNetwork = true;
+        if (isNetwork) {
+            owlFilePath = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
+            dlpFilePath = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
+            samples.add(new Literal("newnode", new Constant("x1")));
+            samples.add(new Literal("newnode", new Constant("x2")));
+        } else {
+            //samples.add(new Literal("flies", new Constant("tweety")));
+            //samples.add(new Literal("flies", new Constant("ollie")));
+            //samples.add(new Literal("flies", new Constant("juju")));
+            //strong(r168).
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r168")));
+            samples.add(new Literal("strong", new Constant("r235")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
+            samples.add(new Literal("strong", new Constant("r373")));
+            samples.add(new Literal("strong", new Constant("r264")));
+            samples.add(new Literal("strong", new Constant("r129")));
+            samples.add(new Literal("strong", new Constant("r30")));
+            samples.add(new Literal("strong", new Constant("r254")));
+            samples.add(new Literal("strong", new Constant("r33")));
+            samples.add(new Literal("strong", new Constant("r74")));
+            samples.add(new Literal("strong", new Constant("r46")));
+            samples.add(new Literal("strong", new Constant("r43")));
+            samples.add(new Literal("strong", new Constant("r173")));
+            samples.add(new Literal("strong", new Constant("r58")));
+            samples.add(new Literal("strong", new Constant("r348")));
+            samples.add(new Literal("strong", new Constant("r237")));
+            samples.add(new Literal("strong", new Constant("r415")));
+            samples.add(new Literal("strong", new Constant("r124")));
+            samples.add(new Literal("strong", new Constant("r117")));
+            samples.add(new Literal("strong", new Constant("r184")));
+            samples.add(new Literal("strong", new Constant("r121")));
+            samples.add(new Literal("strong", new Constant("r193")));
+            samples.add(new Literal("strong", new Constant("r380")));
+            samples.add(new Literal("strong", new Constant("r44")));
         }
 
-//        Set<OWLAxiom> axioms = ontology.getABoxAxioms(true);
-        ontology.getIndividualsInSignature();
-        ontology.getRBoxAxioms(true);
-
-        for (Object o : ontology.getClassesInSignature()) {
-            System.out.println(o.toString());
+        Scanner in = new Scanner(new File(dlpFilePath));
+        StringBuilder sb = new StringBuilder();
+        while (in.hasNext()) {
+            sb.append(in.nextLine());
+            sb.append("\n");
         }
-        System.out.println("\n");
 
-        for (Object o : ontology.getIndividualsInSignature()) {
-            System.out.println(o.toString());
-        }
-        System.out.println("\n");
-
-        for (Object o : ontology.getObjectPropertiesInSignature()) {
-            System.out.println(o.toString());
-        }
-        System.out.println("\n");
-
-        /*
-         for (Object o : ontology.getSignature()) {
-         System.out.println(o.toString());
-         }
-         System.out.println("\n");
-         */
-        /*
-         for (OWLAxiom a : axioms) {
-         Set<OWLNamedIndividual> individual = ontology.getIndividualsInSignature();
-         for (OWLNamedIndividual i : individual) {
-         System.out.println(i.toString());
-         }
-         System.out.println(a + "\n");
-         //System.out.println(a.toString());
-         }
-         */
+        DReWReasoner dr = new DReWReasoner(owlFilePath, sb.toString(), false, samples);
+        //DReWReasoner dr = new DReWReasoner(owlFilePath, dlpFilePath, true, samples);
+        dr.init();
     }
 
     public static void testDReW() {
@@ -163,9 +343,13 @@ public class App {
             if (printMySets) {
                 arg[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
                 arg[4] = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
+                arg[4] = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules-with-rule.dlp";
 
+                //arg[4] = "/Users/Victor/Desktop/lattesRules-with-rule.dlp";
                 System.out.println("My Sets");
                 DReWRLCLILiteral d = DReWRLCLILiteral.run(arg);
+                //testDataLogLiteral(d.getLiteralModelHandler().getAnswerSets().get(0));
+
                 for (Set<Literal> l : d.getLiteralModelHandler().getAnswerSets()) {
                     /*
                      StringBuilder sb = new StringBuilder();
@@ -180,18 +364,12 @@ public class App {
                      System.out.println(sb.toString().trim());
                      //System.out.println("}\n");
                      */
-                    Set<String> ind = new HashSet<>();
-                    ind.add("tweety");
-                    ind.add("polly");
 
-                    Set<DataLogPredicate> pred = new HashSet<>();
-                    pred.add(new SimplePredicate("penguin", 1));
-                    pred.add(new SimplePredicate("bird", 1));
-                    pred.add(new SimplePredicate("flies", 1));
+                    //AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet());
+                    System.out.println(l);
+                    //ar.init();
+                    //System.out.println(ar.getRules().iterator().next().toString());
 
-                    ExpansionAnswerSet e = new ExpansionAnswerSet(l, ind, pred);
-                    //e.init();
-                    System.out.println(e);
                 }
             } else {
                 System.out.println("DReW's Sets");

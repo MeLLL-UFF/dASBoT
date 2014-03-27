@@ -4,7 +4,7 @@
 package edu.uff.expansion.set;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.dllearner.core.Component;
@@ -21,73 +21,59 @@ import org.semanticweb.drew.dlprogram.model.Term;
 @ComponentAnn(name = "ExpansionAnswerSet", shortName = "expset", version = 0.1)
 public class ExpansionAnswerSet implements Component {
 
-    private Set<Literal> answerSet;
+    private List<ConcreteDataLogPredicate> answerSet;
+    private List<ConcreteDataLogPredicate> samples;
 
-    private Set<String> individuals;
-    private Set<DataLogPredicate> predicates;
+    private Set<? extends Constant> individuals;
+    private Set<? extends DataLogPredicate> predicates;
 
-    private List<Literal> expansionSet;
+    private List<DataLogLiteral> expansionSet;
 
-    private Set<String> answerSetAsString;
-    
     public ExpansionAnswerSet() {
     }
 
-    public ExpansionAnswerSet(Set<Literal> answerSet, Set<String> individuals, Set<DataLogPredicate> predicates) throws ComponentInitException {
-        this.answerSet = answerSet;
+    public ExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, Set<? extends Constant> individuals, Set<? extends DataLogPredicate> predicates) throws ComponentInitException {
+        this.answerSet = DataLogLiteral.getListOfLiterals(answerSet);
+        this.samples = DataLogLiteral.getListOfLiterals(samples);
         this.individuals = individuals;
         this.predicates = predicates;
+
         init();
     }
 
     @Override
     public void init() throws ComponentInitException {
-        answerSetAsString = new HashSet<>();
-        
-        for (Literal l : answerSet) {
-            answerSetAsString.add(l.toString());
-        }
-        
+        answerSet.removeAll(samples);
+
         expansionSet = new ArrayList<>();
-        Literal lit;
+        DataLogLiteral lit;
         for (DataLogPredicate hp : predicates) {
             List<List<Term>> list = permuteIndividuals(individuals, hp.getArity());
             for (List<Term> terms : list) {
-                Term[] t = listToArray(terms);
-                lit = new Literal(hp.getHead(), t);
-                if (! answerSetAsString.contains(lit.toString())) {
+                lit = new DataLogLiteral(hp.getHead(), terms);
+                if (!answerSet.contains(lit)) {
+                    lit.setFailed(true);
                     expansionSet.add(lit);
                 }
-                
-                
-                lit = new Literal(hp.getHead(), t);
+
+                lit = lit.clone();
+                //lit.setFailed(false);
                 lit.setNegative(true);
-                if (! answerSetAsString.contains(lit.toString())) {
+                if (!answerSet.contains(lit)) {
+                    lit.setFailed(true);
                     expansionSet.add(lit);
                 }
-                
             }
         }
     }
-    
-    private Term[] listToArray(List<Term> l) {
-        Term[] resp = new Term[l.size()];
-        int i = 0;
-        for (Term t : l) {
-            resp[i] = t;
-            i++;
-        }
-        
-        return resp;
-    }
 
-    public List<List<Term>> permuteIndividuals(Set<String> individuals, int listSize) {
+    public List<List<Term>> permuteIndividuals(Set<? extends Constant> individuals, int listSize) {
         List<List<Term>> resp = new ArrayList<List<Term>>();
 
         List<Term> l;
-        for (String ind : individuals) {
+        for (Constant ind : individuals) {
             l = new ArrayList<>();
-            l.add(new Constant(ind));
+            l.add(ind);
             resp.add(l);
         }
 
@@ -95,9 +81,9 @@ public class ExpansionAnswerSet implements Component {
             List<List<Term>> aux = new ArrayList<List<Term>>();
 
             for (List<Term> list : resp) {
-                for (String ind : individuals) {
+                for (Constant ind : individuals) {
                     l = new ArrayList<>(list);
-                    l.add(new Constant(ind));
+                    l.add(ind);
                     aux.add(l);
                 }
             }
@@ -108,27 +94,30 @@ public class ExpansionAnswerSet implements Component {
         return resp;
     }
 
-    public Set<Literal> getAnswerSet() {
-        return answerSet;
+    public List<ConcreteDataLogPredicate> getExpansionSet() {
+        List<ConcreteDataLogPredicate> resp = new ArrayList<>(expansionSet.size() + answerSet.size());
+        resp.addAll(answerSet);
+        resp.addAll(expansionSet);
+        return resp;
     }
 
-    public void setAnswerSet(Set<Literal> answerSet) {
+    public void setAnswerSet(List<ConcreteDataLogPredicate> answerSet) {
         this.answerSet = answerSet;
     }
 
-    public Set<String> getIndividuals() {
+    public Set<? extends Constant> getIndividuals() {
         return individuals;
     }
 
-    public void setIndividuals(Set<String> individuals) {
+    public void setIndividuals(Set<Constant> individuals) {
         this.individuals = individuals;
     }
 
-    public Set<DataLogPredicate> getPredicates() {
+    public Set<? extends DataLogPredicate> getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(Set<DataLogPredicate> predicates) {
+    public void setPredicates(Set<? extends DataLogPredicate> predicates) {
         this.predicates = predicates;
     }
 
@@ -136,23 +125,25 @@ public class ExpansionAnswerSet implements Component {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{ ");
-        for (Literal l : answerSet) {
+        for (ConcreteDataLogPredicate l : answerSet) {
             sb.append(l);
             sb.append(", ");
         }
 
-        for (Literal l : expansionSet) {
-            sb.append("not ");
+        for (ConcreteDataLogPredicate l : expansionSet) {
+            //sb.append("not ");
             sb.append(l);
             sb.append(", ");
         }
 
-        String resp = sb.toString().trim();
-        resp = resp.substring(0, resp.length() - 1);
-
-        resp = resp + " }";
-
-        return resp;
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        sb.append("}");
+        
+        return sb.toString().trim();
     }
 
+    public List<ConcreteDataLogPredicate> getSamples() {
+        return samples;
+    }
+    
 }

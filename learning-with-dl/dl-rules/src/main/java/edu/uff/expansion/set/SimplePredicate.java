@@ -8,6 +8,7 @@ import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.default_logic.OWLPredicate;
+import org.semanticweb.drew.dlprogram.model.NormalPredicate;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 
 /**
@@ -28,6 +29,11 @@ public class SimplePredicate implements DataLogPredicate, Component {
         this.arity = arity;
     }
 
+    public SimplePredicate(NormalPredicate np) {
+        this.head = np.getName();
+        this.arity = np.getArity();
+    }
+    
     @Override
     public String getHead() {
         return head;
@@ -86,5 +92,12 @@ public class SimplePredicate implements DataLogPredicate, Component {
     @Override
     public void init() throws ComponentInitException {
     }
+
+    @Override
+    public String toString() {
+        return head + "/" + arity;
+    }
+    
+    
 
 }
