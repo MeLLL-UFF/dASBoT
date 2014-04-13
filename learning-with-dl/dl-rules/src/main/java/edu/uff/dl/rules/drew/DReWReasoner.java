@@ -3,7 +3,6 @@
  */
 package edu.uff.dl.rules.drew;
 
-import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.rules.AnswerRule;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
@@ -11,9 +10,11 @@ import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.expansion.set.ExpansionAnswerSet;
 import edu.uff.dl.rules.expansion.set.SampleExpansionAnswerSet;
 import edu.uff.dl.rules.datalog.SimplePredicate;
-import edu.uff.dl.rules.expansion.set.parallel.ParalleExpansionAnswerSet;
-import edu.uff.dl.rules.expansion.set.parallel.ParalleSampleExpansionAnswerSet;
+import edu.uff.dl.rules.expansion.set.IndividualTemplate;
+import edu.uff.dl.rules.expansion.set.parallel.ParallelExpansionAnswerSet;
+import edu.uff.dl.rules.expansion.set.parallel.ParallelSampleExpansionAnswerSet;
 import edu.uff.dl.rules.test.App;
+import edu.uff.dl.rules.util.FileContent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
@@ -59,6 +60,7 @@ public class DReWReasoner implements Component {
     protected String dlpContent;
     protected String samplesContent;
     protected List<AnswerSetRule> answerSetRules;
+    protected String templateContent;
 
     private String[] arg = {
         "-rl",
@@ -77,11 +79,12 @@ public class DReWReasoner implements Component {
         answerSetRules = new ArrayList<>();
     }
 
-    public DReWReasoner(String owlFilePath, String dlpContent, String samplesContent) {
+    public DReWReasoner(String owlFilePath, String dlpContent, String samplesContent, String templateContent) {
         this();
         this.arg[2] = owlFilePath;
         this.dlpContent = dlpContent;
         this.samplesContent = samplesContent;
+        this.templateContent = templateContent;
     }
 
     @Override
@@ -96,27 +99,31 @@ public class DReWReasoner implements Component {
             //loadFromAnswerSet(individuals, predicates);
             ExpansionAnswerSet e;
             for (Set<Literal> answerSet : drew.getLiteralModelHandler().getAnswerSets()) {
+                System.out.println("Iniciar Configuração do Template: " + App.getTime());
+                //SampleExpansionAnswerSet s = new SampleExpansionAnswerSet(answerSet, samples, individuals, predicates);
+                IndividualTemplate it = new IndividualTemplate(templateContent, dlpContent + samplesContent, FileContent.getStringFromFile(getOwlFilePath()));
+                it.init();
                 System.out.println("Iniciar Geração do Conjunto Expandido: " + App.getTime());
-                SampleExpansionAnswerSet s = new SampleExpansionAnswerSet(answerSet, samples, individuals, predicates);
-                e = new ParalleSampleExpansionAnswerSet(answerSet, samples, individuals, predicates, 4);
+                e = new ExpansionAnswerSet(answerSet, samples, it);
                 //e = s;
                 //System.out.println(e.getSamples());
                 
                 e.init();
                 //System.out.println(e);
                 System.out.println("Iniciar Geração da Regra: " + App.getTime());
-                AnswerRule ar = new AnswerRule(s.getSamples(), e.getExpansionSet());
+                AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet());
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
                 answerSetRules.add(aes);
             }
 
         } catch (ParseException | ComponentInitException | FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
             throw new ComponentInitException(ex.getMessage());
         }
     }
 
-    private void loadIndividualsAndPredicates(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
+    public void loadIndividualsAndPredicates(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
         loadOntology(individuals, predicates);
         loadDLP(individuals, predicates);
         loadSamples(individuals, predicates);
@@ -313,4 +320,12 @@ public class DReWReasoner implements Component {
         return arg;
     }
 
+    public String getTemplateContent() {
+        return templateContent;
+    }
+
+    public void setTemplateContent(String templateContent) {
+        this.templateContent = templateContent;
+    }
+    
 }

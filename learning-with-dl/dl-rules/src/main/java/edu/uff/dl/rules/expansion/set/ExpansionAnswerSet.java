@@ -15,8 +15,11 @@ import java.util.Set;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
+import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Constant;
+import org.semanticweb.drew.dlprogram.model.NormalPredicate;
+import org.semanticweb.drew.dlprogram.model.Predicate;
 import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
@@ -29,23 +32,23 @@ public class ExpansionAnswerSet implements Component {
     protected List<ConcreteLiteral> answerSet;
     protected List<ConcreteLiteral> samples;
 
-    protected Set<? extends Constant> individuals;
-    protected Set<? extends DataLogPredicate> predicates;
-
     protected List<DataLogLiteral> expansionSet;
 
-    protected Map<Integer, List<List<Term>>> permuteMap;
+    protected Map<List<Term>, List<List<Term>>> permuteMap;
+    protected Map<Integer, List<List<Term>>> generalPermuteMap;
+    protected TypeTemplate individualsClasses;
 
     public ExpansionAnswerSet() {
         this.permuteMap = new HashMap<>();
+        this.generalPermuteMap = new HashMap<>();
     }
 
-    public ExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, Set<? extends Constant> individuals, Set<? extends DataLogPredicate> predicates) throws ComponentInitException {
+    public ExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, TypeTemplate individualsClasses) throws ComponentInitException {
         this();
         this.answerSet = DataLogLiteral.getListOfLiterals(answerSet);
         this.samples = DataLogLiteral.getListOfLiterals(samples);
-        this.individuals = individuals;
-        this.predicates = predicates;
+
+        this.individualsClasses = individualsClasses;
     }
 
     @Override
@@ -53,39 +56,79 @@ public class ExpansionAnswerSet implements Component {
         answerSet.removeAll(getSamples());
 
         expansionSet = new ArrayList<>();
+
+        Collection<Clause> facts;
+        for (DataLogPredicate pred : individualsClasses.getProgramPredicates()) {
+            facts = individualsClasses.getTemplateFactsForPredicate(pred);
+            if (facts != null && ! facts.isEmpty()) {
+                loadLiteralsFromFacts(expansionSet, facts);
+            } else {
+                System.out.println(pred);
+                loadLiteralsFromFacts(expansionSet, facts, pred.getHead(), getGeneralPermuteMap(pred.getArity()));
+            }
+        }
+
+        //loadLiteralsFromFacts(expansionSet, individualsClasses.getTemplateFacts());
+    }
+
+    protected void loadLiteralsFromFacts(Collection<DataLogLiteral> expansionSet, Collection<Clause> facts) {
+        if (expansionSet == null || facts == null || facts.isEmpty())
+            return;
+
+        for (Clause c : facts) {
+            List<List<Term>> list = getPermuteMap(c.getHead().getTerms());
+            loadLiteralsFromFacts(expansionSet, facts, ((NormalPredicate) c.getHead().getPredicate()).getName(), list);
+        }
+    }
+
+    protected void loadLiteralsFromFacts(Collection<DataLogLiteral> expansionSet, Collection<Clause> facts, String pred, List<List<Term>> list) {
         DataLogLiteral lit;
-        for (DataLogPredicate hp : predicates) {
-            List<List<Term>> list = getPermuteMap(hp.getArity());
-            for (List<Term> terms : list) {
+        for (List<Term> terms : list) {
 
-                lit = new DataLogLiteral(hp.getHead(), terms);
-                if (!answerSet.contains(lit)) {
-                    lit.setFailed(true);
-                    expansionSet.add(lit);
-                }
+            lit = new DataLogLiteral(pred, terms);
+            if (!answerSet.contains(lit)) {
+                lit.setFailed(true);
+                expansionSet.add(lit);
+            }
 
-                lit = lit.clone();
-                //lit.setFailed(false);
-                lit.setNegative(true);
-                if (!answerSet.contains(lit)) {
-                    lit.setFailed(true);
-                    expansionSet.add(lit);
-                }
+            lit = lit.clone();
+            //lit.setFailed(false);
+            lit.setNegative(true);
+            if (!answerSet.contains(lit)) {
+                lit.setFailed(true);
+                expansionSet.add(lit);
             }
         }
     }
 
-    protected List<List<Term>> getPermuteMap(int key) {
+    protected List<List<Term>> getPermuteMap(List<Term> key) {
 
         if (!permuteMap.containsKey(key)) {
-            if (permuteMap.isEmpty()) {
-                permuteMap.put(1, permuteIndividuals(individuals, 1));
+            List<List<Term>> resp = permuteIndividuals(individualsClasses.getIndividualsGroups().get(key.get(0).getName()), 1);
+            resp.addAll(permuteIndividuals(individualsClasses.getIndividualsGroups().get(TypeTemplate.OTHER_INDIVIDUALS), 1));
+            List<List<Term>> aux;
+            for (int i = 1; i < key.size(); i++) {
+                aux = permuteIndividuals(resp, individualsClasses.getIndividualsGroups().get(key.get(i).getName()), i + 1);
+                aux.addAll(permuteIndividuals(resp, individualsClasses.getIndividualsGroups().get(TypeTemplate.OTHER_INDIVIDUALS), i + 1));
+                resp = aux;
             }
-            if (key > 1)
-                permuteMap.put(key, permuteIndividuals(getPermuteMap(key - 1), individuals, key));
+
+            permuteMap.put(key, resp);
         }
 
         return permuteMap.get(key);
+    }
+
+    protected List<List<Term>> getGeneralPermuteMap(int key) {
+        if (!generalPermuteMap.containsKey(key)) {
+            if (generalPermuteMap.isEmpty()) {
+                generalPermuteMap.put(1, permuteIndividuals(individualsClasses.getIndividuals(), 1));
+            }
+            if (key > 1)
+                generalPermuteMap.put(key, permuteIndividuals(getGeneralPermuteMap(key - 1), individualsClasses.getIndividuals(), key));
+        }
+
+        return generalPermuteMap.get(key);
     }
 
     protected List<List<Term>> permuteIndividuals(final Collection<? extends Constant> individuals, int listSize) {
@@ -135,18 +178,6 @@ public class ExpansionAnswerSet implements Component {
         this.answerSet = answerSet;
     }
 
-    public Set<? extends Constant> getIndividuals() {
-        return individuals;
-    }
-
-    public Set<? extends DataLogPredicate> getPredicates() {
-        return predicates;
-    }
-
-    public void setPredicates(Set<? extends DataLogPredicate> predicates) {
-        this.predicates = predicates;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -176,8 +207,8 @@ public class ExpansionAnswerSet implements Component {
         this.samples = samples;
     }
 
-    public void setIndividuals(Set<? extends Constant> individuals) {
-        this.individuals = individuals;
+    public void setIndividualsClasses(TypeTemplate individualsClasses) {
+        this.individualsClasses = individualsClasses;
     }
-
+    
 }

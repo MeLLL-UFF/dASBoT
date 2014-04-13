@@ -5,7 +5,8 @@
 package edu.uff.dl.rules.expansion.set.parallel;
 
 import edu.uff.dl.rules.datalog.DataLogPredicate;
-import edu.uff.dl.rules.expansion.set.ExpansionAnswerSet;
+import edu.uff.dl.rules.expansion.set.SampleExpansionAnswerSet;
+import edu.uff.dl.rules.expansion.set.TypeTemplate;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,19 +23,18 @@ import org.semanticweb.drew.dlprogram.model.Term;
  *
  * @author Victor
  */
-public class ParalleExpansionAnswerSet extends ExpansionAnswerSet {
-    
+public class ParallelSampleExpansionAnswerSet extends SampleExpansionAnswerSet {
     protected int nThreads;
 
-    public ParalleExpansionAnswerSet() {
+    public ParallelSampleExpansionAnswerSet() {
         this.nThreads = 2;
     }
 
-    public ParalleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, Set<? extends Constant> individuals, Set<? extends DataLogPredicate> predicates, int nThreads) throws ComponentInitException {
-        super(answerSet, samples, individuals, predicates);
+    public ParallelSampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, TypeTemplate individualsClasses, int nThreads) throws ComponentInitException {
+        super(answerSet, samples, individualsClasses);
         this.nThreads = nThreads;
     }
-    
+
     @Override
     protected List<List<Term>> permuteIndividuals(final List<List<Term>> append, final Collection<? extends Constant> individuals, int listSize) {
         ConcurrentLinkedQueue<List<Term>> roots;
@@ -48,7 +48,7 @@ public class ParalleExpansionAnswerSet extends ExpansionAnswerSet {
         List<List<Term>> resp = new LinkedList<>();
         
         for (int i = 0; i < realThreads; i++) {
-            permutes[i] = new Permute(roots, individuals, listSize);
+            permutes[i] = new SamplePermute(roots, individuals, listSize, getSample());
             threads[i] = new Thread(permutes[i]);
             threads[i].start();
         }
@@ -57,7 +57,7 @@ public class ParalleExpansionAnswerSet extends ExpansionAnswerSet {
             try {
                 threads[i].join();
             } catch (InterruptedException ex) {
-                Logger.getLogger(ParalleExpansionAnswerSet.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ParallelExpansionAnswerSet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -67,12 +67,12 @@ public class ParalleExpansionAnswerSet extends ExpansionAnswerSet {
         
         return resp;
     }
-
-    public int getnThreads() {
+    
+    public int getNThreads() {
         return nThreads;
     }
 
-    public void setnThreads(int nThreads) {
+    public void setNThreads(int nThreads) {
         this.nThreads = nThreads;
     }
     

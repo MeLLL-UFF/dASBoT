@@ -68,10 +68,23 @@ public class AnswerRule implements Component {
 
     private DataLogRule getRule() {//List<ConcreteDataLogPredicate> relevants, ConcreteDataLogPredicate sample) {
         ConcreteLiteral sample = pickSampleAtRandom();
+        //System.out.println("Rule based on sample: " + sample);
+        //System.out.println("");
+        List<? extends ConcreteLiteral> relevants = getRelevants(sample);
+//        List<? extends ConcreteLiteral> relevants = null;
+//        for (ConcreteLiteral cl : samples) {
+//            sample = cl;
+//            relevants = getRelevants(sample);
+//            if (relevants != null) {
+//                break;
+//            }
+//        }
+//        if (relevants == null) {
+//            System.out.println("Nenhum relevante!");
+//        }
         System.out.println("Rule based on sample: " + sample);
         System.out.println("");
-        List<? extends ConcreteLiteral> relevants = getRelevants(sample);
-
+        
         VariableGenerator v = new SimpleGenerator();
         
         Map<Term, String> map = new HashMap<>();

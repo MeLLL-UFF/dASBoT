@@ -30,19 +30,25 @@ import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
+import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.expansion.set.ExpansionAnswerSet;
+import edu.uff.dl.rules.expansion.set.IndividualTemplate;
 import edu.uff.dl.rules.expansion.set.SampleExpansionAnswerSet;
+import edu.uff.dl.rules.util.AlphabetCounter;
 import edu.uff.dl.rules.util.FileContent;
+import edu.uff.dl.rules.util.VariableGenerator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
+import org.semanticweb.drew.dlprogram.model.Variable;
 
 public class App {
 
@@ -59,29 +65,8 @@ public class App {
         return String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
         //System.out.println("");
     }
-
-//    public static void testSimpleExpansionAnswerSet() {
-//        ExpansionAnswerSet e = new SampleExpansionAnswerSet();
-//        List<Constant> ind = new ArrayList<>();
-//        Constant sample = new Constant("d");
-//        ind.add(new Constant("a"));
-//        ind.add(new Constant("b"));
-//        ind.add(new Constant("c"));
-//        ind.add(sample);
-//        //e.setIndividuals(ind);
-//        int count = 0;
-//        List<List<Term>> list = e.permuteIndividuals(ind, 3);
-//        for (List<Term> list1 : list) {
-//            if (list1.contains(sample)) {
-//                System.out.println(list1);
-//                count++;
-//            }
-//
-//        }
-//        System.out.println(count);
-//    }
-
-    public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException, ComponentInitException, org.dllearner.parser.ParseException {
+   
+    public static void main(String[] args) throws ParseException, ParseException, IOException, ReasoningMethodUnsupportedException, ComponentInitException, org.dllearner.parser.ParseException, FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
         String begin, end;
         begin = getTime();
         getTime();
@@ -89,19 +74,25 @@ public class App {
         //testDReW();
         testDReWReasoner();
         //testSimpleExpansionAnswerSet();
-
+        
+        //testIndividualTemplate();
+        
         end = getTime();
         System.out.println("");
         System.out.println("Begin: " + begin);
         System.out.println("End:   " + end);
     }
 
-    public static void testDReWReasoner() throws ComponentInitException, FileNotFoundException, IOException {
+    public static void testIndividualTemplate() throws FileNotFoundException, ComponentInitException {
+        
+    }
+    
+    public static void testDReWReasoner() throws ComponentInitException, FileNotFoundException, IOException, org.semanticweb.drew.dlprogram.parser.ParseException {
         DReWReasoner dr;
         String samples;
         String owlFilePath = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
-        //dlpFilePath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules.dlp";
+        dlpFilePath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules.dlp";
         String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/samples.dlp";
 
         //Arity = 2
@@ -119,7 +110,12 @@ public class App {
             //samples = "flies(tweety).";
         }
         String dlpContent = FileContent.getStringFromFile(dlpFilePath);
-        dr = new DReWReasoner(owlFilePath, dlpContent, samples);
+        String templateContent = FileContent.getStringFromFile("/Users/Victor/Desktop/template.dlp");
+        dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent);
+        Set<Constant> individuals = new HashSet<>(); 
+        Set<DataLogPredicate> predicates = new HashSet<>();
+        
+        dr.loadIndividualsAndPredicates(individuals, predicates);
         dr.init();
 
         if (dr.getAnswerSetRules() == null || dr.getAnswerSetRules().size() < 1)
@@ -131,15 +127,22 @@ public class App {
         System.out.println(asr.getRulesAsString());
         System.out.println("");
         System.out.println("Comparar a Regra: " + App.getTime());
+        boolean compare = false;
+        //compare = true;
+        if (!compare) return;
         DReWRLCLILiteral drew = DReWRLCLILiteral.run(in, dr.getArg());
         Set<Literal> lits = drew.getLiteralModelHandler().getAnswerSets().get(0);
 
+        int positive = 0;
         for (Literal s : dr.getSamples()) {
-            if (lits.contains(s))
+            if (lits.contains(s)) {
                 System.out.println(s);
+                positive++;
+            }       
         }
-        System.out.println("Gerar arquivo de saída: " + App.getTime());
-        asr.setRulesToFile("/Users/Victor/Desktop/rules.dlp", false);
+        System.out.println("Exmplos Cobertos / Total : " + positive + " / " + dr.getSamples().size());
+        //System.out.println("Gerar arquivo de saída: " + App.getTime());
+        //asr.setRulesToFile("/Users/Victor/Desktop/rules.dlp", false);
     }
 
     public static void testDReW() {
@@ -221,91 +224,22 @@ public class App {
         //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
     }
 
-    public static void test1() throws ParseException, org.dllearner.parser.ParseException {
-        PrologParser pp = new PrologParser();
-        String atomString = "couple('joao', joao).";
-        Atom atom = pp.parseAtom(atomString);
-        System.out.println(atom);
-
-        for (int i = 0; i < atom.getArity(); i++) {
-            System.out.println(atom.getArgument(i).toPLString());
-        }
-    }
-
-    public static void testBKRules(boolean onlyDatalog) throws ComponentInitException {
-        String myBK = "/Users/Victor/Dropbox/dl.rules/bk.pl";
-        String networkBK = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
-        String networkOWL = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
-        //String archKB = "/Users/Victor/workspace/dllearner/examples/arch/arch.kb";
-        //String archKB = "/Users/Victor/workspace/dllearner/examples/arch/arch.kb";
-        //String archOWL = "/Users/Victor/workspace/dllearner/examples/arch/arch.owl";
-        //String archOWL = "/Users/Victor/workspace/dllearner/examples/arch/arch.owl";
-        BKRules bk;
-        if (onlyDatalog) {
-            bk = new BKRules(myBK);
-        } else {
-            bk = new BKRules(networkBK, networkOWL);
-        }
-        bk.init();
-        if (bk.getFacts() != null) {
-            System.out.println("Facts:");
-            for (Clause c : bk.getFacts()) {
-                System.out.println(c);
+    public static void testGenerator() {
+        VariableGenerator vg = new AlphabetCounter();
+        //((AlphabetCounter) vg).setCount(475253);
+        List<String> list = new LinkedList<>();
+        String in;
+        int repeat = 0;
+        for (int i = 0; i < 475253; i++) {
+            in = vg.getNextName();
+            if (list.contains(in)) {
+                repeat++;
+            } else {
+                list.add(vg.getNextName());
             }
+            System.out.println(in);
         }
-
-        if (bk.getRules() != null) {
-            System.out.println("");
-            System.out.println("Rules:");
-            for (Clause c : bk.getRules()) {
-                System.out.println(c);
-            }
-        }
+        System.out.println("Repetidos: " + repeat);
     }
-
-    public static void testBeans() throws IOException {
-
-        PosNegLP lp;
-        IConfiguration configuration;
-        ApplicationContext context;
-
-        String initialConf = "/Users/Victor/Dropbox/dl.rules/initialConf.txt";
-        String fold = "/Users/Victor/Dropbox/dl.rules/fold.txt";
-        String notFold = "/Users/Victor/Dropbox/dl.rules/notFold.txt";
-        String paths[] = {initialConf, fold};
-
-        AnnComponentManager.addComponentClassName(PosNegLPRules.class.getName());
-        //Resource confFileR = new FileSystemResource(IOUtil.stringToFile(IOUtil.readFile(paths), "fold")); //Works
-        // /var/folders/zp/xnfn64fx5ln8x0mt4qfvld8w0000gn/T
-        Resource confFileR = new StringResource(notFold, IOUtil.readFile(paths), "UTF-8"); //Works
-
-        List<Resource> springConfigResources = new ArrayList<>();
-        configuration = new ConfParserConfiguration(confFileR); //Works
-        ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
-        context = builder.buildApplicationContext(configuration, springConfigResources);
-
-        lp = context.getBean(PosNegLP.class);
-
-        System.out.println("Positivo");
-        Set<AtomTerm> s = ((PosNegLPRules) lp).getPositiveAtoms();
-        for (AtomTerm atom : s) {
-            System.out.println(atom.toString());
-        }
-
-        System.out.println("Negativo");
-        System.out.println("");
-        s = ((PosNegLPRules) lp).getNegativeAtoms();
-        for (AtomTerm atom : s) {
-            System.out.println(atom.toString());
-        }
-
-        System.out.println("");
-        System.out.println("Done!");
-    }
-
-    public static void print(String... strings) {
-        for (String s : strings) {
-            System.out.println(s);
-        }
-    }
+    
 }

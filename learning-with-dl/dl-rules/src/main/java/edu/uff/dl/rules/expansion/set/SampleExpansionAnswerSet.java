@@ -27,30 +27,8 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
     public SampleExpansionAnswerSet() {
     }
 
-    public SampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, Set<? extends Constant> individuals, Set<? extends DataLogPredicate> predicates) throws ComponentInitException {
-        super(answerSet, samples, individuals, predicates);
-    }
-
-    @Override
-    public void init() throws ComponentInitException {
-        //sample = getSamples().get(0);
-
-        answerSet.removeAll(getSamples());
-
-        expansionSet = new ArrayList<>();
-        DataLogLiteral lit;
-        boolean isNegative = getSample().isNegative();
-        for (DataLogPredicate hp : predicates) {
-            List<List<Term>> list = getPermuteMap(hp.getArity());
-            for (List<Term> terms : list) {
-
-                lit = new DataLogLiteral(hp.getHead(), terms, isNegative);
-                if (!answerSet.contains(lit)) {
-                    lit.setFailed(true);
-                    expansionSet.add(lit);
-                }
-            }
-        }
+    public SampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, TypeTemplate individualsClasses) throws ComponentInitException {
+        super(answerSet, samples, individualsClasses);
     }
 
     @Override
@@ -77,7 +55,7 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
 
         List<Term> l;
 
-        int size = listSize - (append != null ? append.get(0).size() : listSize);
+        int size = listSize - (append != null && ! append.isEmpty() ? append.get(0).size() : listSize);
 
         List<List<Term>> resp = new ArrayList<>(append);
         List<List<Term>> noRelevants = new ArrayList<>();
@@ -139,17 +117,17 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
     }
 
     @Override
-    protected List<List<Term>> getPermuteMap(int key) {
+    protected List<List<Term>> getGeneralPermuteMap(int key) {
 
-        if (!permuteMap.containsKey(key)) {
-            if (permuteMap.isEmpty()) {
-                permuteMap.put(1, permuteIndividuals(individuals, 1));
-            }
+        if (!generalPermuteMap.containsKey(key)) {
+//            if (generalPermuteMap.isEmpty()) {
+//                generalPermuteMap.put(1, permuteIndividuals(individualsClasses.getIndividuals(), 1));
+//            }
 
-            permuteMap.put(key, permuteIndividuals(individuals, key));
+            generalPermuteMap.put(key, permuteIndividuals(individualsClasses.getIndividuals(), key));
         }
 
-        return permuteMap.get(key);
+        return generalPermuteMap.get(key);
     }
 
     private List<Constant> loadSampleTerms() {
