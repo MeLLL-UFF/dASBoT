@@ -19,7 +19,7 @@ public class App
         String path = "C:\\Users\\Bruno\\Projetos\\Datasets\\dl\\trainTest\\facultynear\\";
         File file = new File(path + "facultynear.conf");
         
-        CLICV cv = new CLICV(file, path + "facultynear", 10, "CVTest.txt", "SimpleCV");
+        CLICV cv = new CLICV(file, path + "facultynear", 10, "BaggingTest.txt", "BaggingCV");
         try {
             cv.init();
             cv.run();

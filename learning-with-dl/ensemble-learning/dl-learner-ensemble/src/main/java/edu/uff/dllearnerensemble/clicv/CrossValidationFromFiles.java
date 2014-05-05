@@ -179,10 +179,10 @@ public class CrossValidationFromFiles extends CrossValidation {
 			
 			long algorithmStartTime = System.nanoTime();
 			
-                        Bagging bagging = new Bagging(la, lp, 5);
+                        Bagging bagging = new Bagging(la, lp, rs, 5);
                         bagging.run();
 			
-                        Description concept = la.getCurrentlyBestDescription();
+                        Description concept = bagging.getBestDescription();
 			
 			long algorithmDuration = System.nanoTime() - algorithmStartTime;
 			runtime.addNumber(algorithmDuration/(double)1000000000);
