@@ -29,12 +29,12 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
 public class Rule implements DataLogRule, Component {
 
     protected ConcreteLiteral horn;
-    protected Collection<? extends ConcreteLiteral> terms;
+    protected Set<? extends ConcreteLiteral> terms;
 
     public Rule() {
     }
 
-    public Rule(ConcreteLiteral horn, Collection<? extends ConcreteLiteral> terms) {
+    public Rule(ConcreteLiteral horn, Set<? extends ConcreteLiteral> terms) {
         this.horn = horn;
         this.terms = terms;
     }
@@ -48,12 +48,12 @@ public class Rule implements DataLogRule, Component {
     }
 
     @Override
-    public ConcreteLiteral getHorn() {
+    public ConcreteLiteral getHead() {
         return horn;
     }
 
     @Override
-    public Collection<? extends ConcreteLiteral> getTerms() {
+    public Set<? extends ConcreteLiteral> getTerms() {
         return terms;
     }
 
@@ -85,7 +85,7 @@ public class Rule implements DataLogRule, Component {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getHorn().toString());
+        sb.append(getHead().toString());
         sb.append(" :- ");
         for (ConcreteLiteral con : terms) {
             sb.append(con);

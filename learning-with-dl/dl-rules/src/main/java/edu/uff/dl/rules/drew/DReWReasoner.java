@@ -15,6 +15,7 @@ import edu.uff.dl.rules.expansion.set.parallel.ParallelExpansionAnswerSet;
 import edu.uff.dl.rules.expansion.set.parallel.ParallelSampleExpansionAnswerSet;
 import edu.uff.dl.rules.test.App;
 import edu.uff.dl.rules.util.FileContent;
+import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
@@ -61,6 +62,7 @@ public class DReWReasoner implements Component {
     protected String samplesContent;
     protected List<AnswerSetRule> answerSetRules;
     protected String templateContent;
+    protected int offSet = 0;
 
     private String[] arg = {
         "-rl",
@@ -93,8 +95,10 @@ public class DReWReasoner implements Component {
             loadIndividualsAndPredicates(individuals, predicates);
             
             //loadSamples(individuals, predicates);
-            drew = DReWRLCLILiteral.run(getDlpAndSamples(), arg);
-
+            drew = DReWRLCLILiteral.get(arg);
+            drew.setDLPContent(getDlpAndSamples());
+            drew.go();
+            
             AnswerSetRule aes;
             //loadFromAnswerSet(individuals, predicates);
             ExpansionAnswerSet e;
@@ -104,14 +108,22 @@ public class DReWReasoner implements Component {
                 IndividualTemplate it = new IndividualTemplate(templateContent, dlpContent + samplesContent, FileContent.getStringFromFile(getOwlFilePath()));
                 it.init();
                 System.out.println("Iniciar Geração do Conjunto Expandido: " + App.getTime());
-                e = new ExpansionAnswerSet(answerSet, samples, it);
+                e = new SampleExpansionAnswerSet(answerSet, samples, it);
+                ((SampleExpansionAnswerSet) e).setOffSet(offSet);
+                System.out.println("");
+                System.out.println(e.getClass());
+                System.out.println("");
                 //e = s;
                 //System.out.println(e.getSamples());
                 
                 e.init();
                 //System.out.println(e);
+                //System.out.println("");
                 System.out.println("Iniciar Geração da Regra: " + App.getTime());
-                AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet());
+                System.out.println("");
+                int deep = 1;
+                System.out.println("Gerando regra com profundidade de variáveis: " + deep);
+                AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet(), deep);
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
                 answerSetRules.add(aes);
@@ -194,7 +206,7 @@ public class DReWReasoner implements Component {
     }
 
     private void loadSamples(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws ParseException {
-        getSamplesLiterals();
+        loadSamplesLiterals();
         Predicate p;
         NormalPredicate np;
         SimplePredicate sp;
@@ -239,7 +251,7 @@ public class DReWReasoner implements Component {
 
     }
 
-    private void getSamplesLiterals() throws ParseException {
+    private void loadSamplesLiterals() throws ParseException {
         List<ProgramStatement> programs = getProgramStatements(samplesContent);
         Clause c;
         Literal l;
@@ -327,5 +339,18 @@ public class DReWReasoner implements Component {
     public void setTemplateContent(String templateContent) {
         this.templateContent = templateContent;
     }
+
+    public int getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(int offSet) {
+        this.offSet = offSet;
+    }
     
+    public void killDLV() throws DLVInvocationException {
+        if (drew != null) {
+            drew.killDLV();
+        }
+    }
 }

@@ -23,8 +23,10 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
 
     protected ConcreteLiteral sample;
     protected Collection<Constant> sampleTerms;
-
+    protected int offSet = 0;
+    
     public SampleExpansionAnswerSet() {
+        
     }
 
     public SampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> samples, TypeTemplate individualsClasses) throws ComponentInitException {
@@ -152,7 +154,7 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
     }
 
     public List<ConcreteLiteral> getSamples() {
-        return samples.subList(0, 1);
+        return samples.subList(offSet, offSet + 1);
     }
 
     protected Collection<Constant> getSampleTerms() {
@@ -164,6 +166,16 @@ public class SampleExpansionAnswerSet extends ExpansionAnswerSet {
 
     public void setSample(ConcreteLiteral sample) {
         this.sample = sample;
+    }
+
+    public int getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(int offSet) {
+        if (offSet < this.samples.size()) {
+            this.offSet = offSet;
+        }
     }
     
 }

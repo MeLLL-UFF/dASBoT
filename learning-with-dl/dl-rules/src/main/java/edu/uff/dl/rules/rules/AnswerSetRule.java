@@ -43,6 +43,7 @@ public class AnswerSetRule {
         for (DataLogRule dataLogRule : answerRule.getRules()) {
             sb.append(dataLogRule.toString());
             sb.append("\n");
+            //sb.append("Rule body: " + dataLogRule.getTerms().size() + " literals.");
         }
         
         return sb.toString().trim();

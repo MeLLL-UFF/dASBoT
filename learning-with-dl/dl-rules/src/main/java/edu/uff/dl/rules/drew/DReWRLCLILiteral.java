@@ -38,6 +38,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
 
     protected LiteralModelHandler literalModelHandler;
     protected String dlpContent;
+    protected DLVInvocation invocation;
 
     private DReWRLCLILiteral(String[] args) {
         super(args);
@@ -50,8 +51,13 @@ public class DReWRLCLILiteral extends DReWRLCLI {
 
     public static DReWRLCLILiteral run(String dlpContent, String... args) {
         DReWRLCLILiteral result = new DReWRLCLILiteral(args);
-        result.setDlpContent(dlpContent);
+        result.setDLPContent(dlpContent);
         result.go();
+        return result;
+    }
+    
+    public static DReWRLCLILiteral get(String... args) {
+        DReWRLCLILiteral result = new DReWRLCLILiteral(args);
         return result;
     }
 
@@ -66,7 +72,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     @Override
     @SuppressWarnings({"CallToThreadDumpStack", "null"})
     public void runDLV(DLVInputProgram inputProgram) {
-        DLVInvocation invocation = DLVWrapper.getInstance().createInvocation(
+        invocation = DLVWrapper.getInstance().createInvocation(
                 dlvPath);
 
         try {
@@ -194,8 +200,13 @@ public class DReWRLCLILiteral extends DReWRLCLI {
         return dlpContent;
     }
 
-    public void setDlpContent(String dlpContent) {
+    public void setDLPContent(String dlpContent) {
         this.dlpContent = dlpContent;
+    }
+    
+    public void killDLV() throws DLVInvocationException {
+        if (invocation != null) 
+            invocation.killDlv();
     }
 
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Scanner;
 
 /**
@@ -17,6 +18,28 @@ public class FileContent {
 
     public static String getStringFromFile(String filePath) throws FileNotFoundException {
         return getStringFromFile(new File(filePath));
+    }
+    
+    public static String getStringFromFile(String... filePath) throws FileNotFoundException {
+        StringBuilder sb = new StringBuilder();
+        
+        for (String string : filePath) {
+            sb.append(getStringFromFile(new File(string)));
+            sb.append("\n");
+        }
+        
+        return sb.toString().trim();
+    }
+    
+    public static String getStringFromFile(Collection<String> filePath) throws FileNotFoundException {
+        StringBuilder sb = new StringBuilder();
+        
+        for (String string : filePath) {
+            sb.append(getStringFromFile(new File(string)));
+            sb.append("\n");
+        }
+        
+        return sb.toString().trim();
     }
     
     public static String getStringFromFile(File file) throws FileNotFoundException {
