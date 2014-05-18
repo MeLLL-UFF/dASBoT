@@ -16,15 +16,17 @@ public class App
     {
         System.out.println("DL-Learner Ensemble Tests!");
         
-        String path = "C:\\Users\\Bruno\\Projetos\\Datasets\\dl\\trainTest\\facultynear\\";
+        String path = "C:\\Users\\Bruno\\Projetos\\Machine Learning\\Datasets\\dl\\trainTest\\facultynear\\";
         File file = new File(path + "facultynear.conf");
         
-        CLICV cv = new CLICV(file, path + "facultynear", 10, "BaggingTest.txt", "BaggingCV");
-        try {
-            cv.init();
-            cv.run();
-        } catch (IOException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        for(int i = 0; i < 1; i++) {
+            CLICV cv = new CLICV(file, path + "facultynear", 10, "Bagging" + i + ".txt", "BaggingCV");
+            try {
+                cv.init();
+                cv.run();
+            } catch (IOException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
