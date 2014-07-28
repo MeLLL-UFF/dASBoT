@@ -19,8 +19,10 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
 import org.semanticweb.drew.ldlpprogram.reasoner.LDLPProgramQueryResultDecompiler;
 
 /**
+ * This class is used to get the DReW's answer set as a collection of
+ * {@link Literal} so it can be used by other classes.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class LiteralModelHandler implements ModelHandler {
 
@@ -30,43 +32,94 @@ public class LiteralModelHandler implements ModelHandler {
     private long dlvHandlerEndTime = 0;
     private int nModels = 0;
 
+    /**
+     * Constructor of the class. Initiates the answer's collection and sets the
+     * language as RL (default language).
+     */
     public LiteralModelHandler() {
         this.type = "rl";
         answerSets = new ArrayList<>();
     }
 
+    /**
+     * Set the language as EL.
+     */
     public void setTypeEL() {
         type = "el";
     }
 
+    /**
+     * Set the language as RL (default).
+     */
     public void setTypeRL() {
         type = "rl";
     }
 
+    /**
+     * Getter for the language type.
+     *
+     * @return the language type.
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Getter for the answer sets.
+     *
+     * @return a list with the answer sets.
+     */
     public List<Set<Literal>> getAnswerSets() {
         return answerSets;
     }
 
-    public long getDlvHandlerStartTime() {
+    /**
+     * Getter for the DLV Start Time.
+     * <br>(Control Variable)
+     *
+     * @return the DLV Start Time.
+     */
+    public long getDLVHandlerStartTime() {
         return dlvHandlerStartTime;
     }
 
+    /**
+     * Getter for the DLV End Time.
+     * <br>(Control Variable)
+     *
+     * @return the DLV End Time.
+     */
     public long getDlvHandlerEndTime() {
         return dlvHandlerEndTime;
     }
 
-    public int getnModels() {
+    /**
+     * Getter for the nModels.
+     * <br>(Control Variable)
+     *
+     * @return the nModels.
+     */
+    public int getNModels() {
         return nModels;
     }
 
-    public void setDlvHandlerStartTime(long dlvHandlerStartTime) {
+    /**
+     * Setter for DLV Start Time.
+     * <br>(Control Variable)
+     *
+     * @param dlvHandlerStartTime the DLV Start Time.
+     */
+    public void setDLVHandlerStartTime(long dlvHandlerStartTime) {
         this.dlvHandlerStartTime = dlvHandlerStartTime;
     }
 
+    /**
+     * Method to handle the DReW's results.
+     * <br>Needed by implement the interface method.
+     *
+     * @param dlvi the DLV invocation.
+     * @param mr the result model.
+     */
     @Override
     public void handleResult(DLVInvocation dlvi, ModelResult mr) {
         switch (type) {
@@ -79,6 +132,12 @@ public class LiteralModelHandler implements ModelHandler {
         }
     }
 
+    /**
+     * Method to handle the result by the RL language.
+     *
+     * @param paramDLVInvocation the DLV invocation.
+     * @param modelResult the result model.
+     */
     @SuppressWarnings("CallToThreadDumpStack")
     public void handleResultRL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
         if (dlvHandlerStartTime == 0)
@@ -121,34 +180,46 @@ public class LiteralModelHandler implements ModelHandler {
 
             }
         }
-        
+
         answerSets.add(literals);
         dlvHandlerEndTime = System.currentTimeMillis();
     }
 
+    /**
+     * Method to handle the result by the EL language.
+     * <br>(Not Implemented Yet)
+     *
+     * @param paramDLVInvocation the DLV invocation.
+     * @param modelResult the result model.
+     */
     public void handleResultEL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * The class's description. A {@link String} which contains all the answer
+     * sets generates by DReW's. Same as DReW's output.
+     *
+     * @return the answer sets results.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        
+
         for (Set<Literal> set : answerSets) {
             sb.append("{ ");
-            
+
             for (Literal l : set) {
                 sb.append(l);
                 sb.append(", ");
             }
             sb.setCharAt(sb.lastIndexOf(","), '}');
-            
+
             sb.append("\n");
             sb.append("\n");
         }
-        
+
         return sb.toString().trim();
     }
-    
-    
+
 }

@@ -7,7 +7,7 @@ import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogRule;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,27 +23,30 @@ import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
+ * Class to represent a logic rule.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class Rule implements DataLogRule, Component {
 
     protected ConcreteLiteral horn;
     protected Set<? extends ConcreteLiteral> terms;
 
-    public Rule() {
+    /**
+     * Constructor without parameters. Needed to load this class from a file
+     * (Spring).
+     */
+    protected Rule() {
     }
 
+    /**
+     * Constructor with all needed parameters.
+     *
+     * @param horn the rule's horn (head).
+     * @param terms the rule's terms (body).
+     */
     public Rule(ConcreteLiteral horn, Set<? extends ConcreteLiteral> terms) {
         this.horn = horn;
-        this.terms = terms;
-    }
-
-    public void setHorn(ConcreteLiteral horn) {
-        this.horn = horn;
-    }
-
-    public void setTerms(Set<ConcreteLiteral> terms) {
         this.terms = terms;
     }
 
@@ -53,7 +56,7 @@ public class Rule implements DataLogRule, Component {
     }
 
     @Override
-    public Set<? extends ConcreteLiteral> getTerms() {
+    public Set<? extends ConcreteLiteral> getBody() {
         return terms;
     }
 
@@ -113,10 +116,21 @@ public class Rule implements DataLogRule, Component {
         if (getClass() != obj.getClass())
             return false;
         final Rule other = (Rule) obj;
-        if (!Objects.equals(this.horn, other.horn))
+        if (!Objects.equals(this.horn, other.horn) || this.horn.hasFailed() != other.horn.hasFailed())
             return false;
-        if (!Objects.equals(this.terms, other.terms))
+        if (this.terms.size() != other.terms.size())
             return false;
+        List<? extends ConcreteLiteral> otherTerms = new LinkedList<>(other.getBody());
+        ConcreteLiteral otherTerm;
+        int index;
+        for (ConcreteLiteral term : terms) {
+            index = otherTerms.indexOf(term);
+            if (index < 0)
+                return false;
+            otherTerm = otherTerms.remove(index);
+            if (otherTerm.hasFailed() != term.hasFailed())
+                return false;
+        }
         return true;
     }
 

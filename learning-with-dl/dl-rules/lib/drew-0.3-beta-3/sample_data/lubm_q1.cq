@@ -1,0 +1,2 @@
+ans(X) :- isa(X, "<http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateStudent>"), triple(X, "<http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#takesCourse>", "<http://www.Department0.University0.edu/GraduateCourse0>").
+		         

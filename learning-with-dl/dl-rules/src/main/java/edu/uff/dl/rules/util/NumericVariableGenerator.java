@@ -4,6 +4,8 @@
 
 package edu.uff.dl.rules.util;
 
+import edu.uff.dl.rules.exception.VariableGenerator;
+
 /**
  *
  * @author Victor

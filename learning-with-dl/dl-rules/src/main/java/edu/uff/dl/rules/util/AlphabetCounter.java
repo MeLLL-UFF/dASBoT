@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.util;
 
+import edu.uff.dl.rules.exception.VariableGenerator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;

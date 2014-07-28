@@ -8,8 +8,9 @@ import org.semanticweb.drew.dlprogram.model.Term;
 import java.util.Comparator;
 
 /**
- *
- * @author Victor
+ *  A comparator to order a collection of {@link Term}.
+ * 
+ * @author Victor Guimarães
  */
 public class TermComparator implements Comparator<Term> {
 

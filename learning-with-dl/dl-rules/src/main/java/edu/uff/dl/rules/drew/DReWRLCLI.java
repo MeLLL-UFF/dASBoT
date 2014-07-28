@@ -1,5 +1,9 @@
 package edu.uff.dl.rules.drew;
 
+import com.google.common.io.CharStreams;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 import it.unical.mat.dlv.program.Literal;
 import it.unical.mat.wrapper.DLVError;
 import it.unical.mat.wrapper.DLVInputProgram;
@@ -11,7 +15,6 @@ import it.unical.mat.wrapper.Model;
 import it.unical.mat.wrapper.ModelHandler;
 import it.unical.mat.wrapper.ModelResult;
 import it.unical.mat.wrapper.Predicate;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +24,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.semanticweb.drew.cli.CommandLine;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorer;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorerImpl;
@@ -47,11 +49,12 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.profiles.OWLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
 
-import com.google.common.io.CharStreams;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.Syntax;
-
+/**
+ * Class to call DReW by command line interface. <br>This class can be used just as
+ * the DReW would be.
+ *
+ * @author Victor Guimarães
+ */
 public class DReWRLCLI extends CommandLine {
 
     protected String ontologyFile;
@@ -74,14 +77,31 @@ public class DReWRLCLI extends CommandLine {
     protected boolean verbose;
     protected int maxInt = -1;
 
+    /**
+     * Constructor with the arguments to initialize the DReW.
+     *
+     * @param args the command line arguments.
+     */
     protected DReWRLCLI(String[] args) {
         this.args = args;
     }
 
+    /**
+     * A main method to execute the program directly from this class. Call the
+     * constructor with the specified arguments.
+     *
+     * @param args the command line arguments to pass thru the constructor.
+     */
     public static void main(String... args) {
         new DReWRLCLI(args).go();
     }
 
+    /**
+     * Parser the input arguments to define what to do next.
+     *
+     * @param args input arguments from command line.
+     * @return true if succeeded, false otherwise.
+     */
     @Override
     public boolean parseArgs(String[] args) {
         int i = 0;
@@ -168,6 +188,9 @@ public class DReWRLCLI extends CommandLine {
         return true;
     }
 
+    /**
+     * Run the DReW itself.
+     */
     @Override
     public void go() {
         System.setProperty("entityExpansionLimit", "512000");
@@ -217,6 +240,11 @@ public class DReWRLCLI extends CommandLine {
         }
     }
 
+    /**
+     * Handle the ontology created by the owl file.
+     *
+     * @param ontology the ontology.
+     */
     private void handleOntology(OWLOntology ontology) {
         LDLPOntologyCompiler rewriter = new LDLPOntologyCompiler();
         List<ProgramStatement> datalog = rewriter.compile(ontology);
@@ -233,6 +261,12 @@ public class DReWRLCLI extends CommandLine {
 
     }
 
+    /**
+     * Handle the Sparql part.
+     *
+     * @param ontology the ontology.
+     * @param inputProgram the DLV input program.
+     */
     private void handleSparql(OWLOntology ontology, DLVInputProgram inputProgram) {
 
         String queryText = "";
@@ -274,11 +308,23 @@ public class DReWRLCLI extends CommandLine {
         }
     }
 
+    /**
+     * Not implemented yet.
+     *
+     * @param ontology the ontology.
+     * @param inputProgram the DLV input program.
+     */
     @Override
     public void handleDefault(OWLOntology ontology, DLVInputProgram inputProgram) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Extract the content of the given input and put it onto java classes.
+     *
+     * @param ontology the ontology.
+     * @param inputProgram the DLV input program.
+     */
     @Override
     public void handleDLProgram(OWLOntology ontology,
             DLVInputProgram inputProgram) {
@@ -338,6 +384,11 @@ public class DReWRLCLI extends CommandLine {
 
     }
 
+    /**
+     * Call the DLV to generate the results.
+     *
+     * @param inputProgram the DLV program.
+     */
     protected void runDLV(DLVInputProgram inputProgram) {
         DLVInvocation invocation = DLVWrapper.getInstance().createInvocation(
                 dlvPath);
@@ -366,7 +417,7 @@ public class DReWRLCLI extends CommandLine {
 
             if (semantics.equals("wf"))
                 invocation.addOption("-wf");
-            
+
             invocation.subscribe(new ModelHandler() {
 
                 @Override
@@ -380,7 +431,7 @@ public class DReWRLCLI extends CommandLine {
                     // System.out.println(nModels);
                     System.out.print("{ ");
                     Model model = (Model) modelResult;
-					// ATTENTION !!! this is necessary and stupid, should we
+                    // ATTENTION !!! this is necessary and stupid, should we
                     // report a bug to DLVWrapper?
                     model.beforeFirst();
                     while (model.hasMorePredicates()) {
@@ -415,7 +466,6 @@ public class DReWRLCLI extends CommandLine {
                     }
 
                     System.out.println("}");
-                    
 
                     dlvHandlerEndTime = System.currentTimeMillis();
                 }
@@ -424,7 +474,7 @@ public class DReWRLCLI extends CommandLine {
             invocation.run();
 
             invocation.waitUntilExecutionFinishes();
-            
+
             List<DLVError> dlvErrors = invocation.getErrors();
             if (dlvErrors.size() > 0)
                 System.err.println(dlvErrors);
@@ -446,12 +496,21 @@ public class DReWRLCLI extends CommandLine {
         }
     }
 
+    /**
+     * Not implemented yet.
+     *
+     * @param ontology the ontology.
+     * @param inputProgram the DLV input program.
+     */
     @Override
     public void handleCQ(OWLOntology ontology, DLVInputProgram inputProgram) {
         throw new UnsupportedOperationException(
                 "not implemented yet! try using `drew -el`");
     }
 
+    /**
+     * Print the command line's help.
+     */
     void printUsage() {
 
         String usage = //

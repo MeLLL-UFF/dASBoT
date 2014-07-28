@@ -3,18 +3,17 @@
  */
 package edu.uff.dl.rules.drew;
 
-import edu.uff.dl.rules.rules.AnswerRule;
-import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogPredicate;
-import edu.uff.dl.rules.expansion.set.ExpansionAnswerSet;
-import edu.uff.dl.rules.expansion.set.SampleExpansionAnswerSet;
 import edu.uff.dl.rules.datalog.SimplePredicate;
-import edu.uff.dl.rules.expansion.set.IndividualTemplate;
-import edu.uff.dl.rules.expansion.set.parallel.ParallelExpansionAnswerSet;
-import edu.uff.dl.rules.expansion.set.parallel.ParallelSampleExpansionAnswerSet;
-import edu.uff.dl.rules.test.App;
+import edu.uff.dl.rules.expansionset.ExpansionAnswerSet;
+import edu.uff.dl.rules.expansionset.IndividualTemplate;
+import edu.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
+import edu.uff.dl.rules.rules.AnswerRule;
+import edu.uff.dl.rules.rules.AnswerSetRule;
+import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
+import static edu.uff.dl.rules.util.Time.getTime;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -47,8 +48,11 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
+ * Class to do all the reasoner to generate the rules. <br>
+ * Run the DReW, creates the Expansion Answer Set and generates the rule based
+ * on a example.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 @ComponentAnn(name = "DReWReasoner", shortName = "drewreas", version = 0.1)
 public class DReWReasoner implements Component {
@@ -57,90 +61,137 @@ public class DReWReasoner implements Component {
     protected OWLOntology ontology;
     protected Set<Constant> individuals;
     protected Set<DataLogPredicate> predicates;
-    protected Set<Literal> samples;
+    protected Set<Literal> examples;
     protected String dlpContent;
-    protected String samplesContent;
+    protected String examplesContent;
     protected List<AnswerSetRule> answerSetRules;
     protected String templateContent;
-    protected int offSet = 0;
+    protected int offset = 0;
+    protected List<ConcreteLiteral> examplesForRule;
 
-    private String[] arg = {
-        "-rl",
-        "-ontology",
-        "",
-        "-dlp",
-        "",
-        "-dlv",
-        "/usr/lib/dlv.i386-apple-darwin-iodbc.bin"
-    };
+    protected IndividualTemplate individialTemplate;
 
+    private String[] arg;
+
+    /**
+     * Constructor without parameters. Needed to load the class by a file
+     * (Spring).
+     */
     public DReWReasoner() {
+        arg = DReWDefaultArgs.ARGS;
         this.individuals = new HashSet<>();
         this.predicates = new HashSet<>();
-        this.samples = new HashSet<>();
+        this.examples = new HashSet<>();
         answerSetRules = new ArrayList<>();
     }
 
-    public DReWReasoner(String owlFilePath, String dlpContent, String samplesContent, String templateContent) {
+    /**
+     * Constructor with all needed parameters.
+     *
+     * @param owlFilePath the path to the owl file.
+     * @param dlpContent the DLP's content.
+     * @param examplesContent the examples's content.
+     * @param templateContent the template's content.
+     */
+    public DReWReasoner(String owlFilePath, String dlpContent, String examplesContent, String templateContent) {
         this();
         this.arg[2] = owlFilePath;
         this.dlpContent = dlpContent;
-        this.samplesContent = samplesContent;
+        this.examplesContent = examplesContent;
         this.templateContent = templateContent;
     }
 
+    /**
+     * The method that prepare the class to do the process.
+     * <br>DReW is called here.
+     *
+     * @throws ComponentInitException a possible exception during the process.
+     */
     @Override
     public void init() throws ComponentInitException {
         try {
             loadIndividualsAndPredicates(individuals, predicates);
-            
-            //loadSamples(individuals, predicates);
-            drew = DReWRLCLILiteral.get(arg);
-            drew.setDLPContent(getDlpAndSamples());
-            drew.go();
-            
-            AnswerSetRule aes;
-            //loadFromAnswerSet(individuals, predicates);
-            ExpansionAnswerSet e;
-            for (Set<Literal> answerSet : drew.getLiteralModelHandler().getAnswerSets()) {
-                System.out.println("Iniciar Configuração do Template: " + App.getTime());
-                //SampleExpansionAnswerSet s = new SampleExpansionAnswerSet(answerSet, samples, individuals, predicates);
-                IndividualTemplate it = new IndividualTemplate(templateContent, dlpContent + samplesContent, FileContent.getStringFromFile(getOwlFilePath()));
-                it.init();
-                System.out.println("Iniciar Geração do Conjunto Expandido: " + App.getTime());
-                e = new SampleExpansionAnswerSet(answerSet, samples, it);
-                ((SampleExpansionAnswerSet) e).setOffSet(offSet);
-                System.out.println("");
-                System.out.println(e.getClass());
-                System.out.println("");
-                //e = s;
-                //System.out.println(e.getSamples());
-                
-                e.init();
-                //System.out.println(e);
-                //System.out.println("");
-                System.out.println("Iniciar Geração da Regra: " + App.getTime());
-                System.out.println("");
-                int deep = 1;
-                System.out.println("Gerando regra com profundidade de variáveis: " + deep);
-                AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet(), deep);
-                ar.init();
-                aes = new AnswerSetRule(e, ar);
-                answerSetRules.add(aes);
-            }
 
+            loadExample(individuals, predicates);
+            drew = DReWRLCLILiteral.get(arg);
+            drew.setDLPContent(getDlpAndExamples());
+            drew.go();
+
+            individialTemplate = new IndividualTemplate(templateContent, dlpContent + examplesContent, FileContent.getStringFromFile(getOwlFilePath()));
+            individialTemplate.init();
         } catch (ParseException | ComponentInitException | FileNotFoundException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
             throw new ComponentInitException(ex.getMessage());
         }
     }
 
+    /**
+     * The method that does all the process for a single example.
+     * <br>Call {@link #init()} before.
+     * <br>This method gets the previously obtained results from DReW by the
+     * {@link #init()} and creates the Expansion Answer Set.
+     * <br>With the Exampasion Answer Set, it creates a rule based on a example
+     * from the examples's content. The example is choosed according with the
+     * offset. The offset can be between [0, N) where N is the total number of
+     * examples within the givan content.
+     */
+    public void run() {
+        AnswerSetRule aes;
+        //loadFromAnswerSet(individuals, predicates);
+        ExpansionAnswerSet e;
+        try {
+            for (Set<Literal> answerSet : drew.getLiteralModelHandler().getAnswerSets()) {
+                System.out.println("Iniciar Configuração do Template: " + getTime());
+
+                System.out.println("Iniciar Geração do Conjunto Expandido: " + getTime());
+                e = new ExampleExpansionAnswerSet(answerSet, examples, individialTemplate);
+                ((ExampleExpansionAnswerSet) e).setOffset(offset);
+                System.out.println("");
+                System.out.println(e.getClass());
+                System.out.println("");
+                //e = s;
+
+                e.init();
+
+                System.out.println("Iniciar Geração da Regra: " + getTime());
+                System.out.println("");
+                int deep = 1;
+                System.out.println("Gerando regra com profundidade de variáveis: " + deep);
+                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), deep);
+                ar.init();
+                aes = new AnswerSetRule(e, ar);
+                answerSetRules.add(aes);
+                examplesForRule = e.getExamples();
+            }
+        } catch (ComponentInitException ex) {
+            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Loads all the individuals and predicates from the problem. This method is
+     * public to allow that the individuals and predicates be used outside this
+     * class.
+     *
+     * @param individuals a set of individual to load in.
+     * @param predicates a set of predicates to load in.
+     * @throws FileNotFoundException in case a file path does not exist.
+     * @throws ParseException in case a file does not accord with the sintax
+     * rules.
+     */
     public void loadIndividualsAndPredicates(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
         loadOntology(individuals, predicates);
         loadDLP(individuals, predicates);
-        loadSamples(individuals, predicates);
+        loadExample(individuals, predicates);
     }
 
+    /**
+     * Used by {@link #loadIndividualsAndPredicates(java.util.Set, java.util.Set)
+     * } to load only the individual and predicates from the ontology.
+     *
+     * @param individuals a set of individual to load in.
+     * @param predicates a set of predicates to load in.
+     */
     private void loadOntology(Set<Constant> individuals, Set<DataLogPredicate> predicates) {
         if (individuals == null || predicates == null)
             return;
@@ -176,6 +227,13 @@ public class DReWReasoner implements Component {
         predicates.remove(new SimplePredicate("owl:Thing", 1));
     }
 
+    /**
+     * Used by {@link #loadIndividualsAndPredicates(java.util.Set, java.util.Set)
+     * } to load only the individual and predicates from the DLP's content.
+     *
+     * @param individuals a set of individual to load in.
+     * @param predicates a set of predicates to load in.
+     */
     private void loadDLP(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
         List<ProgramStatement> programs = getProgramStatements(dlpContent);
         Clause c;
@@ -205,12 +263,19 @@ public class DReWReasoner implements Component {
 
     }
 
-    private void loadSamples(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws ParseException {
-        loadSamplesLiterals();
+    /**
+     * Used by {@link #loadIndividualsAndPredicates(java.util.Set, java.util.Set)
+     * } to load only the individual and predicates from the examples's content.
+     *
+     * @param individuals a set of individual to load in.
+     * @param predicates a set of predicates to load in.
+     */
+    private void loadExample(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws ParseException {
+        loadExamplesLiterals();
         Predicate p;
         NormalPredicate np;
         SimplePredicate sp;
-        for (Literal l : samples) {
+        for (Literal l : examples) {
             p = l.getPredicate();
             if (p instanceof NormalPredicate) {
                 np = (NormalPredicate) p;
@@ -226,6 +291,13 @@ public class DReWReasoner implements Component {
         }
     }
 
+    /**
+     * Used by {@link #loadIndividualsAndPredicates(java.util.Set, java.util.Set)
+     * } to load only the individual and predicates from the DReW's answer.
+     *
+     * @param individuals a set of individual to load in.
+     * @param predicates a set of predicates to load in.
+     */
     private void loadFromAnswerSet(Set<Constant> individuals, Set<DataLogPredicate> predicates) {
 
         Predicate p;
@@ -251,19 +323,35 @@ public class DReWReasoner implements Component {
 
     }
 
-    private void loadSamplesLiterals() throws ParseException {
-        List<ProgramStatement> programs = getProgramStatements(samplesContent);
+    /**
+     * Load the literals from the examples's content.
+     *
+     * @throws ParseException in case a file does not accord with the sintax
+     * rules.
+     */
+    private void loadExamplesLiterals() throws ParseException {
+        List<ProgramStatement> programs = getProgramStatements(examplesContent);
         Clause c;
         Literal l;
 
         for (ProgramStatement ps : programs) {
             if (ps.isClause() && (c = ps.asClause()).isFact()) {
                 l = new Literal(c.getHead().getPredicate(), c.getHead().getTerms());
-                samples.add(l);
+                examples.add(l);
             }
         }
     }
 
+    /**
+     * Gets a list of {@link ProgramStatement} from a {@link String}. It means,
+     * transforme the content from a {@link String} into Java classes of the
+     * problem.
+     *
+     * @param content the content.
+     * @return a list of {@link ProgramStatement}.
+     * @throws ParseException in case a file does not accord with the sintax
+     * rules.
+     */
     private List<ProgramStatement> getProgramStatements(String content) throws ParseException {
         DLProgramKB kb = new DLProgramKB();
         kb.setOntology(ontology);
@@ -284,73 +372,173 @@ public class DReWReasoner implements Component {
         return elprogram.getStatements();
     }
 
-    private String getDlpAndSamples() {
-        return dlpContent + samplesContent;
+    /**
+     * Getter for the DLP's content plus the examples's content.
+     *
+     * @return the DLP's content plus the examples's content.
+     */
+    private String getDlpAndExamples() {
+        return dlpContent + examplesContent;
     }
 
+    /**
+     * Setter for the DLP's content.
+     *
+     * @param dlpContent the DLP's content.
+     */
     public void setDlpContent(String dlpContent) {
         this.dlpContent = dlpContent;
     }
 
-    public void setSamplesContent(String samplesContent) {
-        this.samplesContent = samplesContent;
+    /**
+     * Setter for the examples's content.
+     *
+     * @param examplesContent the examples's content.
+     */
+    public void setExamplesContent(String examplesContent) {
+        this.examplesContent = examplesContent;
     }
 
+    /**
+     * Getter for the individuals of the problem.
+     *
+     * @return the individuals of the problem.
+     */
     public Set<Constant> getIndividuals() {
         return individuals;
     }
 
+    /**
+     * Getter for the predicates of the problem.
+     *
+     * @return the predicates of the problem.
+     */
     public Set<DataLogPredicate> getPredicates() {
         return predicates;
     }
 
-    public Set<Literal> getSamples() {
-        return samples;
+    /**
+     * Getter for the examples of the problem.
+     *
+     * @return the examples of the problem.
+     */
+    public Set<Literal> getExamples() {
+        return examples;
     }
 
+    /**
+     * Getter for DLP's content of the problem.
+     *
+     * @return the DLP's content of the problem.
+     */
     public String getDlpContent() {
         return dlpContent;
     }
 
-    public String getSamplesContent() {
-        return samplesContent;
+    /**
+     * Getter for examples's content of the problem.
+     *
+     * @return the examples's content of the problem.
+     */
+    public String getExamplesContent() {
+        return examplesContent;
     }
 
+    /**
+     * Getter for {@link AnswerSetRule} of the problem. It is a pair of a
+     * {@link ExpansionAnswerSet} and a {@link AnswerRule}. This class generates
+     * one of this pairs on each iteration ({@link #run()} call).
+     *
+     * @return the {@link AnswerSetRule} of the problem.
+     */
     public List<AnswerSetRule> getAnswerSetRules() {
         return answerSetRules;
     }
 
+    /**
+     * Getter for the owl's filepath of the problem.
+     *
+     * @return the owl's filepath of the problem.
+     */
     public String getOwlFilePath() {
         return arg[2];
     }
 
+    /**
+     * Setter for the owl filepath.
+     *
+     * @param owlFilePath the owl filepath.
+     */
     public void setOwlFilePath(String owlFilePath) {
         arg[2] = owlFilePath;
     }
 
+    /**
+     * Getter for the command line arguments of the problem.
+     *
+     * @return the command line arguments of the problem.
+     */
     public String[] getArg() {
         return arg;
     }
 
+    /**
+     * Getter for template's content of the problem.
+     *
+     * @return the template's content of the problem.
+     */
     public String getTemplateContent() {
         return templateContent;
     }
 
+    /**
+     * Setter for the template's content.
+     *
+     * @param templateContent the template's content.
+     */
     public void setTemplateContent(String templateContent) {
         this.templateContent = templateContent;
     }
 
-    public int getOffSet() {
-        return offSet;
+    /**
+     * Getter for the offset of the problem.
+     *
+     * @return the offset of the problem.
+     */
+    public int getOffset() {
+        return offset;
     }
 
-    public void setOffSet(int offSet) {
-        this.offSet = offSet;
+    /**
+     * Setter for the offset.
+     *
+     * @param offset the offset.
+     */
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
-    
+
+    /**
+     * Method to kill the DLV's execution. <br>
+     * Usiful when the program takes to long to be executed and exceeds the
+     * problem's timeout.
+     *
+     * @throws DLVInvocationException a possible exception during the DLV
+     * invocation.
+     */
     public void killDLV() throws DLVInvocationException {
         if (drew != null) {
             drew.killDLV();
         }
     }
+
+    /**
+     * Getter for the examples which was proved by the generated rule.
+     *
+     * @return the examples for the generated rule.
+     */
+    public List<ConcreteLiteral> getExamplesForRule() {
+        return examplesForRule;
+    }
+
 }

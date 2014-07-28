@@ -3,7 +3,6 @@
  */
 package edu.uff.dl.rules.datalog;
 
-import edu.uff.dl.rules.datalog.DataLogPredicate;
 import java.util.Objects;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
@@ -13,8 +12,11 @@ import org.semanticweb.drew.dlprogram.model.NormalPredicate;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 
 /**
+ * A DataLog simple pradicate.
+ * <br>A predicate that is not instanciaded yet.
+ * <br>Have just a head and an arity.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 @ComponentAnn(name = "SimplePredicate", shortName = "smppred", version = 0.1)
 public class SimplePredicate implements DataLogPredicate, Component {
@@ -22,19 +24,31 @@ public class SimplePredicate implements DataLogPredicate, Component {
     protected String head;
     protected int arity;
 
+    /**
+     * A empty construtor, needed to load the class from a file by Spring.
+     */
     public SimplePredicate() {
     }
 
+    /**
+     * The construtor with all needed parameters
+     * @param head the predicate's head
+     * @param arity the predicate's arity
+     */
     public SimplePredicate(String head, int arity) {
         this.head = head;
         this.arity = arity;
     }
 
-    public SimplePredicate(NormalPredicate np) {
-        this.head = np.getName();
-        this.arity = np.getArity();
+    /**
+     * The construtor to create a predicate by a {@link NormalPredicate}
+     * @param normalPredicate the {@link NormalPredicate} needed.
+     */
+    public SimplePredicate(NormalPredicate normalPredicate) {
+        this.head = normalPredicate.getName();
+        this.arity = normalPredicate.getArity();
     }
-    
+
     @Override
     public String getHead() {
         return head;
@@ -74,7 +88,7 @@ public class SimplePredicate implements DataLogPredicate, Component {
             return false;
         if (this.arity != other.arity)
             return false;
-        
+
         return true;
     }
 
@@ -98,7 +112,5 @@ public class SimplePredicate implements DataLogPredicate, Component {
     public String toString() {
         return head + "/" + arity;
     }
-    
-    
 
 }
