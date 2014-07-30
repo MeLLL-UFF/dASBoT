@@ -7,21 +7,27 @@ import java.io.File;
 import java.util.Comparator;
 
 /**
+ * Class to compare rule's names. Used to sort a set of rules by its names.
  *
- * @author Victor
+ * @author Victor Guimarães.
  */
 public class RuleFileNameComparator implements Comparator<File> {
 
     private String prefix;
 
+    /**
+     * Constructor with the rule's file name prefix.
+     *
+     * @param prefix the prefix.
+     */
     public RuleFileNameComparator(String prefix) {
         this.prefix = prefix;
     }
-    
+
     @Override
     public int compare(File o1, File o2) {
         try {
-            if (o1.isHidden()) 
+            if (o1.isHidden())
                 return -1;
             if (o2.isHidden())
                 return 1;

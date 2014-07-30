@@ -1,16 +1,22 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.dl.rules.util;
 
 import java.util.Calendar;
 
 /**
+ * Class used to estimate time between processes.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class Time {
+
+    /**
+     * Get the current time and format it as a {@link String}.
+     *
+     * @return the current time as {@link String}.
+     */
     public static String getTime() {
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
@@ -25,6 +31,14 @@ public class Time {
         //System.out.println("");
     }
 
+    /**
+     * Get the current time and format it as a {@link String} and also load the
+     * time as a long inside a {@link Box<Long>}. The time is formated by
+     * summing everything as miliseconds.
+     *
+     * @param time the {@link Box<Long>} with the time in it.
+     * @return the current time as {@link String}.
+     */
     public static String getTime(Box<Long> time) {
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
@@ -48,11 +62,25 @@ public class Time {
 
         return String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
     }
-    
+
+    /**
+     * Calculate the difference between to times.
+     *
+     * @param begin the begin.
+     * @param end the end.
+     * @return a formatted {@link String} with the time difference.
+     */
     public static String getDiference(Box<Long> begin, Box<Long> end) {
         return getDiference(begin.getContent(), end.getContent());
     }
-    
+
+    /**
+     * Calculate the difference between to times.
+     *
+     * @param begin the begin.
+     * @param end the end.
+     * @return a formatted {@link String} with the time difference.
+     */
     public static String getDiference(Long begin, Long end) {
         long dif = Math.round((end - begin) / 1000.0);
         long hour, min, sec;

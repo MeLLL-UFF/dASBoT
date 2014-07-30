@@ -1,7 +1,6 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.dl.rules.util;
 
 import java.io.File;
@@ -24,9 +23,11 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentInitException;
+
 /**
  * Class to get rules and/or facts from a file.
- * @author Victor
+ *
+ * @author Victor Guimarães
  */
 @ComponentAnn(name = "BK Rules", shortName = "bkrules", version = 0.1)
 public class BKRules implements Component {
@@ -34,29 +35,32 @@ public class BKRules implements Component {
     private Set<Clause> facts;
     private Set<Clause> rules;
     private DLProgram program;
-    
+
     private String bkFilePath;
     private String owlFilePath;
 
     /**
      * Default constructor (needed for reflection in ComponentManager).
      */
-    public BKRules() {   
+    public BKRules() {
     }
-    
+
     /**
-     * This method implements the constructor to get facts and rules from a datalog file without linked OWL data.
+     * This method implements the constructor to get facts and rules from a
+     * datalog file without linked OWL data.
+     *
      * @param bkFilePath path to datalog file
-     * 
+     *
      */
-    
     public BKRules(String bkFilePath) {
         this.bkFilePath = bkFilePath;
         //this(bkFilePath, null);
     }
 
     /**
-     * This method implements the constructor to get facts and rules from a datalog file with linked OWL data.
+     * This method implements the constructor to get facts and rules from a
+     * datalog file with linked OWL data.
+     *
      * @param bkFilePath path to datalog file
      * @param owlFilePath path to owl file
      */
@@ -64,7 +68,7 @@ public class BKRules implements Component {
         this.bkFilePath = bkFilePath;
         this.owlFilePath = owlFilePath;
     }
-    
+
     public void init() throws ComponentInitException {
         try {
             DLProgramParser parser;
@@ -94,14 +98,27 @@ public class BKRules implements Component {
         }
     }
 
+    /**
+     * Getter for the facts.
+     *
+     * @return the facts.
+     */
     public Set<Clause> getFacts() {
         return facts;
     }
 
+    /**
+     * Getter for the rules.
+     *
+     * @return the rules.
+     */
     public Set<Clause> getRules() {
         return rules;
     }
 
+    /**
+     * Loads the sets of rules and facts.
+     */
     private void loadClausesSets() {
         List<ProgramStatement> l = program.getStatements();
         Clause c = null;
@@ -109,7 +126,7 @@ public class BKRules implements Component {
         if (l == null) {
             return;
         }
-        
+
         if (facts == null) {
             facts = new HashSet<Clause>();
         }
@@ -133,36 +150,61 @@ public class BKRules implements Component {
             }
         }
     }
-    
+
+    /**
+     * Getter for the KB's content.
+     *
+     * @return the KB's content.
+     */
     public String getKBContent() {
         StringBuilder sb = new StringBuilder();
-        
+
         if (getFacts() == null) {
             return null;
         }
-        
+
         for (Clause c : getFacts()) {
             sb.append(c);
             sb.append("\n");
         }
-        
+
         return sb.toString();
     }
 
-    public String getBkFilePath() {
+    /**
+     * Getter for the BK's file path.
+     *
+     * @return the BK's file path.
+     */
+    public String getBKFilePath() {
         return bkFilePath;
     }
 
+    /**
+     * Setter for the BK's file path.
+     *
+     * @param bkFilePath the BK's file path.
+     */
     public void setBkFilePath(String bkFilePath) {
         this.bkFilePath = bkFilePath;
     }
 
+    /**
+     * Getter for the owl's file path.
+     *
+     * @return the owl's file path.
+     */
     public String getOwlFilePath() {
         return owlFilePath;
     }
 
+    /**
+     * Setter for the owl's file path.
+     *
+     * @param owlFilePath the owl's file path.
+     */
     public void setOwlFilePath(String owlFilePath) {
         this.owlFilePath = owlFilePath;
     }
-    
+
 }

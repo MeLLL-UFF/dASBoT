@@ -10,7 +10,7 @@ import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.rules.SafeRule;
 import edu.uff.dl.rules.rules.avaliation.RuleEvaluator;
 import edu.uff.dl.rules.rules.avaliation.RuleMeasurer;
-import edu.uff.dl.rules.util.TimeoutException;
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.util.answerpool.AnswerPool;
 import edu.uff.dl.rules.util.answerpool.RuleSizeComparator;
 import java.util.ArrayList;
@@ -28,11 +28,31 @@ import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
+ * Class to do the refinement according with the top-down, it means, from the
+ * most generic to the most specific, strategy and using a bound rule.
  *
- * @author Victor
+ * <br> This class gets a rule as bound and try to create a new rule with the
+ * same head and the body restrained or equal the bound rule. It starts with the
+ * head and a minimal set of literals on the body to make the rule safe. Then
+ * adds literals in the body, one by one until there are no more literals which
+ * fit in the body or reaches the bound rule.
+ *
+ * @author Victor Guimarães
  */
 public class TopDownBoundedRefinement extends Refinement {
 
+    /**
+     * Constructor with all needed literals.
+     *
+     * @param args the DReW's arguments.
+     * @param dlpContent the DLP's content.
+     * @param genericRule a geniric rule to refine.
+     * @param threshold a threshold improviment.
+     * @param positiveSamples a set of positive examples.
+     * @param negativeSamples a set of negative examples.
+     * @param timeout a timeout to infer each rule.
+     * @param ruleMeasure a measurer of rules.
+     */
     public TopDownBoundedRefinement(String[] args, String dlpContent, EvaluatedRule genericRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure) {
         super(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure);
     }
@@ -75,13 +95,23 @@ public class TopDownBoundedRefinement extends Refinement {
             } else {
                 return;
             }
-            
+
             System.out.println("Measure Increase: " + measureIncrease);
             System.out.println("");
-        //} while (count < limit);
+            //} while (count < limit);
         } while (Math.abs(measureIncrease) > threshold && count < limit);
     }
 
+    /**
+     * Creates all the minimal rules and pick the best to be refined. Put the
+     * best rule into a {@link Map} and return its key.
+     *
+     * @param head the rule's head.
+     * @param candidates the candidate literals.
+     * @param com a comparator to decides which rule is the best.
+     * @return the rule's key.
+     * @throws TimeoutException in case something goes wrong on the thread.
+     */
     private int loadBestMinimalRule(ConcreteLiteral head, final Set<? extends ConcreteLiteral> candidates, Comparator<EvaluatedRule> com) throws TimeoutException {
         AnswerPool<Rule> pool = loadMinimalRule(head, candidates);
         EvaluatedRule er;
@@ -111,6 +141,13 @@ public class TopDownBoundedRefinement extends Refinement {
         return size;
     }
 
+    /**
+     * Loads all the possibilities of minimal rules.
+     *
+     * @param head the rule's head.
+     * @param candidates the candidate literals.
+     * @return a pool with all the minimal rules.
+     */
     private AnswerPool<Rule> loadMinimalRule(ConcreteLiteral head, final Set<? extends ConcreteLiteral> candidates) {
         SafeRule r;
         AnswerPool<Rule> pool = new AnswerPool<>(new RuleSizeComparator());
@@ -132,6 +169,16 @@ public class TopDownBoundedRefinement extends Refinement {
         return pool;
     }
 
+    /**
+     * Loads all the possibilities of minimal rules. This is the recursive part,
+     * that loads the minimal rules by appending a new literal to its body until
+     * it becomes safe.
+     *
+     * @param head the rule's head.
+     * @param candidates the candidate literals.
+     * @param body the rule's body.
+     * @param pool the pool to insert the rule.
+     */
     private void loadMinimalRule(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates, final Set<? extends ConcreteLiteral> body, AnswerPool<Rule> pool) {
         SafeRule r;
         Set<ConcreteLiteral> newBody;
@@ -150,6 +197,12 @@ public class TopDownBoundedRefinement extends Refinement {
         }
     }
 
+    /**
+     * Checks if the rule is safe.
+     *
+     * @param rule the rule.
+     * @return true if it is, false otherwise.
+     */
     private boolean isRuleSafe(Rule rule) {
         Set<Term> terms = getAllTermsFromRule(rule);
         Set<Term> safe = new HashSet<>();
@@ -162,6 +215,17 @@ public class TopDownBoundedRefinement extends Refinement {
         return safe.containsAll(terms);
     }
 
+    /**
+     * Refines the rule. This part of the refinement consists in add a new
+     * literal from the candidates to the rule's body and see which literal gets
+     * the best result.
+     *
+     * @param rule the initial rule.
+     * @param candidates the candidates.
+     * @param count the rule's body size.
+     * @param com the comparator.
+     * @return a new evaluated rule.
+     */
     private EvaluatedRule refineRule(final Rule rule, Set<? extends ConcreteLiteral> candidates, int count, Comparator com) {
         EvaluatedRule er;
         Rule r;
@@ -199,10 +263,24 @@ public class TopDownBoundedRefinement extends Refinement {
         return best;
     }
 
+    /**
+     * Method to get the true candidates for the rule's body.
+     *
+     * @param head the rule's head.
+     * @param candidates the general candidates.
+     * @return a set of candidates.
+     */
     private Set<? extends ConcreteLiteral> getCandidates(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates) {
         return getCandidates(new Rule(head, null), candidates);
     }
 
+    /**
+     * Method to get the true candidates for the rule's body.
+     *
+     * @param head the rule's head.
+     * @param candidates the general candidates.
+     * @return a set of candidates.
+     */
     private Set<? extends ConcreteLiteral> getCandidates(Rule r, Set<? extends ConcreteLiteral> candidates) {
         Set<ConcreteLiteral> answer = new LinkedHashSet<>();
         Set<Term> allTerms = getAllTermsFromRule(r);
@@ -239,12 +317,27 @@ public class TopDownBoundedRefinement extends Refinement {
         return answer;
     }
 
+    /**
+     * Method to check if will be safe add the given literal into the given
+     * rule's body.
+     *
+     * @param lit the literal.
+     * @param r the rule.
+     * @return true if it is, false otherwise.
+     */
     private boolean isSafe(ConcreteLiteral lit, Rule r) {
         return (existAllTerms(r.getBody(), lit.getTerms()));
     }
 
-    private boolean existAllTerms(Set<? extends ConcreteLiteral> body, Collection<Term> literal) {
-        if (literal == null || literal.isEmpty())
+    /**
+     * Checks if each literal from the body is present on the set of literals.
+     *
+     * @param body the body.
+     * @param literals the set of literals.
+     * @return true if it is, false otherwise.
+     */
+    private boolean existAllTerms(Set<? extends ConcreteLiteral> body, Collection<Term> literals) {
+        if (literals == null || literals.isEmpty())
             return true;
         if (body == null || body.isEmpty())
             return false;
@@ -252,9 +345,16 @@ public class TopDownBoundedRefinement extends Refinement {
         for (ConcreteLiteral lit : body) {
             terms.addAll(lit.getTerms());
         }
-        return existAllTerms(terms, literal);
+        return existAllTerms(terms, literals);
     }
 
+    /**
+     * Checks if each literal from the part is present on the all.
+     *
+     * @param all the all.
+     * @param part the part.
+     * @return true if it is, false otherwise.
+     */
     private boolean existAllTerms(Collection<Term> all, Term... part) {
         if (part == null || part.length == 0)
             return true;
@@ -268,6 +368,13 @@ public class TopDownBoundedRefinement extends Refinement {
         return true;
     }
 
+    /**
+     * Checks if each literal from the part is present on the all.
+     *
+     * @param all the all.
+     * @param part the part.
+     * @return true if it is, false otherwise.
+     */
     private boolean existAllTerms(Collection<Term> all, Collection<Term> part) {
         if (part == null || part.isEmpty())
             return true;
@@ -281,6 +388,13 @@ public class TopDownBoundedRefinement extends Refinement {
         return true;
     }
 
+    /**
+     * Checks if any literal from the part is present on the all.
+     *
+     * @param all the all.
+     * @param part the part.
+     * @return true if it is, false otherwise.
+     */
     private boolean existAnyTerms(Collection<Term> all, Term... part) {
         if (all == null || all.isEmpty() || part == null || part.length == 0)
             return false;
@@ -292,6 +406,13 @@ public class TopDownBoundedRefinement extends Refinement {
         return false;
     }
 
+    /**
+     * Checks if any literal from the part is present on the all.
+     *
+     * @param all the all.
+     * @param part the part.
+     * @return true if it is, false otherwise.
+     */
     private boolean existAnyTerms(Collection<Term> all, Collection<Term> part) {
         if (all == null || all.isEmpty() || part == null || part.isEmpty())
             return false;
@@ -303,6 +424,15 @@ public class TopDownBoundedRefinement extends Refinement {
         return false;
     }
 
+    /**
+     * Method to check if a given literal is equivalent to another into the
+     * given rule.
+     *
+     * @param a the literal a.
+     * @param b the literal b.
+     * @param r the rule.
+     * @return true if it is, false otherwise.
+     */
     private boolean isEquivalent(final ConcreteLiteral a, final ConcreteLiteral b, Rule r) {
         List<Term> termsA = new ArrayList<>(a.getTerms());
         List<Term> termsB = new ArrayList<>(b.getTerms());
@@ -339,6 +469,13 @@ public class TopDownBoundedRefinement extends Refinement {
         return true;
     }
 
+    /**
+     * Getter for all the terms from a rule. A Term is any constant or variable
+     * that appear on the rule, including its head.
+     *
+     * @param r the rule.
+     * @return a set with all the rule's terms.
+     */
     private Set<Term> getAllTermsFromRule(Rule r) {
         Set<Term> answer = new HashSet<>();
         answer.addAll(r.getHead().getTerms());

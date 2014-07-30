@@ -1,15 +1,15 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.dl.rules.util.answerpool;
 
 import edu.uff.dl.rules.rules.Rule;
 import java.util.Comparator;
 
 /**
+ * Class to compare rules based on the rule body's size.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class RuleSizeComparator implements Comparator<Rule> {
 
@@ -19,9 +19,9 @@ public class RuleSizeComparator implements Comparator<Rule> {
             return 0;
         else if (o1.getBody().size() < o2.getBody().size())
             return 1;
-        else 
+        else
             return -1;
-            
+
     }
-    
+
 }

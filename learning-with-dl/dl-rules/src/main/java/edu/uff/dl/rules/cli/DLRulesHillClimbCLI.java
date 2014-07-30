@@ -16,7 +16,7 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.CLIArgumentsParser;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
-import edu.uff.dl.rules.util.TimeoutException;
+import edu.uff.dl.rules.exception.TimeoutException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;

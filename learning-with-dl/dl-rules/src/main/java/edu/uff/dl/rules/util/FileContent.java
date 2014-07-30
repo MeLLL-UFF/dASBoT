@@ -12,9 +12,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -32,37 +30,68 @@ import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
+ * Class to retrieve information from files. It can be used for get the file's
+ * content on different formats.
+ * <br> This class has only static methods, so has no need for instanciate it.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class FileContent {
 
-    public static String getStringFromFile(String filePath) throws FileNotFoundException {
-        return getStringFromFile(new File(filePath));
+    /**
+     * Get the file's content as a {@link String}.
+     *
+     * @param filepath the file's path.
+     * @return the content as {@link String}.
+     * @throws FileNotFoundException if the does not exists.
+     */
+    public static String getStringFromFile(String filepath) throws FileNotFoundException {
+        return getStringFromFile(new File(filepath));
     }
 
-    public static String getStringFromFile(String... filePath) throws FileNotFoundException {
+    /**
+     * Get the content of one or more files as a {@link String}.
+     *
+     * @param filepath a set of file's paths.
+     * @return the content as {@link String}.
+     * @throws FileNotFoundException if the does not exists.
+     */
+    public static String getStringFromFile(String... filepath) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
 
-        for (String string : filePath) {
-            sb.append(getStringFromFile(new File(string)));
+        for (String string : filepath) {
+            sb.append(getStringFromFile(string));
             sb.append("\n");
         }
 
         return sb.toString().trim();
     }
 
-    public static String getStringFromFile(Collection<String> filePath) throws FileNotFoundException {
+    /**
+     * Get the content of one or more files as a {@link String}.
+     *
+     * @param filepath a collection of file's paths.
+     * @return the content as {@link String}.
+     * @throws FileNotFoundException if the does not exists.
+     */
+    public static String getStringFromFile(Collection<String> filepath) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
 
-        for (String string : filePath) {
-            sb.append(getStringFromFile(new File(string)));
+        for (String string : filepath) {
+            sb.append(getStringFromFile(string));
             sb.append("\n");
         }
 
         return sb.toString().trim();
     }
 
+    /**
+     * Get the content of one file as a {@link String}.
+     *
+     * @param file the file.
+     * @return the content as {@link String}.
+     * @throws FileNotFoundException if the does not exists.
+     */
     public static String getStringFromFile(File file) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         Scanner in = new Scanner(file);
@@ -75,15 +104,37 @@ public class FileContent {
         return sb.toString().trim();
     }
 
+    /**
+     * Get the a {@link Reader} from a file.
+     *
+     * @param file the file.
+     * @return the {@link Reader}.
+     * @throws FileNotFoundException if the does not exists.
+     */
     public static Reader getReaderFromFile(File file) throws FileNotFoundException {
         return new StringReader(getStringFromFile(file));
     }
 
-    public static Reader getReaderFromFile(String filePath) throws FileNotFoundException {
-        return new StringReader(getStringFromFile(filePath));
+    /**
+     * Get the a {@link Reader} from a file.
+     *
+     * @param filepath the file's path.
+     * @return the {@link Reader}.
+     * @throws FileNotFoundException if the does not exists.
+     */
+    public static Reader getReaderFromFile(String filepath) throws FileNotFoundException {
+        return new StringReader(getStringFromFile(filepath));
     }
 
-    public static Set<Literal> getExamplesLiterals(String content) throws org.semanticweb.drew.dlprogram.parser.ParseException {
+    /**
+     * Get the file's content as a {@link Set} of {@link Literal}.
+     *
+     * @param content the file's content.
+     * @return the {@link Set} of {@link Literal}.
+     * @throws ParseException if the file's content does not accord with the
+     * language.
+     */
+    public static Set<Literal> getExamplesLiterals(String content) throws ParseException {
         List<ProgramStatement> programs = getProgramStatements(content);
         Set<Literal> samples = new HashSet<>();
         Clause c;
@@ -99,7 +150,15 @@ public class FileContent {
         return samples;
     }
 
-    public static List<ProgramStatement> getProgramStatements(String content) throws org.semanticweb.drew.dlprogram.parser.ParseException {
+    /**
+     * Get the file's content as a {@link List} of {@link ProgramStatement}.
+     *
+     * @param content the file's content.
+     * @return the {@link List} of {@link ProgramStatement}.
+     * @throws ParseException if the file's content does not accord with the
+     * language.
+     */
+    public static List<ProgramStatement> getProgramStatements(String content) throws ParseException {
         DLProgramKB kb = new DLProgramKB();
 
         DLProgram elprogram = null;
@@ -117,29 +176,41 @@ public class FileContent {
         return elprogram.getStatements();
     }
 
+    /**
+     * Get a {@link ConcreteLiteral} from a {@link String}.
+     *
+     * @param literalLine the {@link String}.
+     * @return the {@link ConcreteLiteral}.
+     */
     public static ConcreteLiteral getLiteralFromString(String literalLine) {
         int indexOfFirstParenteses = literalLine.indexOf("(");
         String termLine = literalLine.substring(indexOfFirstParenteses + 1, literalLine.lastIndexOf(")"));
         String[] termsString = termLine.split(",");
         List<Term> terms = new ArrayList<>(termsString.length);
         literalLine = literalLine.substring(0, indexOfFirstParenteses);
-        
+
         boolean negative = literalLine.startsWith("-");
         if (negative) {
             literalLine = literalLine.substring(1);
         }
-        
+
         int j = 0;
         for (String term : termsString) {
             terms.add(new Constant(term.trim()));
             j++;
         }
         ConcreteLiteral literal = new DataLogLiteral(literalLine, terms, negative);
-        
+
         //ConcreteLiteral literal = new ConcreteLiteral(literalLine, terms);
         return literal;
     }
-    
+
+    /**
+     * Get a {@link Rule} from a {@link String}.
+     *
+     * @param rule the {@link String}.
+     * @return the {@link Rule}.
+     */
     public static Rule getRuleFromString(String rule) throws ParseException {
         ProgramStatement ps = getProgramStatements(rule).get(0);
 
@@ -149,7 +220,7 @@ public class FileContent {
 
         if (c.getType() != ClauseType.RULE)
             return null;
-        
+
         SortedSet<DataLogLiteral> lits = new TreeSet<>();
 
         boolean fail;
@@ -169,6 +240,13 @@ public class FileContent {
         return new Rule(new DataLogLiteral(removeSlash(c.getHead().getPredicate().toString()), c.getHead().getTerms()), lits);
     }
 
+    /**
+     * Method used internally to remove a slash from a predicate's notation used
+     * by DReW.
+     *
+     * @param s a predicate as a {@link String} (with the slash).
+     * @return the predicate as a {@link String} (without the slash).
+     */
     private static String removeSlash(String s) {
         return s.substring(0, s.indexOf("/"));
     }

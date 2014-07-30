@@ -1,7 +1,6 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.dl.rules.util;
 
 import java.io.File;
@@ -20,8 +19,10 @@ import org.springframework.core.io.WritableResource;
 import org.springframework.util.StringUtils;
 
 /**
- * This class can be used as a FileResource by reading a String as content instead of a file.
- * @author Victor
+ * This class can be used as a FileResource by reading a String as content
+ * instead of a file.
+ *
+ * @author Victor Guimarães
  */
 public class StringResource extends AbstractResource implements WritableResource {
     /*
@@ -45,7 +46,7 @@ public class StringResource extends AbstractResource implements WritableResource
     private final String path;
 
     private final String encoding;
-    
+
     private String content;
 
     /**

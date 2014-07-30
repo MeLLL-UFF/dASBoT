@@ -1,13 +1,7 @@
 /*
  * UFF Project Semantic Learning
  */
-
 package edu.uff.dl.rules.util;
-
-/**
- *
- * @author Victor
- */
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -16,6 +10,11 @@ import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.owl.Individual;
 import org.dllearner.learningproblems.PosNegLPStandard;
 
+/**
+ * Class originally idealized to extends the DL-Learner language. (Not used yet)
+ *
+ * @author Victor Guimarães.
+ */
 @ComponentAnn(name = "PosNegLPRules", shortName = "rulesLP", version = 0.1)
 public class PosNegLPRules extends PosNegLPStandard {
 
@@ -26,8 +25,8 @@ public class PosNegLPRules extends PosNegLPStandard {
     protected Set<AtomTerm> uncoveredPositiveAtoms;
 
     /**
-     * Constructor, used in case that positive and negative examples are
-     * provided when this component is initialized
+     * Constructor used in case that positive and negative examples are provided
+     * when this component is initialized
      *
      * @param reasoningService Reasoner, provides reasoning service. Used to
      * checking the instance type
@@ -43,24 +42,27 @@ public class PosNegLPRules extends PosNegLPStandard {
         this.uncoveredPositiveAtoms = positiveAtoms;
     }
 
-    
-
     /**
-     * Constructor, used in case that positive and negative examples are
-     * provided when this component is initialized
+     * Constructor used in case that positive and negative examples are provided
+     * when this component is initialized
      *
      * @param reasoningService Reasoner, provides reasoning service. Used to
      * checking the instance type
      * @param positiveAtoms Set of positive terms
      * @param negativeAtoms Set of negative terms
      */
-    public PosNegLPRules(AbstractReasonerComponent reasoningService, Set<AtomTerm> positiveAtoms, Set<AtomTerm> negativeAtoms) {    
+    public PosNegLPRules(AbstractReasonerComponent reasoningService, Set<AtomTerm> positiveAtoms, Set<AtomTerm> negativeAtoms) {
         super(reasoningService);
         this.positiveAtoms = positiveAtoms;
         this.negativeAtoms = negativeAtoms;
         this.uncoveredPositiveAtoms = positiveAtoms;
     }
 
+    /**
+     * Constructor used to accord with a super constructor.
+     *
+     * @param reasoningService
+     */
     public PosNegLPRules(AbstractReasonerComponent reasoningService) {
         super(reasoningService);
     }
@@ -73,24 +75,49 @@ public class PosNegLPRules extends PosNegLPStandard {
         super();
     }
 
+    /**
+     * Getter for the positive atoms.
+     *
+     * @return the positive atoms.
+     */
     public Set<AtomTerm> getPositiveAtoms() {
         return positiveAtoms;
     }
 
+    /**
+     * Setter for the positive atoms.
+     *
+     * @param positiveAtoms the positive atoms.
+     */
     public void setPositiveAtoms(Set<AtomTerm> positiveAtoms) {
         this.positiveAtoms = positiveAtoms;
     }
 
+    /**
+     * Getter for the negative atoms.
+     *
+     * @return the negative atoms.
+     */
     public Set<AtomTerm> getNegativeAtoms() {
         return negativeAtoms;
     }
 
+    /**
+     * Setter for the negative atoms.
+     *
+     * @param negativeAtoms the negative atoms.
+     */
     public void setNegativeAtoms(Set<AtomTerm> negativeAtoms) {
         this.negativeAtoms = negativeAtoms;
     }
 
-    public void setAtomPositiveAtoms(Set<AtomTerm> atomPositiveAtoms) {
-        this.uncoveredPositiveAtoms = atomPositiveAtoms;
+    /**
+     * Setter for the unconvered positive atoms.
+     *
+     * @param uncoveredPositiveAtoms the unconvered positive atoms.
+     */
+    public void setUncoveredPositiveAtoms(Set<AtomTerm> uncoveredPositiveAtoms) {
+        this.uncoveredPositiveAtoms = uncoveredPositiveAtoms;
     }
 
 }

@@ -23,7 +23,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
  * Class to generate a KB from a String as content.
- * @author Victor
+ *
+ * @author Victor Guimarães
  */
 @ComponentAnn(name = "KB Reader", shortName = "kbreader", version = 0.1)
 public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnowledgeSource {
@@ -33,7 +34,6 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
     private KB kb;
 
     private BKRules content;
-    
 
     /**
      * Default constructor (needed for reflection in ComponentManager).
@@ -57,14 +57,15 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
     }
 
     /**
-     * Constructor allowing you to treat an KB object from a String as a
-     * KBFile knowledge source.
+     * Constructor allowing you to treat an KB object from a String as a KBFile
+     * knowledge source.
+     *
      * @param content A KB content.
      */
     public KBReader(BKRules content) {
         this.content = content;
     }
-    
+
     @Override
     public void init() throws ComponentInitException {
         try {
@@ -81,7 +82,7 @@ public class KBReader extends AbstractKnowledgeSource implements OWLOntologyKnow
             throw new ComponentInitException("KB content could not be parsed correctly.", e);
         }
     }
-    
+
     @Override
     public OWLOntology createOWLOntology(OWLOntologyManager manager) {
 

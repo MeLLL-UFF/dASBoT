@@ -7,7 +7,7 @@ import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.util.Box;
 import static edu.uff.dl.rules.util.Time.getTime;
-import edu.uff.dl.rules.util.TimeoutException;
+import edu.uff.dl.rules.exception.TimeoutException;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
 import java.io.IOException;

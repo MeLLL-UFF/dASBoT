@@ -7,16 +7,15 @@ import edu.uff.dl.rules.cli.DLRulesCLI;
 import java.io.FileNotFoundException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
+ * Class to do the parser thru the command line arguments. This class can also
+ * check the parameters and instantiate a {@link DLRulesCLI}.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class CLIArgumentsParser {
 
@@ -37,11 +36,19 @@ public class CLIArgumentsParser {
     public boolean ref = false;
     public boolean cv = false;
 
+    /**
+     * The constructor with the command line arguments.
+     *
+     * @param args the arguments.
+     */
     public CLIArgumentsParser(String[] args) {
         this.args = args;
         parser();
     }
 
+    /**
+     * Method to parse the arguments and load the values into variables.
+     */
     public void parser() {
         int numberOfDLPFiles = 0;
         Queue<String> queue = new LinkedList<>();
@@ -107,6 +114,13 @@ public class CLIArgumentsParser {
         cvNumberOfFolds = Integer.parseInt(queue.remove());
     }
 
+    /**
+     * Method to check the parameters.
+     *
+     * @return true if it is ok, false otherwise.
+     * @throws ParseException in case a content do not accord with the language.
+     * @throws FileNotFoundException in case a file not be found.
+     */
     public boolean checkParameters() throws ParseException, FileNotFoundException {
         for (String filePaths : dlpFilepaths) {
             FileContent.getProgramStatements(FileContent.getStringFromFile(filePaths));
@@ -123,6 +137,13 @@ public class CLIArgumentsParser {
         return true;
     }
 
+    /**
+     * Generates a new instance of a {@link DLRulesCLI} with the passed
+     * arguments.
+     *
+     * @return a new instance of a {@link DLRulesCLI}.
+     * @throws FileNotFoundException in case a file not be found.
+     */
     public DLRulesCLI newInstance() throws FileNotFoundException {
         DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positiveTrainFilepath, negativeTrainFilepath, outputDirectory, timeout, templateFilepath, cvDirectory, cvPrefix, cvNumberOfFolds);
         dlrcli.setRule(rule);

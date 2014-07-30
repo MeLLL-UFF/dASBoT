@@ -19,8 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Class to evaluate the rule against the folds of the cross validation.
  *
- * @author Victor
+ * @author Victor Guimarães
  */
 public class CrossValidationEvaluator implements Runnable {
 
@@ -37,14 +38,40 @@ public class CrossValidationEvaluator implements Runnable {
 
     private DecimalFormat df = new DecimalFormat("#.#####");
 
+    private NameFilterCompare nameFilterCompare;
+
+    /**
+     * Constructor with all needed parameters.
+     *
+     * @param cvDirectory the directory with the folds.
+     * @param foldPrefix the fold's prefix.
+     * @param numberOfFolds the number of folds (the folds should have the
+     * number after its prefix and must be in [1,{@link #numberOfFolds}].
+     * @param ruleMeasure the measurer of rules.
+     */
     public CrossValidationEvaluator(String cvDirectory, String foldPrefix, int numberOfFolds, RuleMeasurer ruleMeasure) {
         this.cvDirectory = cvDirectory;
         this.foldPrefix = foldPrefix;
         this.numberOfFolds = numberOfFolds;
         this.ruleMeasure = ruleMeasure;
         this.rulesMeasures = new HashMap<>();
+        this.nameFilterCompare = new NameFilterCompare("rule");
     }
 
+    /**
+     * Constructor with all needed parameters. With addition of the
+     * {@link #prefixSeparator}, a {@link String} to separate the rule's name
+     * from the fold's name on the output files. This separator is "_"
+     * (underscore) by default.
+     *
+     * @param cvDirectory the directory with the folds.
+     * @param foldPrefix the fold's prefix.
+     * @param numberOfFolds the number of folds (the folds should have the
+     * number after its prefix and must be in [1,{@link #numberOfFolds}].
+     * @param ruleMeasure the measurer of rules.
+     * @param prefixSeparator the {@link #prefixSeparator}, a {@link String} to
+     * separate the rule's name from the fold's name on the output files.
+     */
     public CrossValidationEvaluator(String cvDirectory, String foldPrefix, int numberOfFolds, RuleMeasurer ruleMeasure, String prefixSeparator) {
         this(cvDirectory, foldPrefix, numberOfFolds, ruleMeasure);
         this.prefixSeparator = prefixSeparator;
@@ -52,7 +79,7 @@ public class CrossValidationEvaluator implements Runnable {
 
     @Override
     public void run() {
-        File[] listOfFiles = (new File(cvDirectory)).listFiles(new nameFiler());
+        File[] listOfFiles = (new File(cvDirectory)).listFiles(nameFilterCompare);
         EvaluatedRuleExample evaluatedRuleExample;
         String ruleName;
         int index;
@@ -74,6 +101,13 @@ public class CrossValidationEvaluator implements Runnable {
         loadResult();
     }
 
+    /**
+     * Method to insert the rule into the {@link Map} of measures.
+     *
+     * @param rule the rule.
+     * @param index the index of the avaliated fold.
+     * @param measure the measure.
+     */
     private void insertMeasure(String rule, int index, double measure) {
         if (!rulesMeasures.containsKey(rule)) {
             double[] measures = new double[numberOfFolds];
@@ -83,6 +117,9 @@ public class CrossValidationEvaluator implements Runnable {
         rulesMeasures.get(rule)[index] = measure;
     }
 
+    /**
+     * Format and load the results into a {@link String} variable.
+     */
     private void loadResult() {
         String[] evaluations = new String[rulesMeasures.size()];
 
@@ -124,7 +161,7 @@ public class CrossValidationEvaluator implements Runnable {
             }
         }
 
-        Arrays.sort(evaluations, new EvaluationComparator());
+        Arrays.sort(evaluations, nameFilterCompare);
 
         description = "";
         i = 0;
@@ -136,7 +173,7 @@ public class CrossValidationEvaluator implements Runnable {
         description += "Number of rules:\t" + i;
 
         description += "\n";
-        
+
         description += "Best Rule:\t";
         description += bestRule;
         try {
@@ -164,6 +201,12 @@ public class CrossValidationEvaluator implements Runnable {
         description += (worstIndex + 1);
     }
 
+    /**
+     * Format the array of results.
+     *
+     * @param measures the array.
+     * @return the formated {@link String}.
+     */
     private String formatMeasures(double[] measures) {
         String format = "";
         double total = 0;
@@ -177,6 +220,14 @@ public class CrossValidationEvaluator implements Runnable {
         return format;
     }
 
+    /**
+     * Finds the index of the best measure from a array of measures. The array
+     * of measure is an array with the measure of a rule from each fold, each
+     * index of the array is a measure of a fold.
+     *
+     * @param measures the array of measures.
+     * @return the index.
+     */
     private int bestIndex(double[] measures) {
         double max = Double.MIN_VALUE;
         int index = -1;
@@ -190,6 +241,14 @@ public class CrossValidationEvaluator implements Runnable {
         return index;
     }
 
+    /**
+     * Finds the index of the worst measure from a array of measures. The array
+     * of measure is an array with the measure of a rule from each fold, each
+     * index of the array is a measure of a fold.
+     *
+     * @param measures the array of measures.
+     * @return the index.
+     */
     private int worstIndex(double[] measures) {
         double min = Double.MAX_VALUE;
         int index = -1;
@@ -208,6 +267,12 @@ public class CrossValidationEvaluator implements Runnable {
         return description;
     }
 
+    /**
+     * Saves the result into a text file.
+     *
+     * @param filepath the filepath.
+     * @throws IOException in case something goes wrong during writing the file.
+     */
     public void saveToFile(String filepath) throws IOException {
         PrintFile pf = new PrintFile(filepath);
         pf.print(description);
@@ -216,19 +281,32 @@ public class CrossValidationEvaluator implements Runnable {
 
 }
 
-class nameFiler implements FilenameFilter {
+/**
+ * Class to filter the files for rule's files and sort they.
+ *
+ * @author Victor Guimarães
+ */
+class NameFilterCompare implements FilenameFilter, Comparator<String> {
+
+    private String rulePrefix;
+
+    /**
+     * Constructor with all needed parameters.
+     *
+     * @param rulePrefix the prefix of the rule's files.
+     */
+    public NameFilterCompare(String rulePrefix) {
+        this.rulePrefix = rulePrefix;
+    }
 
     @Override
     public boolean accept(File dir, String name) {
-        return (name.startsWith("rule"));
+        return (name.startsWith(rulePrefix));
     }
-
-}
-
-class EvaluationComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
+        int size = rulePrefix.length();
         double d1, d2;
 
         d1 = Double.parseDouble(o1.substring(o1.lastIndexOf("\t"), o1.length()).trim().replaceAll(",", "."));
@@ -240,8 +318,8 @@ class EvaluationComparator implements Comparator<String> {
             return 1;
         else {
             int n1, n2;
-            n1 = Integer.parseInt(o1.substring(4, o1.indexOf(":")));
-            n2 = Integer.parseInt(o2.substring(4, o2.indexOf(":")));
+            n1 = Integer.parseInt(o1.substring(size, o1.indexOf(":")));
+            n2 = Integer.parseInt(o2.substring(size, o2.indexOf(":")));
 
             if (n1 < n2)
                 return -1;
@@ -251,5 +329,4 @@ class EvaluationComparator implements Comparator<String> {
                 return 0;
         }
     }
-
 }
