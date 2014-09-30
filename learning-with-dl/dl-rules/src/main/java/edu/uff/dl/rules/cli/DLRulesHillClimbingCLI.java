@@ -37,7 +37,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  *
  * @author Victor Guimarães
  */
-public class DLRulesHillClimbCLI extends DLRulesCLI {
+public class DLRulesHillClimbingCLI extends DLRulesCLI {
 
     private Set<Literal> positiveTrain;
     private Set<Literal> negativeTrain;
@@ -60,15 +60,15 @@ public class DLRulesHillClimbCLI extends DLRulesCLI {
      */
     public static void main(String[] args) throws FileNotFoundException {
         CLIArgumentsParser ap = new CLIArgumentsParser(args);
-        DLRulesHillClimbCLI dlrcli;
+        DLRulesHillClimbingCLI dlrcli;
         try {
-            dlrcli = new DLRulesHillClimbCLI(ap.dlpFilepaths, ap.owlFilepath, ap.positiveTrainFilepath, ap.negativeTrainFilepath, ap.outputDirectory, ap.timeout, ap.templateFilepath, ap.cvDirectory, ap.cvPrefix, ap.cvNumberOfFolds);
+            dlrcli = new DLRulesHillClimbingCLI(ap.dlpFilepaths, ap.owlFilepath, ap.positiveTrainFilepath, ap.negativeTrainFilepath, ap.outputDirectory, ap.timeout, ap.templateFilepath, ap.cvDirectory, ap.cvPrefix, ap.cvNumberOfFolds);
             dlrcli.setRule(ap.rule);
             dlrcli.setRefinement(ap.ref);
             dlrcli.setCrossValidation(ap.cv);
             dlrcli.init();
         } catch (ParseException ex) {
-            Logger.getLogger(DLRulesHillClimbCLI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class DLRulesHillClimbCLI extends DLRulesCLI {
      * @param cvNumberOfFolds the number of folds.
      * @throws FileNotFoundException in case of any file path does not exist.
      */
-    public DLRulesHillClimbCLI(Set<String> dlpFilepaths, String owlFilepath, String positiveTrainFilepath, String negativeTrainFilepath, String outputDirectory, int timeout, String templateFilepath, String cvDirectory, String cvPrefix, int cvNumberOfFolds) throws FileNotFoundException, ParseException {
+    public DLRulesHillClimbingCLI(Set<String> dlpFilepaths, String owlFilepath, String positiveTrainFilepath, String negativeTrainFilepath, String outputDirectory, int timeout, String templateFilepath, String cvDirectory, String cvPrefix, int cvNumberOfFolds) throws FileNotFoundException, ParseException {
         super(dlpFilepaths, owlFilepath, positiveTrainFilepath, negativeTrainFilepath, outputDirectory, timeout, templateFilepath, cvDirectory, cvPrefix, cvNumberOfFolds);
         positiveTrain = FileContent.getExamplesLiterals(positiveTrainExample);
         negativeTrain = FileContent.getExamplesLiterals(negativeTrainExample);
@@ -166,9 +166,9 @@ public class DLRulesHillClimbCLI extends DLRulesCLI {
                     fullDLPContent.append(serializeRule.getRule().toString()).append("\n");
             }
         } catch (FileNotFoundException | ParseException ex) {
-            Logger.getLogger(DLRulesHillClimbCLI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException ex) {
-            Logger.getLogger(DLRulesHillClimbCLI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("End time:\t" + Time.getTime(e));
         System.out.println("Total time:\t" + Time.getDiference(b, e));

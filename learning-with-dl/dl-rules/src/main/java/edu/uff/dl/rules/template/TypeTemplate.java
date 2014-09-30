@@ -1,9 +1,10 @@
 /*
  * UFF Project Semantic Learning
  */
-package edu.uff.dl.rules.expansionset;
+package edu.uff.dl.rules.template;
 
 import edu.uff.dl.rules.datalog.DataLogPredicate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Clause;
@@ -49,11 +50,21 @@ public interface TypeTemplate {
     public Set<Clause> getTemplateFacts();
 
     /**
-     * Getter for a {@link Set} of facts from the template for the given {@link DataLogPredicate}.
+     * Getter for a {@link Set} of facts from the template for the given
+     * {@link DataLogPredicate}.
      *
-     * @param pred the {@link DataLogPredicate} to filter the {@link Set} of facts.
+     * @param pred the {@link DataLogPredicate} to filter the {@link Set} of
+     * facts.
      * @return a {@link Set} of facts from the template.
      */
     public Set<Clause> getTemplateFactsForPredicate(DataLogPredicate pred);
+
+    /**
+     * Getter for a {@link Map} of constants from the template. The constants
+     * remain the same after the rule generalization process.
+     *
+     * @return a {@link Map} of constants.
+     */
+    public Map<String, List<List<TermType>>> getConstantMap();
 
 }

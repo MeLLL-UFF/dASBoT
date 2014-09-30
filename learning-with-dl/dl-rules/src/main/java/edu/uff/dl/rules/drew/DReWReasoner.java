@@ -7,7 +7,7 @@ import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.SimplePredicate;
 import edu.uff.dl.rules.expansionset.ExpansionAnswerSet;
-import edu.uff.dl.rules.expansionset.IndividualTemplate;
+import edu.uff.dl.rules.template.IndividualTemplate;
 import edu.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
 import edu.uff.dl.rules.rules.AnswerRule;
 import edu.uff.dl.rules.rules.AnswerSetRule;
@@ -70,6 +70,8 @@ public class DReWReasoner implements Component {
     protected List<ConcreteLiteral> examplesForRule;
 
     protected IndividualTemplate individialTemplate;
+
+    protected boolean recursiveRuleAllowed = true;
 
     private String[] arg;
 
@@ -152,12 +154,13 @@ public class DReWReasoner implements Component {
                 //e = s;
 
                 e.init();
-
+                
                 System.out.println("Iniciar Geração da Regra: " + getTime());
                 System.out.println("");
                 int deep = 1;
                 System.out.println("Gerando regra com profundidade de variáveis: " + deep);
-                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), deep);
+                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), deep, individialTemplate);
+                ar.setRecursive(recursiveRuleAllowed);
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
                 answerSetRules.add(aes);
@@ -539,6 +542,28 @@ public class DReWReasoner implements Component {
      */
     public List<ConcreteLiteral> getExamplesForRule() {
         return examplesForRule;
+    }
+
+    /**
+     * Getter for the {@link #recursiveRuleAllowed}. It is true if recursion is
+     * allowed at the rule, false otherwise.
+     * <br> It is true by default.
+     *
+     * @return the {@link #recursiveRuleAllowed}.
+     */
+    public boolean isRecursiveRuleAllowed() {
+        return recursiveRuleAllowed;
+    }
+
+    /**
+     * Setter for the {@link #recursiveRuleAllowed}. Set true to allow the
+     * recursion, false to do not.
+     * <br> It is true by default.
+     *
+     * @param recursiveRuleAllowed the {@link #recursiveRuleAllowed}.
+     */
+    public void setRecursiveRuleAllowed(boolean recursiveRuleAllowed) {
+        this.recursiveRuleAllowed = recursiveRuleAllowed;
     }
 
 }

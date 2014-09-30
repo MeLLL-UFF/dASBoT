@@ -67,6 +67,7 @@ public class DLRulesCLI {
     protected boolean rule;
     protected boolean refinement;
     protected boolean crossValidation;
+    protected boolean recursiveRuleAllowed = true;
 
     protected String[] args = DReWDefaultArgs.ARGS;
 
@@ -75,14 +76,14 @@ public class DLRulesCLI {
      *
      * @param args the parameters needed for the program execution.<br>-rule to
      * generate the rules (optional),<br>-ref to refine the rules
-     * (optional),<br>-cv to cross validate the rules (optional),<br>an integer
-     * number of bk files (omitted = 1),<br>a set of paths for the bk files,
-     * according with the number of files previous setted,<br>-tp to use
-     * template (file to type the individuos according with its relationships)
-     * (optional),<br>if -tp was used, the path of the template file,<br>an
-     * output directory for the program's output,<br>a timeout for the rule's
-     * inferences,<br>the cross validation directory with the folds,<br>the
-     * fold's prefix name.
+     * (optional),<br>-cv to cross validate the rules (optional),<br>-norec to
+     * not allow recursive rules,<br>an integer number of bk files (omitted =
+     * 1),<br>a set of paths for the bk files, according with the number of
+     * files previous setted,<br>-tp to use template (file to type the
+     * individuos according with its relationships) (optional),<br>if -tp was
+     * used, the path of the template file,<br>an output directory for the
+     * program's output,<br>a timeout for the rule's inferences,<br>the cross
+     * validation directory with the folds,<br>the fold's prefix name.
      * @throws FileNotFoundException in case of a file path does not exist.
      */
     public static void main(String[] args) throws FileNotFoundException {
@@ -97,6 +98,7 @@ public class DLRulesCLI {
         boolean rule = false;
         boolean ref = false;
         boolean cv = false;
+        boolean noRec = false;
         try {
 
             while (queue.peek().startsWith("-")) {
@@ -109,6 +111,9 @@ public class DLRulesCLI {
                         break;
                     case "-cv":
                         cv = true;
+                        break;
+                    case "-norec":
+                        noRec = true;
                         break;
                 }
                 queue.remove();
@@ -159,6 +164,7 @@ public class DLRulesCLI {
             dlrcli.setRule(rule);
             dlrcli.setRefinement(ref);
             dlrcli.setCrossValidation(cv);
+            dlrcli.setRecursiveRuleAllowed(!noRec);
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -317,6 +323,7 @@ public class DLRulesCLI {
             String ruleName;
             Time.getTime(begin);
             DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, positiveTrainExample, templateContent);
+            reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
             reasoner.init();
 
             size = reasoner.getExamples().size();
@@ -621,6 +628,27 @@ public class DLRulesCLI {
      */
     public void setCrossValidation(boolean crossValidation) {
         this.crossValidation = crossValidation;
+    }
+
+    /**
+     * Getter for -norec. It is true if recursion is allowed at the rule, false
+     * otherwise.
+     * <br> It is true by default.
+     *
+     * @return the {@link #recursiveRuleAllowed}.
+     */
+    public boolean isRecursiveRuleAllowed() {
+        return recursiveRuleAllowed;
+    }
+
+    /**
+     * Setter for -norec. Set true to allow the recursion, false to do not.
+     * <br> It is true by default.
+     *
+     * @param recursiveRuleAllowed the {@link #recursiveRuleAllowed}.
+     */
+    public void setRecursiveRuleAllowed(boolean recursiveRuleAllowed) {
+        this.recursiveRuleAllowed = recursiveRuleAllowed;
     }
 
 }

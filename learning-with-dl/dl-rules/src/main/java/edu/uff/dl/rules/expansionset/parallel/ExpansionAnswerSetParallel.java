@@ -4,7 +4,7 @@
 package edu.uff.dl.rules.expansionset.parallel;
 
 import edu.uff.dl.rules.expansionset.ExpansionAnswerSet;
-import edu.uff.dl.rules.expansionset.IndividualTemplate;
+import edu.uff.dl.rules.template.IndividualTemplate;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;

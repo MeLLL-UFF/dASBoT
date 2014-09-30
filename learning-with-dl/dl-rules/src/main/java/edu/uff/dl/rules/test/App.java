@@ -4,7 +4,7 @@
 package edu.uff.dl.rules.test;
 
 import edu.uff.dl.rules.cli.DLRulesCLI;
-import edu.uff.dl.rules.cli.DLRulesHillClimbCLI;
+import edu.uff.dl.rules.cli.DLRulesHillClimbingCLI;
 import edu.uff.dl.rules.cli.parallel.DLRulesCLIParallel;
 import edu.uff.dl.rules.cli.parallel.RefinementParallel;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
@@ -107,13 +107,14 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         //evaluateAll();
-        evaluateCrossValidation("/Users/Victor/Desktop/sameAuthorTrain1/CV/", "/Users/Victor/Desktop/ecvCoraSameAuthorTrain1.txt");
-        //testCLI();
+        testCLI();
         //testRun();
         //testMeasure("/Users/Victor/Desktop/out/ER/");
-        //evaluateCrossValidation("/Users/Victor/Desktop/clusterResults/imdb/imdbTrain2/CV/");
+        //evaluateCrossValidation("/Users/Victor/Desktop/out/imdbTrain3/CV/", "/Users/Victor/Desktop/cveImdbTrain3Const.txt");
         //System.out.println("test");
         //checkParameters();
+        //System.out.println("oi");
+        //testDReW();
     }
 
     private static void testCLI() throws FileNotFoundException {
@@ -121,6 +122,7 @@ public class App {
             "-rule",
             "-ref",
             "-cv",
+            "-norec",
             "6",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap",
@@ -128,7 +130,7 @@ public class App {
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/misc.yap",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/systems.yap",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/theory.yap",
-            "/Users/Victor/Desktop/kbs/uw-cse-testebinario/sample.owl",
+            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/sample.owl",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.f",
             "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.n",
             "-tp",
@@ -139,8 +141,20 @@ public class App {
             "test",
             "5"
         };
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/parameters.txt").split("\n\n");
-        DLRulesCLI.main(parameters[2].trim().split(" "));
+        
+        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/args/args.txt").split("\n");
+        for (String parameter : parameters) {
+            String[] arguments = parameter.split(" ");
+            for (String argument : arguments) {
+                System.out.println(argument);
+            }
+            DLRulesCLI.main(arguments);
+        }
+        args = DReWDefaultArgs.ARGS;
+        //args[2]
+        
+        //String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/cv.txt").split(" ");
+        //DLRulesCLI.main(arguments);
         //DLRulesHillClimbCLI.main(args);
     }
 

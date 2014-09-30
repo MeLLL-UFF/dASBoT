@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.expansionset;
 
+import edu.uff.dl.rules.template.TypeTemplate;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import java.util.ArrayList;
 import java.util.Collection;

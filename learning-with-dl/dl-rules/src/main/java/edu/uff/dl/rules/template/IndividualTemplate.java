@@ -1,17 +1,19 @@
 /*
  * UFF Project Semantic Learning
  */
-package edu.uff.dl.rules.expansionset;
+package edu.uff.dl.rules.template;
 
 import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.SimplePredicate;
 import java.io.FileNotFoundException;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +62,9 @@ public class IndividualTemplate implements TypeTemplate, Component {
     protected Set<Clause> singleFacts;
     protected Set<Clause> repeatedFacts;
 
+    protected Map<String, List<List<TermType>>> constantsMap;
+    protected Map<String, Set<Clause>> factsMap;
+
     /**
      * Constructor that only allocate the variables. Using this constructor will
      * be needed set other variables before to call {@link #init()}.
@@ -70,6 +75,8 @@ public class IndividualTemplate implements TypeTemplate, Component {
         this.individualsGroups = new HashMap<>();
         this.individuals = new LinkedHashSet<>();
         this.predicates = new LinkedHashSet<>();
+        this.constantsMap = new HashMap<>();
+        this.factsMap = new HashMap<>();
     }
 
     /**
@@ -84,9 +91,11 @@ public class IndividualTemplate implements TypeTemplate, Component {
         this.templateContent = templateContent;
         this.dlpContent = dlpContent;
         this.owlContent = owlContent;
-        if (templateContent != null) {
-            this.templateContent = templateContent.replace("#", "");
-        }
+        /*
+         if (templateContent != null) {
+         this.templateContent = templateContent.replace("#", "");
+         }
+         */
     }
 
     /**
@@ -106,10 +115,40 @@ public class IndividualTemplate implements TypeTemplate, Component {
             loadIndividualsAndPredicates(this.individuals, predicates, program);
             Set<Constant> localIndividuals = new HashSet(individuals);
             loadIndividualsGroups(program, localIndividuals);
+            loadConstants();
         } catch (Exception ex) {
             throw new ComponentInitException(ex.getMessage());
         }
 
+    }
+
+    /**
+     * Creates the {@link Map} of constants.
+     */
+    private void loadConstants() {
+        String[] auxs = templateContent.replace('.', ';').split(";");
+        Set<String> lines = new LinkedHashSet<>(auxs.length);
+        for (String aux : auxs) {
+            if (!aux.isEmpty() && aux.indexOf("#") > 0) {
+                lines.add(aux);
+            }
+        }
+
+        String terms[];
+        String key;
+        List<TermType> list;
+        for (String line : lines) {
+            terms = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split(",");
+            list = new ArrayList<>(terms.length);
+            key = line.substring(0, line.indexOf("(")).trim();
+            if (constantsMap.get(key) == null) {
+                constantsMap.put(key, new LinkedList<List<TermType>>());
+            }
+            for (String term : terms) {
+                list.add(new TermType(term.trim()));
+            }
+            constantsMap.get(key).add(list);
+        }
     }
 
     /**
@@ -122,7 +161,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
     private Set<Clause> getClausesFromTemplate() throws Exception {
         Set<Clause> resp = new LinkedHashSet<>();
         try {
-            DLProgram program = getDLProgram(templateContent);
+            DLProgram program = getDLProgram(templateContent.replace("#", ""));
 
             Clause c;
             for (ProgramStatement ps : program.getStatements()) {
@@ -143,7 +182,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
 
     /**
      * Loads the clauses ({@link Clause}) separating into the ones which are
-     * repeated and the ones which do not.
+     * repeated and the ones which are not.
      *
      * @param clauses the clauses that will be loaded.
      */
@@ -484,21 +523,25 @@ public class IndividualTemplate implements TypeTemplate, Component {
 
     @Override
     public Set<Clause> getTemplateFactsForPredicate(DataLogPredicate pred) {
-        Set<Clause> resp = new LinkedHashSet<>();
+        if (! factsMap.containsKey(pred.getHead())) {
+            Set<Clause> answer = new LinkedHashSet<>();
 
-        for (Clause fact : singleFacts) {
-            if (hasPredicateInClause(fact, pred)) {
-                resp.add(fact);
+            for (Clause fact : singleFacts) {
+                if (hasPredicateInClause(fact, pred)) {
+                    answer.add(fact);
+                }
             }
-        }
 
-        for (Clause fact : repeatedFacts) {
-            if (hasPredicateInClause(fact, pred)) {
-                resp.add(fact);
+            for (Clause fact : repeatedFacts) {
+                if (hasPredicateInClause(fact, pred)) {
+                    answer.add(fact);
+                }
             }
+            
+            factsMap.put(pred.getHead(), answer);
         }
-
-        return resp;
+        
+        return factsMap.get(pred.getHead());
     }
 
     /**
@@ -510,7 +553,9 @@ public class IndividualTemplate implements TypeTemplate, Component {
      * @return true if it has, false otherwise.
      */
     private boolean hasPredicateInClause(Clause c, DataLogPredicate p) {
-        return c.getHead().getPredicate().toString().equals(p.toString());
+        String cs = c.getHead().getPredicate().toString();
+        cs = cs.substring(0, cs.lastIndexOf("/"));
+        return cs.equals(p.getHead());
     }
 
     @Override
@@ -526,6 +571,11 @@ public class IndividualTemplate implements TypeTemplate, Component {
     @Override
     public Set<Constant> getIndividuals() {
         return individuals;
+    }
+
+    @Override
+    public Map<String, List<List<TermType>>> getConstantMap() {
+        return constantsMap;
     }
 
 }
