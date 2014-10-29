@@ -126,6 +126,8 @@ public class IndividualTemplate implements TypeTemplate, Component {
      * Creates the {@link Map} of constants.
      */
     private void loadConstants() {
+        if (templateContent == null)
+            return;
         String[] auxs = templateContent.replace('.', ';').split(";");
         Set<String> lines = new LinkedHashSet<>(auxs.length);
         for (String aux : auxs) {
@@ -523,7 +525,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
 
     @Override
     public Set<Clause> getTemplateFactsForPredicate(DataLogPredicate pred) {
-        if (! factsMap.containsKey(pred.getHead())) {
+        if (!factsMap.containsKey(pred.getHead())) {
             Set<Clause> answer = new LinkedHashSet<>();
 
             for (Clause fact : singleFacts) {
@@ -537,10 +539,10 @@ public class IndividualTemplate implements TypeTemplate, Component {
                     answer.add(fact);
                 }
             }
-            
+
             factsMap.put(pred.getHead(), answer);
         }
-        
+
         return factsMap.get(pred.getHead());
     }
 

@@ -152,14 +152,16 @@ public class DLRulesCLI {
 
             int timeout = Integer.parseInt(queue.remove());
 
-            String cvDirectory;
-            String cvPrefix;
-            int cvNumberOfFolds;
+            String cvDirectory = null;
+            String cvPrefix = null;
+            int cvNumberOfFolds = 0;
 
-            cvDirectory = queue.remove();
-            cvPrefix = queue.remove();
-            cvNumberOfFolds = Integer.parseInt(queue.remove());
-
+            if (cv) {
+                cvDirectory = queue.remove();
+                cvPrefix = queue.remove();
+                cvNumberOfFolds = Integer.parseInt(queue.remove());
+            }
+            
             DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positeveTrain, negativeTrain, outputDirectory, timeout, template, cvDirectory, cvPrefix, cvNumberOfFolds);
             dlrcli.setRule(rule);
             dlrcli.setRefinement(ref);

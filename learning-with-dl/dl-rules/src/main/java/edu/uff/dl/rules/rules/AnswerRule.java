@@ -232,6 +232,8 @@ public class AnswerRule implements Component {
      */
     private boolean checkForCorrectTypes(ConcreteLiteral literal, Map<Term, Set<Term>> termTypes) {
         Set<Clause> fact = template.getTemplateFactsForPredicate(literal);
+        if (fact.isEmpty())
+            return true;
         List<Term> templateType;
         List<Term> terms = literal.getTerms();
         Map<Term, Set<Term>> types = new HashMap<>(terms.size());

@@ -6,8 +6,13 @@ package edu.uff.dl.rules.util;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.rules.Rule;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -249,6 +254,41 @@ public class FileContent {
      */
     private static String removeSlash(String s) {
         return s.substring(0, s.indexOf("/"));
+    }
+
+    /**
+     * Method to save the content of a {@link String} into a file. This method
+     * creates the file if it does not exists or overwrites it if it does.
+     *
+     * @param filepath the file path
+     * @param content the content
+     *
+     * @throws java.io.IOException in case something goes wrong with the file
+     */
+    public static void saveToFile(String filepath, String content) throws IOException {
+        saveToFile(filepath, content, false);
+    }
+
+    /**
+     * Method to save the content of a {@link String} into a file. If it is
+     * true, the content is appended on the bottom of the file. If append is
+     * false, this method creates the file if it does not exists or overwrites
+     * it if it does.
+     *
+     * @param filepath the file path
+     * @param content the content
+     * @param append true to append on the bottom, false to overwrite
+     *
+     * @throws java.io.IOException in case something goes wrong with the file
+     */
+    public static void saveToFile(String filepath, String content, boolean append) throws IOException {
+        OutputStream output = new FileOutputStream(filepath, append);
+        OutputStreamWriter writer = new OutputStreamWriter(output);
+        BufferedWriter bw = new BufferedWriter(writer);
+
+        bw.write(content);
+
+        bw.close();
     }
 
 }

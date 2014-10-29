@@ -17,6 +17,7 @@ import static edu.uff.dl.rules.util.Time.getTime;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -238,7 +239,14 @@ public class DReWReasoner implements Component {
      * @param predicates a set of predicates to load in.
      */
     private void loadDLP(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
+        try {
+            FileContent.saveToFile("/Users/Victor/Desktop/content.dlp", dlpContent);
+        } catch (IOException ex) {
+            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         List<ProgramStatement> programs = getProgramStatements(dlpContent);
+        
         Clause c;
         SimplePredicate sp;
         Predicate p;

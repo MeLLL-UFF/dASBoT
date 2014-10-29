@@ -99,4 +99,54 @@ public class Time {
             return hour + "h" + min + "min" + sec + "s";
         }
     }
+    
+    public static String getFormatedTime(Long time) {
+        long dif = Math.round(time / 1000.0);
+        long hour, min, sec;
+        if (dif < 60) {
+            sec = dif;
+            return sec + "s";
+        } else if (dif < 60 * 60) {
+            sec = dif % 60;
+            min = dif / 60;
+            return min + "min" + sec + "s";
+        } else {
+            hour = dif / 3600;
+            dif = dif % (3600);
+            min = dif / 60;
+            sec = dif % 60;
+            return hour + "h" + min + "min" + sec + "s";
+        }
+    }
+    
+    public static long getLongTime(String time) {
+        //12h45min37s
+        int h = 0, m = 0, s = 0;
+        String t = time;
+        int index = t.indexOf("h");
+        if (index > 0) {
+            h = Integer.parseInt(t.substring(0, index));
+            t = t.substring(index + 1);
+        }
+        
+        index = t.indexOf("min");
+        if (index > 0) {
+            m = Integer.parseInt(t.substring(0, index));
+            t = t.substring(index + 3);
+        }
+        
+        index = t.indexOf("s");
+        if (index > 0) {
+            s = Integer.parseInt(t.substring(0, index));
+            t = t.substring(index + 1);
+        }
+        
+        long resp = 0;
+        resp += s * 1000;
+        resp += m * 60 * 1000;
+        resp += h * 60 * 60 * 1000;
+        
+        return resp;
+    }
+    
 }
