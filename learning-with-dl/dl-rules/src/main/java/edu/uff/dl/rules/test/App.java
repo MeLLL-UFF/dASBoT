@@ -125,13 +125,13 @@ public class App {
                 outputDirectory = indidualArgs[0];
                 positiveExamples = FileContent.getStringFromFile(indidualArgs[1]);
                 negativeExamples = FileContent.getStringFromFile(indidualArgs[2]);
-                
+
                 dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length));
-                
+
                 out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("Version")).replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
                 ResultSet rs = new ResultSet(dlpContent, positiveExamples, negativeExamples, outputDirectory, measurer, args);
-                
+
                 System.setOut(stream);
                 System.out.println("Done: " + outputDirectory + "results.txt");
             } catch (FileNotFoundException | org.semanticweb.drew.dlprogram.parser.ParseException e) {
@@ -147,7 +147,7 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         //evaluateAll();
-        //testCLI();
+        testCLI();
         //testRun();
         //testMeasure("/Users/Victor/Desktop/out/ER/");
         //evaluateCrossValidation("/Users/Victor/Desktop/out/imdbTrain3/CV/", "/Users/Victor/Desktop/cveImdbTrain3Const.txt");
@@ -155,7 +155,8 @@ public class App {
         //checkParameters();
         //System.out.println("oi");
         //testDReW();
-        loadResults();
+        //loadResults();
+        //testDReWReasoner(0);
     }
 
     private static void testCLI() throws FileNotFoundException {
@@ -184,7 +185,7 @@ public class App {
         };
 
         String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/args.txt").split("\n\n");
-        for (int i = 2; i < parameters.length; i++) {
+        for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split(" ");
             for (String argument : arguments) {
                 System.out.println(argument);
@@ -628,51 +629,28 @@ public class App {
         DReWReasoner dr;
         String samples;
         String negativeSamplesContent;
-        String owlFilePath = "/Users/Victor/Dropbox/dl.rules/sample.owl";
-        String dlpFilepath = "/Users/Victor/Dropbox/dl.rules/sample.dlp";
-        dlpFilepath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules.dlp";
-        String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/samples.dlp";
-
-        //Arity = 2
-        samplesFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/train1.f";
-        dlpFilepath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/all.yap";
+        String owlFilePath = "/Users/Victor/Desktop/results/poker_kb/pair/pair.owl";
+        String dlpFilepath = "/Users/Victor/Desktop/results/poker_kb/sample.dlp";
+        String samplesFilePath = "/Users/Victor/Desktop/results/poker_kb/pair/train1.f";
         negativeSamplesContent = FileContent.getStringFromFile("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/train1.n");
-        boolean isNetwork = false;
-        //isNetwork = true;
-        if (isNetwork) {
-            owlFilePath = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.owl";
-            dlpFilepath = "/Users/Victor/NetBeansProjects/drew-master/sample_data/network.dlp";
-            samples = "newnode(x1).\nnewnode(x2).";
-
-        } else {
-            samples = FileContent.getStringFromFile(samplesFilePath);
-            //samples = "flies(tweety).";
-        }
-        //String dlpContent = FileContent.getStringFromFile(dlpFilePath);
-        String[] filepaths = {
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/language.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/misc.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/systems.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/theory.yap",};
-
-        String dlpContent = FileContent.getStringFromFile(filepaths);
-        //String dlpContent = FileContent.getStringFromFile(dlpFilepath);
-        String templateContent = FileContent.getStringFromFile("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/template.dlp");
+        samples = FileContent.getStringFromFile(samplesFilePath);
+        String dlpContent = FileContent.getStringFromFile(dlpFilepath);
+        String templateContent = FileContent.getStringFromFile("/Users/Victor/Desktop/results/poker_kb/template.dlp");
+        
         dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent);
         dr.setOffset(offset);
         Set<Constant> individuals = new HashSet<>();
         Set<DataLogPredicate> predicates = new HashSet<>();
 
-        dr.loadIndividualsAndPredicates(individuals, predicates);
+        //dr.loadIndividualsAndPredicates(individuals, predicates);
         dr.init();
         dr.run();
 
         if (dr.getAnswerSetRules() == null || dr.getAnswerSetRules().size() < 1)
             return;
+        
         AnswerSetRule asr = dr.getAnswerSetRules().get(0);
-
+        
         String in = dlpContent + "\n" + asr.getRulesAsString();
 
         System.out.println(asr.getRulesAsString());
@@ -795,7 +773,9 @@ public class App {
                 //arg[4] = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules-with-rule.dlp";
                 //String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/f0.f";
                 //String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap";
-                String out = FileContent.getStringFromFile(arg[4]);// + "newnode(x1). newnode(x2).";//FileContent.getStringFromFile(samplesFilePath);
+                //String out = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/pair/pair.kb", "/Users/Victor/Desktop/rule.txt", arg[4]);// + "newnode(x1). newnode(x2).";//FileContent.getStringFromFile(samplesFilePath);
+                String out = FileContent.getStringFromFile("/Users/Victor/Desktop/sample.dlp", arg[4]);
+                //out += "\nnewnode(x1). newnode(x2).";
                 //arg[4] = "/Users/Victor/Desktop/lattesRules-with-rule.dlp";
                 System.out.println("My Sets");
                 DReWRLCLILiteral d = DReWRLCLILiteral.run(out, arg);
@@ -846,12 +826,6 @@ public class App {
         CLICV.main(arg);
     }
 
-//    public static void testCLI() throws ParseException, IOException, ReasoningMethodUnsupportedException {
-//        String[] arg = {"/Users/Victor/workspace/trunk/examples/arch/arch_owl.conf"};
-//        CLI.main(arg);
-//        //uff.dl.rules.CLI.main(arg); //Meu CLI, usando o ParcelPosNegLPRules
-//        //org.dllearner.cli.CLI.main(arg); //Do DL-Learner
-//    }
     public static void testGenerator() {
         VariableGenerator vg = new AlphabetCounter();
         //((AlphabetCounter) vg).setCount(475253);

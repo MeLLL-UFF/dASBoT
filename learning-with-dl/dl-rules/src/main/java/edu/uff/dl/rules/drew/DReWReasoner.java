@@ -41,6 +41,7 @@ import org.semanticweb.drew.dlprogram.model.Term;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -155,10 +156,10 @@ public class DReWReasoner implements Component {
                 //e = s;
 
                 e.init();
-                
+
                 System.out.println("Iniciar Geração da Regra: " + getTime());
                 System.out.println("");
-                int deep = 1;
+                int deep = 2;
                 System.out.println("Gerando regra com profundidade de variáveis: " + deep);
                 AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), deep, individialTemplate);
                 ar.setRecursive(recursiveRuleAllowed);
@@ -244,9 +245,9 @@ public class DReWReasoner implements Component {
         } catch (IOException ex) {
             Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         List<ProgramStatement> programs = getProgramStatements(dlpContent);
-        
+
         Clause c;
         SimplePredicate sp;
         Predicate p;

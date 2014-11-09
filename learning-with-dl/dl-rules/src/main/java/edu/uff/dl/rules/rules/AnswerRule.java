@@ -158,15 +158,9 @@ public class AnswerRule implements Component {
         s = new DataLogLiteral(example.getHead(), example.getTerms(), example.isNegative());
         checkForCorrectTypes(example, typeMap);
         s.setFailed(true);
-        //if ()
-        for (Term term : example.getTerms()) {
 
-        }
-        /*
-         if (!relevants.remove(s)) {
-         return null;
-         }
-         */
+        relevants.remove(s);
+         
         Map<String, List<List<TermType>>> constantsMap = template.getConstantMap();
         Map<String, Set<? extends Constant>> individualGroups = template.getIndividualsGroups();
         List<TermType> constantList;
@@ -339,22 +333,23 @@ public class AnswerRule implements Component {
 
         //getTransitivity(relevants);
         int count = transitivityDepth;
-        if (count == 0)
-            count = getTransitivity(relevants);
-        while (count > 0) {
-            if (transitivityDepth == 0) {
-                count = getTransitivity(relevants);
-            } else {
-                getTransitivity(relevants);
-                count--;
-            }
+        boolean allTransitivity = transitivityDepth == 0;
+        SafeRule sf;
 
+        while (count > 0 || allTransitivity) {
+            if (getTransitivity(relevants) == 0)
+                break;
+            
+            sf = new SafeRule(example, relevants);
+            relevants.retainAll(sf.getBody());
+            
+            count--;
         }
 
         if (!recursive) {
             return removeRecursion(example, relevants);
         }
-
+        
         return relevants;
     }
 
@@ -389,6 +384,7 @@ public class AnswerRule implements Component {
     private int getTransitivity(Collection<ConcreteLiteral> relevants) {
         List<ConcreteLiteral> append = new ArrayList<>();
         List<Term> t;
+        int count = 0;
 
         for (ConcreteLiteral pred : relevants) {
             for (ConcreteLiteral unc : answerSet) {
@@ -405,7 +401,7 @@ public class AnswerRule implements Component {
 
                 }
             }
-
+            count++;
         }
         relevants.addAll(append);
 
