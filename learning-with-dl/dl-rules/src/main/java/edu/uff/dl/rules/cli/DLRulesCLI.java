@@ -3,7 +3,9 @@
  */
 package edu.uff.dl.rules.cli;
 
+import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.DLExamplesRules;
 import edu.uff.dl.rules.rules.avaliation.CompressionMeasure;
 import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
@@ -19,7 +21,6 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
-import edu.uff.dl.rules.exception.TimeoutException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -68,6 +69,9 @@ public class DLRulesCLI {
     protected boolean refinement;
     protected boolean crossValidation;
     protected boolean recursiveRuleAllowed = true;
+
+    protected int depth;
+    protected double threshold;
 
     protected String[] args = DReWDefaultArgs.ARGS;
 
@@ -162,11 +166,17 @@ public class DLRulesCLI {
                 cvNumberOfFolds = Integer.parseInt(queue.remove());
             }
             
+            int depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
+            double threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
+
             DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positeveTrain, negativeTrain, outputDirectory, timeout, template, cvDirectory, cvPrefix, cvNumberOfFolds);
             dlrcli.setRule(rule);
             dlrcli.setRefinement(ref);
             dlrcli.setCrossValidation(cv);
             dlrcli.setRecursiveRuleAllowed(!noRec);
+            dlrcli.setDepth(depth);
+            dlrcli.setThreshold(threshold);
+            
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -193,11 +203,15 @@ public class DLRulesCLI {
         this.outputDirectory = outputDirectory;
         this.timeout = timeout;
 
+        this.depth = 0;
+        this.threshold = 0.0;
+        
         this.dlpContent = FileContent.getStringFromFile(dlpFilepaths);
         this.outER = outputDirectory + "ER" + "/";
         this.outRefinement = outputDirectory + "refinement/";
         this.outRefinementAll = outRefinement + "all/";
         this.outCV = outputDirectory + "CV" + "/";
+        
         createOutputDirectories();
 
         this.positiveTrainExample = FileContent.getStringFromFile(positiveTrainFilepath);
@@ -319,12 +333,15 @@ public class DLRulesCLI {
             int maxR = 0, minR = 0;
             Box<Long> begin = new Box<>(null), end = new Box(null);
             int size;
-            EvaluatedRule er;
+            EvaluatedRule er = null;
             EvaluatedRuleExample ere;
             File fOut;
             String ruleName;
+            List<ConcreteLiteral> examples;
+            ConcreteLiteral example;
             Time.getTime(begin);
             DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, positiveTrainExample, templateContent);
+            reasoner.setDepth(depth);
             reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
             reasoner.init();
 
@@ -355,16 +372,27 @@ public class DLRulesCLI {
                         count++;
                         System.out.println("It takes " + aux + "s to finish!");
                         er = run.getEvaluatedRule();
-                        ere = new EvaluatedRuleExample(er, run.getExamples().get(0));
-                        if (run.getEvaluatedRule() != null) {
-                            fOut = new File(outER + ruleName);
-                            ere.serialize(fOut);
-                        }
+
                     } else {
                         run.interrupt();
                         System.out.println("Stoped on " + timeout + "s!");
                     }
 
+                    if (er != null) {
+                        ere = new EvaluatedRuleExample(er, run.getExamples().get(0));
+                    } else {
+                        examples = run.getExamples();
+
+                        if (examples.size() == 1) {
+                            example = examples.get(0);
+                        } else {
+                            example = examples.get(run.getOffset());
+                        }
+                        ere = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, null, example);
+                    }
+
+                    fOut = new File(outER + ruleName);
+                    ere.serialize(fOut);
                 } catch (InterruptedException | FileNotFoundException | NullPointerException ex) {
                     System.out.println(ex.getClass() + ": " + ex.getMessage());
                 }
@@ -399,12 +427,12 @@ public class DLRulesCLI {
             redirectOutputStream(outRefinement + "statistics.txt");
 
             System.out.println("Begin time:\t" + Time.getTime(b));
+            System.out.println("Refinement Threshold: " + threshold);
             RuleMeasurer ruleMeasure = new LaplaceMeasure();
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
             EvaluatedRuleExample serializeRule;
-            double threshold = 0.01;
 
             File[] listFiles = (new File(outER)).listFiles();
             for (File file : listFiles) {
@@ -651,6 +679,42 @@ public class DLRulesCLI {
      */
     public void setRecursiveRuleAllowed(boolean recursiveRuleAllowed) {
         this.recursiveRuleAllowed = recursiveRuleAllowed;
+    }
+
+    /**
+     * Getter for the depth of the transitivity on the Expansion Answer Set.
+     *
+     * @return the depth of the transitivity.
+     */
+    public int getDepth() {
+        return depth;
+    }
+
+    /**
+     * Setter for the depth of the transitivity on the Expansion Answer Set.
+     *
+     * @param depth the depth of the transitivity.
+     */
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    /**
+     * Getter for the refinement threshold.
+     *
+     * @return the refinement threshold
+     */
+    public double getThreshold() {
+        return threshold;
+    }
+
+    /**
+     * Setter for the refinement threshold.
+     *
+     * @param threshold the refinement threshold
+     */
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
     }
 
 }

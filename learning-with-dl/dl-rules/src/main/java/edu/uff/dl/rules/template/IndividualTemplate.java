@@ -5,6 +5,7 @@ package edu.uff.dl.rules.template;
 
 import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.SimplePredicate;
+import static edu.uff.dl.rules.drew.DReWReasoner.PREFIX_SEPARATOR;
 import java.io.FileNotFoundException;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
@@ -381,6 +382,23 @@ public class IndividualTemplate implements TypeTemplate, Component {
     public void loadIndividualsAndPredicates(Set<Constant> individuals, Set<DataLogPredicate> predicates, DLProgram program) throws FileNotFoundException, ParseException, OWLOntologyCreationException {
         loadOntology(individuals, predicates);
         loadDLP(individuals, predicates, program);
+        removePredicatesPrefix(predicates);
+    }
+    
+    /**
+     * Remove the web prefix of the predicates.
+     *
+     * @param predicates the predicates
+     */
+    private void removePredicatesPrefix(Set<DataLogPredicate> predicates) {
+        String head;
+        for (DataLogPredicate dataLogPredicate : predicates) {
+            head = dataLogPredicate.getHead();
+            if (head.startsWith("<") && head.endsWith(">")) {
+                head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head.lastIndexOf(">"));
+            }
+            dataLogPredicate.setHead(head);
+        }
     }
 
     /**

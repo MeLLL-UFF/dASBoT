@@ -99,7 +99,7 @@ public class TopDownBoundedRefinement extends Refinement {
             System.out.println("Measure Increase: " + measureIncrease);
             System.out.println("");
             //} while (count < limit);
-        } while (Math.abs(measureIncrease) > threshold && count < limit);
+        } while (measureIncrease >= threshold && count < limit);
     }
 
     /**

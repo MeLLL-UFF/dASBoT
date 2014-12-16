@@ -6,11 +6,11 @@ package edu.uff.dl.rules.drew;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.SimplePredicate;
-import edu.uff.dl.rules.expansionset.ExpansionAnswerSet;
-import edu.uff.dl.rules.template.IndividualTemplate;
 import edu.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
+import edu.uff.dl.rules.expansionset.ExpansionAnswerSet;
 import edu.uff.dl.rules.rules.AnswerRule;
 import edu.uff.dl.rules.rules.AnswerSetRule;
+import edu.uff.dl.rules.template.IndividualTemplate;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
 import static edu.uff.dl.rules.util.Time.getTime;
@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -59,6 +60,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 @ComponentAnn(name = "DReWReasoner", shortName = "drewreas", version = 0.1)
 public class DReWReasoner implements Component {
 
+    public static final String PREFIX_SEPARATOR = "#";
+
     protected DReWRLCLILiteral drew;
     protected OWLOntology ontology;
     protected Set<Constant> individuals;
@@ -75,6 +78,8 @@ public class DReWReasoner implements Component {
 
     protected boolean recursiveRuleAllowed = true;
 
+    protected int depth;
+    
     private String[] arg;
 
     /**
@@ -87,6 +92,7 @@ public class DReWReasoner implements Component {
         this.predicates = new HashSet<>();
         this.examples = new HashSet<>();
         answerSetRules = new ArrayList<>();
+        depth = 0;
     }
 
     /**
@@ -157,11 +163,13 @@ public class DReWReasoner implements Component {
 
                 e.init();
 
+                System.out.println(e);
+
                 System.out.println("Iniciar Geração da Regra: " + getTime());
                 System.out.println("");
-                int deep = 2;
-                System.out.println("Gerando regra com profundidade de variáveis: " + deep);
-                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), deep, individialTemplate);
+                //depth = 4;
+                System.out.println("Gerando regra com profundidade de variáveis: " + depth);
+                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), depth, individialTemplate);
                 ar.setRecursive(recursiveRuleAllowed);
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
@@ -188,6 +196,23 @@ public class DReWReasoner implements Component {
         loadOntology(individuals, predicates);
         loadDLP(individuals, predicates);
         loadExample(individuals, predicates);
+        removePredicatesPrefix(predicates);
+    }
+
+    /**
+     * Remove the web prefix of the predicates.
+     *
+     * @param predicates the predicates
+     */
+    private void removePredicatesPrefix(Set<DataLogPredicate> predicates) {
+        String head;
+        for (DataLogPredicate dataLogPredicate : predicates) {
+            head = dataLogPredicate.getHead();
+            if (head.startsWith("<") && head.endsWith(">")) {
+                head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head.lastIndexOf(">"));
+            }
+            dataLogPredicate.setHead(head);
+        }
     }
 
     /**
@@ -240,12 +265,6 @@ public class DReWReasoner implements Component {
      * @param predicates a set of predicates to load in.
      */
     private void loadDLP(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
-        try {
-            FileContent.saveToFile("/Users/Victor/Desktop/content.dlp", dlpContent);
-        } catch (IOException ex) {
-            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         List<ProgramStatement> programs = getProgramStatements(dlpContent);
 
         Clause c;
@@ -301,6 +320,7 @@ public class DReWReasoner implements Component {
                 }
             }
         }
+        removePredicatesPrefix(predicates);
     }
 
     /**
@@ -574,5 +594,25 @@ public class DReWReasoner implements Component {
     public void setRecursiveRuleAllowed(boolean recursiveRuleAllowed) {
         this.recursiveRuleAllowed = recursiveRuleAllowed;
     }
+
+    /**
+     * Getter for the depth of the transitivity on the Expansion Answer Set.
+     *
+     * @return the depth of the transitivity.
+     */
+    public int getDepth() {
+        return depth;
+    }
+
+    /**
+     * Setter for the depth of the transitivity on the Expansion Answer Set.
+     *
+     * @param depth the depth of the transitivity.
+     */
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+    
+    
 
 }

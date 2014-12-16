@@ -14,6 +14,7 @@ import edu.uff.dl.rules.datalog.SimplePredicate;
 import edu.uff.dl.rules.drew.DReWRLCLI;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.rules.DLExamplesRules;
@@ -31,9 +32,9 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.CLIArgumentsParser;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
+import edu.uff.dl.rules.util.FoldFactory;
 import edu.uff.dl.rules.util.RuleFileNameComparator;
 import edu.uff.dl.rules.util.Time;
-import edu.uff.dl.rules.exception.TimeoutException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,14 +42,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -71,7 +76,7 @@ public class App {
     }
 
     private static void evaluateCrossValidation(String cvDirectory, String out) throws IOException {
-        CrossValidationEvaluator cve = new CrossValidationEvaluator(cvDirectory, "Fold", 5, new LaplaceMeasure());
+        CrossValidationEvaluator cve = new CrossValidationEvaluator(cvDirectory, "Fold", 4, new LaplaceMeasure());
         cve.run();
         System.out.println(cve);
         cve.saveToFile(out);
@@ -145,12 +150,68 @@ public class App {
 
     }
 
+    public static void measureAll() throws FileNotFoundException, IOException {
+        String[] folders = FileContent.getStringFromFile("/Users/Victor/Desktop/args.txt").split("\n");
+        double avgMeasure;
+        Map<String, Double> measuresMap = new HashMap<>(folders.length);
+        for (String folder : folders) {
+            avgMeasure = testMeasure(folder);
+            measuresMap.put(folder, avgMeasure);
+        }
+
+        List<Double> measures = new ArrayList<>(measuresMap.values());
+        Collections.sort(measures, (Double o1, Double o2) -> -1 * Double.compare(o1, o2));
+        double measure;
+        DecimalFormat df = new DecimalFormat("#0.0000000000000000");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < measures.size(); i++) {
+            if (i < measures.size() - 1 && Objects.equals(measures.get(i), measures.get(i + 1)))
+                continue;
+            measure = measures.get(i);
+            for (String file : measuresMap.keySet()) {
+                if (Objects.equals(measuresMap.get(file), measure)) {
+                    if (!Double.isNaN(measure)) {
+                        System.out.println("Measure: " + df.format(measure) + "\tFile: " + file);
+                        sb.append("Measure: ").append(df.format(measure)).append("\tFile: ").append(file).append("\n");
+                    }
+                }
+            }
+        }
+        FileContent.saveToFile("/Users/Victor/Desktop/statistics.txt", sb.toString().trim());
+    }
+
+    public static void createFolds() {
+        String inputFilepath = "/Users/Victor/Desktop/kb/pair/train1";
+        String outputFilepath = "/Users/Victor/Desktop/folds/train";
+        String numberOfFolds = "4";
+        String[] args = {inputFilepath, outputFilepath, numberOfFolds};
+        FoldFactory.main(args);
+    }
+    
     public static void main(String[] args) throws Exception {
+        //System.out.println("Test");
         //evaluateAll();
         testCLI();
+        //createFolds();
         //testRun();
-        //testMeasure("/Users/Victor/Desktop/out/ER/");
-        //evaluateCrossValidation("/Users/Victor/Desktop/out/imdbTrain3/CV/", "/Users/Victor/Desktop/cveImdbTrain3Const.txt");
+        //measureAll();
+        //testMeasure("/Users/Victor/Desktop/kb/out_mixxed/pair/refinement/");
+        
+        /*
+        String[][] baseDirectories = {
+            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep2Train"}, 
+            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep2Train"}, 
+            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep4Train"}, 
+            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep4Train"}
+        };
+            
+        for (String[] directory : baseDirectories) {
+            for (int i = 1; i < 5; i++) {
+                evaluateCrossValidation(directory[0] + i + "/CV/", directory[1] + i + ".txt");
+            }
+        }
+        */
+        
         //System.out.println("test");
         //checkParameters();
         //System.out.println("oi");
@@ -410,15 +471,15 @@ public class App {
         System.out.println(sb2.toString().trim());
     }
 
-    public static void testMeasure(String baseFilepath) throws FileNotFoundException {
+    public static double testMeasure(String baseFilepath) throws FileNotFoundException, IOException {
         File folder = new File(baseFilepath);
         File[] listOfFiles = folder.listFiles();
-        Set<EvaluatedRuleExample> ers = new TreeSet<>(new EvaluatedRuleComparator());
+        List<EvaluatedRuleExample> ers = new ArrayList<>();
         EvaluatedRuleExample er;
-        RuleMeasurer measure = new CompressionMeasure();
+        RuleMeasurer measure = new LaplaceMeasure();
         int best = Integer.MIN_VALUE;
         for (File file : listOfFiles) {
-            if (file.isFile() && !file.isHidden()) {
+            if (file.isFile() && !file.isHidden() && file.getName().startsWith("rule")) {
                 er = new EvaluatedRuleExample(file);
                 er.setRuleMeasureFunction(measure);
 
@@ -427,12 +488,37 @@ public class App {
                 //System.out.println("Rule: " + file.getName() + " Measure: " + er.getMeasure());
             }
         }
-        int count = 1;
-        for (EvaluatedRuleExample evaluatedRule : ers) {
-            System.out.println(count + ":\tRule: " + evaluatedRule.getSerializedFile().getName() + "\tMeasure: " + evaluatedRule.getMeasure() + "\tExamaple: " + evaluatedRule.getExample().toString());
-            count++;
-        }
 
+        Collections.sort(ers, new EvaluatedRuleComparator());
+
+        int count = 1;
+        String fileName = "baseFile.txt";
+        StringBuilder sb = new StringBuilder();
+        String msg;
+        System.out.println("Base folder: " + baseFilepath);
+        sb.append("Base folder: ").append(baseFilepath).append("\n");
+        double avgMeasure = 0;
+        DecimalFormat df = new DecimalFormat("#0.0000000000000000");
+        for (EvaluatedRuleExample evaluatedRule : ers) {
+            fileName = evaluatedRule.getSerializedFile().getName();
+            msg = count + ":\tRule: " + fileName;
+            if (Integer.parseInt(fileName.substring(fileName.indexOf("rule") + 4, fileName.indexOf(".txt"))) < 10) {
+                msg += "\t";
+            }
+            msg += "\tMeasure: " + df.format(evaluatedRule.getMeasure()) + "\tExamaple: " + evaluatedRule.getExample().toString();
+            sb.append(msg).append("\n");
+            System.out.println(msg);
+            count++;
+            avgMeasure += evaluatedRule.getMeasure();
+        }
+        String outPath = "/Users/Victor/Desktop/";
+        if (baseFilepath.startsWith(outPath)) {
+            baseFilepath = baseFilepath.substring(outPath.length());
+        }
+        System.out.println("");
+        FileContent.saveToFile(outPath + "evaluations/" + baseFilepath.replace("/", "_").trim() + "evaluation.txt", sb.toString().trim());
+
+        return avgMeasure / ers.size();
     }
 
     public static void testRun() throws FileNotFoundException, ComponentInitException {
@@ -636,7 +722,7 @@ public class App {
         samples = FileContent.getStringFromFile(samplesFilePath);
         String dlpContent = FileContent.getStringFromFile(dlpFilepath);
         String templateContent = FileContent.getStringFromFile("/Users/Victor/Desktop/results/poker_kb/template.dlp");
-        
+
         dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent);
         dr.setOffset(offset);
         Set<Constant> individuals = new HashSet<>();
@@ -648,9 +734,9 @@ public class App {
 
         if (dr.getAnswerSetRules() == null || dr.getAnswerSetRules().size() < 1)
             return;
-        
+
         AnswerSetRule asr = dr.getAnswerSetRules().get(0);
-        
+
         String in = dlpContent + "\n" + asr.getRulesAsString();
 
         System.out.println(asr.getRulesAsString());

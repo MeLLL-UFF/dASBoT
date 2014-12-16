@@ -6,6 +6,7 @@ package edu.uff.dl.rules.rules;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that generates a rule based on a example and a given Expansion Answer
@@ -52,8 +53,8 @@ public class AnswerRuleConstant extends AnswerRule {
     }
 
     @Override
-    protected List<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
-        List<? extends ConcreteLiteral> relevants = super.getRelevants(example);
+    protected Set<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
+        Set<? extends ConcreteLiteral> relevants = super.getRelevants(example);
 
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 

@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.math3.filter.MeasurementModel;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 

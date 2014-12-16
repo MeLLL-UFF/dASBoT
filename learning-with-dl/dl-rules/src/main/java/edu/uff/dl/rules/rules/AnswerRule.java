@@ -141,7 +141,7 @@ public class AnswerRule implements Component {
     public Rule getRule() {
         ConcreteLiteral example = pickExampleAtRandom();
 
-        List<? extends ConcreteLiteral> relevants = getRelevants(example);
+        Set<? extends ConcreteLiteral> relevants = getRelevants(example);
 
         System.out.println("Rule based on example: " + example);
         System.out.println("");
@@ -160,7 +160,7 @@ public class AnswerRule implements Component {
         s.setFailed(true);
 
         relevants.remove(s);
-         
+
         Map<String, List<List<TermType>>> constantsMap = template.getConstantMap();
         Map<String, Set<? extends Constant>> individualGroups = template.getIndividualsGroups();
         List<TermType> constantList;
@@ -210,7 +210,11 @@ public class AnswerRule implements Component {
 
         s.setFailed(false);
 
-        Rule r = new SafeRule(s, body);
+        Rule r;// = new SafeRule(example, relevants);
+        
+        //System.out.println(r.toString());
+        
+        r = new SafeRule(s, body);
 
         return r;
     }
@@ -311,11 +315,11 @@ public class AnswerRule implements Component {
      * @param example the example.
      * @return a list of relevant literals.
      */
-    protected List<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
+    protected Set<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
         if (this.answerSet == null || this.examples == null)
             return null;
 
-        List<ConcreteLiteral> relevants = new ArrayList<>();
+        Set<ConcreteLiteral> bodyLiterals = new LinkedHashSet<>();
 
         Set<Term> terms = new HashSet<>(example.getTerms());
 
@@ -324,11 +328,11 @@ public class AnswerRule implements Component {
                     && pred.getTerms().size() == terms.size()
                     && terms.containsAll(pred.getTerms())) {
 
-                relevants.add(pred);
+                bodyLiterals.add(pred);
             }
         }
 
-        if (relevants.isEmpty())
+        if (bodyLiterals.isEmpty())
             return null;
 
         //getTransitivity(relevants);
@@ -336,21 +340,31 @@ public class AnswerRule implements Component {
         boolean allTransitivity = transitivityDepth == 0;
         SafeRule sf;
 
+        Set<ConcreteLiteral> relevants = new LinkedHashSet<>(bodyLiterals);
+        
+        int increase, size;
         while (count > 0 || allTransitivity) {
-            if (getTransitivity(relevants) == 0)
+            increase = getTransitivity(relevants);
+            if (increase == 0)
+                break;
+
+            size = bodyLiterals.size();
+            bodyLiterals.addAll(relevants);
+            
+            if (size == bodyLiterals.size()) 
                 break;
             
             sf = new SafeRule(example, relevants);
             relevants.retainAll(sf.getBody());
-            
+
             count--;
         }
 
         if (!recursive) {
-            return removeRecursion(example, relevants);
+            return removeRecursion(example, bodyLiterals);
         }
-        
-        return relevants;
+
+        return bodyLiterals;
     }
 
     /**
@@ -361,7 +375,7 @@ public class AnswerRule implements Component {
      * @param relevants the set of relevant literals.
      * @return the filtered set.
      */
-    private List<? extends ConcreteLiteral> removeRecursion(ConcreteLiteral head, List<ConcreteLiteral> relevants) {
+    private Set<? extends ConcreteLiteral> removeRecursion(ConcreteLiteral head, Set<ConcreteLiteral> relevants) {
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 
         while (it.hasNext()) {

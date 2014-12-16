@@ -35,6 +35,10 @@ public class CLIArgumentsParser {
     public boolean rule = false;
     public boolean ref = false;
     public boolean cv = false;
+    public boolean noRec = false;
+
+    public int depth;
+    public double threshold;
 
     /**
      * The constructor with the command line arguments.
@@ -50,16 +54,13 @@ public class CLIArgumentsParser {
      * Method to parse the arguments and load the values into variables.
      */
     public void parser() {
+        String template = null;
         int numberOfDLPFiles = 0;
         Queue<String> queue = new LinkedList<>();
 
         for (String arg : args) {
             queue.add(arg);
         }
-
-        rule = false;
-        ref = false;
-        cv = false;
 
         while (queue.peek().startsWith("-")) {
             switch (queue.peek().toLowerCase()) {
@@ -71,6 +72,9 @@ public class CLIArgumentsParser {
                     break;
                 case "-cv":
                     cv = true;
+                    break;
+                case "-norec":
+                    noRec = true;
                     break;
             }
             queue.remove();
@@ -94,12 +98,12 @@ public class CLIArgumentsParser {
         }
 
         owlFilepath = queue.remove();
-        positiveTrainFilepath = queue.remove();
-        negativeTrainFilepath = queue.remove();
+        String positeveTrain = queue.remove();
+        String negativeTrain = queue.remove();
 
         if (queue.peek().toLowerCase().equals("-tp")) {
             queue.remove();
-            templateFilepath = queue.remove();
+            template = queue.remove();
         }
 
         outputDirectory = queue.remove();
@@ -109,9 +113,18 @@ public class CLIArgumentsParser {
 
         timeout = Integer.parseInt(queue.remove());
 
-        cvDirectory = queue.remove();
-        cvPrefix = queue.remove();
-        cvNumberOfFolds = Integer.parseInt(queue.remove());
+        cvDirectory = null;
+        cvPrefix = null;
+        cvNumberOfFolds = 0;
+
+        if (cv) {
+            cvDirectory = queue.remove();
+            cvPrefix = queue.remove();
+            cvNumberOfFolds = Integer.parseInt(queue.remove());
+        }
+
+        depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
+        threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
     }
 
     /**
@@ -149,7 +162,8 @@ public class CLIArgumentsParser {
         dlrcli.setRule(rule);
         dlrcli.setRefinement(ref);
         dlrcli.setCrossValidation(cv);
-        dlrcli.init();
+        dlrcli.setRecursiveRuleAllowed(!noRec);
+        //dlrcli.init();
         return dlrcli;
     }
 
