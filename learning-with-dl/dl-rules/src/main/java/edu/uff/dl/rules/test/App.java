@@ -18,13 +18,13 @@ import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.rules.DLExamplesRules;
-import edu.uff.dl.rules.rules.avaliation.CompressionMeasure;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleComparator;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.avaliation.LaplaceMeasure;
-import edu.uff.dl.rules.rules.avaliation.RuleEvaluator;
-import edu.uff.dl.rules.rules.avaliation.RuleMeasurer;
+import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
+import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.AlphabetCounter;
@@ -111,7 +111,7 @@ public class App {
     }
 
     private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
-        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args2.txt").split("\n\n");
+        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args.txt").split("\n\n");
 
         String dlpContent;
         String positiveExamples;
@@ -191,7 +191,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         //System.out.println("Test");
         //evaluateAll();
-        testCLI();
+        //testCLI();
         //createFolds();
         //testRun();
         //measureAll();
@@ -216,7 +216,7 @@ public class App {
         //checkParameters();
         //System.out.println("oi");
         //testDReW();
-        //loadResults();
+        loadResults();
         //testDReWReasoner(0);
     }
 

@@ -5,8 +5,8 @@ package edu.uff.dl.rules.cli.parallel;
 
 import edu.uff.dl.rules.drew.DReWReasoner;
 import edu.uff.dl.rules.rules.DLExamplesRules;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;

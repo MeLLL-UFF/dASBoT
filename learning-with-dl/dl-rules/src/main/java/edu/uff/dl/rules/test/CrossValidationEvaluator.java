@@ -4,8 +4,8 @@
 package edu.uff.dl.rules.test;
 
 import edu.stanford.nlp.io.PrintFile;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.avaliation.RuleMeasurer;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;

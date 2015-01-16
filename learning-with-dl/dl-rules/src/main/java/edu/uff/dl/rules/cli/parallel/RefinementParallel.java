@@ -3,10 +3,10 @@
  */
 package edu.uff.dl.rules.cli.parallel;
 
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.avaliation.LaplaceMeasure;
-import edu.uff.dl.rules.rules.avaliation.RuleMeasurer;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;

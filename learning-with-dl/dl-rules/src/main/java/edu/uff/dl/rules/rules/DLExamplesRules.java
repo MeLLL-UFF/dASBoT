@@ -3,7 +3,7 @@
  */
 package edu.uff.dl.rules.rules;
 
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;

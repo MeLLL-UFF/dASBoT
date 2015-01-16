@@ -3,12 +3,12 @@
  */
 package edu.uff.dl.rules.cli;
 
-import edu.uff.dl.rules.rules.avaliation.CompressionMeasure;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRule;
-import edu.uff.dl.rules.rules.avaliation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.avaliation.LaplaceMeasure;
-import edu.uff.dl.rules.rules.avaliation.RuleEvaluator;
-import edu.uff.dl.rules.rules.avaliation.RuleMeasurer;
+import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
+import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import static edu.uff.dl.rules.test.App.redirectOutputStream;
@@ -66,6 +66,8 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             dlrcli.setRule(ap.rule);
             dlrcli.setRefinement(ap.ref);
             dlrcli.setCrossValidation(ap.cv);
+            dlrcli.setDepth(ap.depth);
+            dlrcli.setThreshold(ap.threshold);
             dlrcli.init();
         } catch (ParseException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,7 +110,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
             EvaluatedRuleExample serializeRule = null;
-            double threshold = 0.01;
+            //double threshold = 0.01;
 
             EvaluatedRuleExample[] listRules = getERESorted();
             for (EvaluatedRuleExample genericRuleExample : listRules) {
