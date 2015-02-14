@@ -43,6 +43,8 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     private Set<Literal> negativeTrain;
     private StringBuilder fullDLPContent;
 
+    private int sideWayMoves;
+
     /**
      * Main function, used to start the program.
      *
@@ -68,6 +70,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             dlrcli.setCrossValidation(ap.cv);
             dlrcli.setDepth(ap.depth);
             dlrcli.setThreshold(ap.threshold);
+            dlrcli.setSideWayMoves(ap.sideWayMoves);
             dlrcli.init();
         } catch (ParseException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,6 +91,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * @param cvPrefix the fold's prefix name.
      * @param cvNumberOfFolds the number of folds.
      * @throws FileNotFoundException in case of any file path does not exist.
+     * @throws org.semanticweb.drew.dlprogram.parser.ParseException
      */
     public DLRulesHillClimbingCLI(Set<String> dlpFilepaths, String owlFilepath, String positiveTrainFilepath, String negativeTrainFilepath, String outputDirectory, int timeout, String templateFilepath, String cvDirectory, String cvPrefix, int cvNumberOfFolds) throws FileNotFoundException, ParseException {
         super(dlpFilepaths, owlFilepath, positiveTrainFilepath, negativeTrainFilepath, outputDirectory, timeout, templateFilepath, cvDirectory, cvPrefix, cvNumberOfFolds);
@@ -95,8 +99,9 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
         negativeTrain = FileContent.getExamplesLiterals(negativeTrainExample);
         fullDLPContent = new StringBuilder();
         fullDLPContent.append(dlpContent).append("\n");
+        sideWayMoves = -1;
     }
-    
+
     @Override
     protected void refinement() {
         double measure = 0, aux;
@@ -109,9 +114,11 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
+            EvaluatedRule er = new EvaluatedRule(null, positiveExamples.size(), negativeExamples.size(), 0, 0, ruleMeasure);
+            measure = er.getMeasure();
             EvaluatedRuleExample serializeRule = null;
             //double threshold = 0.01;
-
+            int sideMoves = 0;
             EvaluatedRuleExample[] listRules = getERESorted();
             for (EvaluatedRuleExample genericRuleExample : listRules) {
                 try {
@@ -158,14 +165,18 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                 }
                 if (serializeRule != null) {
                     aux = evaluateRule(serializeRule, ruleMeasure, measure);
-                    if (aux >= measure) {
+                    if (aux > measure) {
                         measure = aux;
+                        sideMoves = 0;
+                        if (serializeRule.getRule() != null)
+                            fullDLPContent.append(serializeRule.getRule().toString()).append("\n");
                     } else {
-                        break;
+                        sideMoves++;
+                        if (sideWayMoves > 0 && sideMoves > this.sideWayMoves)
+                            break;
                     }
                 }
-                if (serializeRule != null && serializeRule.getRule() != null)
-                    fullDLPContent.append(serializeRule.getRule().toString()).append("\n");
+
             }
         } catch (FileNotFoundException | ParseException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -177,13 +188,16 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     }
 
     /**
-     * Evaluate the current rule with all the previous rules to get a overall measure of the set of rules.
+     * Evaluate the current rule with all the previous rules to get a overall
+     * measure of the set of rules.
      * <br> Case can not infer the rule, returns the same measure.
+     *
      * @param rule the current rule.
      * @param ruleMeasure the measure function.
      * @param measure the previous measure.
      * @return the measure of the set of rules so far.
-     * @throws TimeoutException case not infer the rule, returns the same measure.
+     * @throws TimeoutException case not infer the rule, returns the same
+     * measure.
      */
     private double evaluateRule(EvaluatedRuleExample rule, RuleMeasurer ruleMeasure, double measure) throws TimeoutException {
         RuleEvaluator re = new RuleEvaluator(rule.getRule(), args, fullDLPContent.toString(), positiveTrain, negativeTrain);
@@ -195,7 +209,9 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     }
 
     /**
-     * Sort the rules based on the compression measure. {@link CompressionMeasure}
+     * Sort the rules based on the compression measure.
+     * {@link CompressionMeasure}
+     *
      * @return the sorted array of rules.
      * @throws FileNotFoundException in case a rule file could not be found.
      */
@@ -234,6 +250,14 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
         });
 
         return evaluatedRuleExamples;
+    }
+
+    public int getSideWayMoves() {
+        return sideWayMoves;
+    }
+
+    public void setSideWayMoves(int sideWayMoves) {
+        this.sideWayMoves = sideWayMoves;
     }
 
 }

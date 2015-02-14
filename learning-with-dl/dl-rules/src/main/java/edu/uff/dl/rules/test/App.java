@@ -36,8 +36,10 @@ import edu.uff.dl.rules.util.FoldFactory;
 import edu.uff.dl.rules.util.RuleFileNameComparator;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
@@ -54,6 +56,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -111,7 +114,7 @@ public class App {
     }
 
     private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
-        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args.txt").split("\n\n");
+        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args3.txt").split("\n\n");
 
         String dlpContent;
         String positiveExamples;
@@ -120,20 +123,25 @@ public class App {
 
         RuleMeasurer measurer = new LaplaceMeasure();
         String[] args = DReWDefaultArgs.ARGS;
-        args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         String[] indidualArgs;
         PrintStream stream = System.out;
         String out = null;
         for (String string : arguments) {
             try {
                 indidualArgs = string.split(" ");
+                if (indidualArgs[indidualArgs.length - 1].endsWith(".owl")) {
+                    args[2] = indidualArgs[indidualArgs.length - 1];
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length - 1));
+                } else {
+                    args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length));
+                }
+
                 outputDirectory = indidualArgs[0];
-                positiveExamples = FileContent.getStringFromFile(indidualArgs[1]);
-                negativeExamples = FileContent.getStringFromFile(indidualArgs[2]);
+                positiveExamples = indidualArgs[1];
+                negativeExamples = indidualArgs[2];
 
-                dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length));
-
-                out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("Version")).replace("/", "_") + "results.txt";
+                out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4).replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
                 ResultSet rs = new ResultSet(dlpContent, positiveExamples, negativeExamples, outputDirectory, measurer, args);
 
@@ -187,8 +195,119 @@ public class App {
         String[] args = {inputFilepath, outputFilepath, numberOfFolds};
         FoldFactory.main(args);
     }
-    
+
+    public static void loadArguments1() throws FileNotFoundException, IOException {
+        String[] paths = FileContent.getStringFromFile("/Users/Victor/Desktop/args.txt").trim().split("\n");
+
+        StringBuilder sb = new StringBuilder();
+
+        File[] subfiles;
+        File[] subsub;
+        for (int i = 0; i < paths.length; i++) {
+            String[] arguments = FileContent.getStringFromFile(paths[i] + "args.txt").trim().split("\n\n");
+            for (String argumment : arguments) {
+                sb.append(loadStringFromArgumment(argumment, paths[i]));
+                sb.append("\n");
+            }
+        }
+        FileContent.saveToFile("/Users/Victor/Desktop/args2.txt", sb.toString().trim());
+    }
+
+    public static String loadStringFromArgumment(String argumment, String rootPath) {
+        String[] split = argumment.split(" ");
+        String[] kbs;
+        String positives, negatives;
+        String origin;
+        int kbSize = 1;
+        int i = 0;
+        for (; i < split.length; i++) {
+            if (split[i].startsWith("-"))
+                continue;
+            kbSize = Integer.parseInt(split[i]) + 1;
+            break;
+        }
+        i++;
+
+        kbs = new String[kbSize];
+        for (int j = 0; j < kbs.length; j++) {
+            kbs[j] = split[i];
+            i++;
+        }
+
+        positives = split[i++];
+        negatives = split[i++];
+
+        if (split[i].startsWith("-"))
+            i += 2;
+
+        origin = split[i];
+        int index = origin.indexOf("/out") + 1;
+        origin = rootPath + origin.substring(index);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(origin);
+        sb.append(" ");
+
+        sb.append(positives);
+        sb.append(" ");
+
+        sb.append(negatives);
+        sb.append(" ");
+
+        for (String string : kbs) {
+            sb.append(string);
+            sb.append(" ");
+        }
+
+        return sb.toString().trim().replace("/Users/Victor/Desktop/kb/", rootPath);
+    }
+
+    public static void loadArguments() throws FileNotFoundException, IOException {
+        String[] paths = FileContent.getStringFromFile("/Users/Victor/Desktop/args.txt").trim().split("\n");
+
+        StringBuilder sb = new StringBuilder();
+
+        File[] subfiles;
+        File root;
+        String[] kb;
+        for (int i = 0; i < paths.length; i++) {
+            root = new File(paths[i]);
+            subfiles = root.listFiles((File pathname) -> (pathname.isDirectory() && pathname.getName().startsWith("out")));
+            String[] arguments = FileContent.getStringFromFile(paths[i] + "args.txt").trim().split("\n\n");
+            for (File file : subfiles) {
+                for (String argumment : arguments) {
+                    sb.append(file.getAbsolutePath()).append("/");
+                    sb.append(" ");
+                    int kbs = 1;
+                    Scanner s = new Scanner(argumment);
+                    while (s.hasNext()) {
+                        try {
+                            kbs = Integer.parseInt(s.next());
+                            break;
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    kb = new String[kbs + 1];
+                    for (int j = 0; j < kb.length; j++) {
+                        kb[j] = s.next();
+                    }
+                    sb.append(s.next()).append(" ");
+                    sb.append(s.next()).append(" ");
+                    for (int j = 0; j < kb.length; j++) {
+                        sb.append(kb[j]).append(" ");
+                    }
+                }
+                sb.append("\n");
+            }
+
+        }
+        FileContent.saveToFile("/Users/Victor/Desktop/args2.txt", sb.toString().trim());
+    }
+
     public static void main(String[] args) throws Exception {
+        //loadArguments1();
+
         //System.out.println("Test");
         //evaluateAll();
         //testCLI();
@@ -196,28 +315,27 @@ public class App {
         //testRun();
         //measureAll();
         //testMeasure("/Users/Victor/Desktop/kb/out_mixxed/pair/refinement/");
-        
         /*
-        String[][] baseDirectories = {
-            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep2Train"}, 
-            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep2Train"}, 
-            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep4Train"}, 
-            {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep4Train"}
-        };
+         String[][] baseDirectories = {
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep2Train"}, 
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep2Train"}, 
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep4Train"}, 
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep4Train"}
+         };
             
-        for (String[] directory : baseDirectories) {
-            for (int i = 1; i < 5; i++) {
-                evaluateCrossValidation(directory[0] + i + "/CV/", directory[1] + i + ".txt");
-            }
-        }
-        */
-        
+         for (String[] directory : baseDirectories) {
+         for (int i = 1; i < 5; i++) {
+         evaluateCrossValidation(directory[0] + i + "/CV/", directory[1] + i + ".txt");
+         }
+         }
+         */
         //System.out.println("test");
         //checkParameters();
         //System.out.println("oi");
-        //testDReW();
-        loadResults();
+        testDReW();
+        //loadResults();
         //testDReWReasoner(0);
+        //System.out.println("Main");
     }
 
     private static void testCLI() throws FileNotFoundException {
@@ -245,7 +363,7 @@ public class App {
             "5"
         };
 
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/args.txt").split("\n\n");
+        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/args3.txt").split("\n");
         for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split(" ");
             for (String argument : arguments) {
@@ -842,9 +960,9 @@ public class App {
         String[] arg = new String[7];
         arg[0] = "-rl";
         arg[1] = "-ontology";
-        arg[2] = "/Users/Victor/Dekstop/kb/sample.owl";
+        arg[2] = "/Users/Victor/Desktop/sample.owl";
         arg[3] = "-dlp";
-        arg[4] = "/Users/Victor/Desktop/kb/card.pl";
+        arg[4] = "/Users/Victor/Desktop/kb.dlp";
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
         boolean printMySets = true;
@@ -860,13 +978,12 @@ public class App {
                 //String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/f0.f";
                 //String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap";
                 //String out = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/pair/pair.kb", "/Users/Victor/Desktop/rule.txt", arg[4]);// + "newnode(x1). newnode(x2).";//FileContent.getStringFromFile(samplesFilePath);
-                String out = FileContent.getStringFromFile("/Users/Victor/Desktop/sample.dlp", arg[4]);
+                String out = FileContent.getStringFromFile(arg[4]);
                 //out += "\nnewnode(x1). newnode(x2).";
                 //arg[4] = "/Users/Victor/Desktop/lattesRules-with-rule.dlp";
                 System.out.println("My Sets");
                 DReWRLCLILiteral d = DReWRLCLILiteral.run(out, arg);
                 //testDataLogLiteral(d.getLiteralModelHandler().getAnswerSets().get(0));
-
                 for (Set<Literal> l : d.getLiteralModelHandler().getAnswerSets()) {
                     /*
                      StringBuilder sb = new StringBuilder();
@@ -888,12 +1005,38 @@ public class App {
                     //System.out.println(ar.getRules().iterator().next().toString());
 
                 }
+                
+                Set<Literal> train = FileContent.getExamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Desktop/train1.f"));
+                int positive, negative, pCovered, nCovered;
+                positive = train.size();
+                pCovered = 0;
+                for (Literal literal : train) {
+                    if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
+                        System.out.println(literal);
+                        pCovered++;
+                    }
+                }
+                System.out.println("Positive Covered: " + pCovered);
+                System.out.println("\n");
+                train = FileContent.getExamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Desktop/train1.n"));
+                negative = train.size();
+                nCovered = 0;
+                for (Literal literal : train) {
+                    if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
+                        System.out.println(literal);
+                        nCovered++;
+                    }
+                }
+                System.out.println("Negative Covered: " + nCovered);
+                
+                EvaluatedRule er = new EvaluatedRule(null, positive, negative, pCovered, nCovered, new LaplaceMeasure());
+                System.out.println("\n\nMeasure: " + er.getMeasure());
             } else {
                 System.out.println("DReW's Sets");
                 DReWRLCLI.main(arg);
             }
         } catch (Exception ex) {
-            System.err.println(ex.getClass().getName());
+            ex.printStackTrace();
         }
     }
 

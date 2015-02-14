@@ -163,11 +163,11 @@ public class DReWReasoner implements Component {
 
                 e.init();
 
-                System.out.println(e);
+                //System.out.println(e);
 
                 System.out.println("Iniciar Geração da Regra: " + getTime());
                 System.out.println("");
-                //depth = 4;
+                depth = 1;
                 System.out.println("Gerando regra com profundidade de variáveis: " + depth);
                 AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), depth, individialTemplate);
                 ar.setRecursive(recursiveRuleAllowed);

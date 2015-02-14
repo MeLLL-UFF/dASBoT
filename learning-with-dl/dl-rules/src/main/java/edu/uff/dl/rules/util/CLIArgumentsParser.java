@@ -39,6 +39,7 @@ public class CLIArgumentsParser {
 
     public int depth;
     public double threshold;
+    public int sideWayMoves;
 
     /**
      * The constructor with the command line arguments.
@@ -125,6 +126,7 @@ public class CLIArgumentsParser {
 
         depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
         threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
+        sideWayMoves = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
     }
 
     /**

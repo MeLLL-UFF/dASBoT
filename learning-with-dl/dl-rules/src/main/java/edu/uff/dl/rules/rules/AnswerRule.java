@@ -214,7 +214,7 @@ public class AnswerRule implements Component {
         
         //System.out.println(r.toString());
         
-        r = new SafeRule(s, body);
+         r = new SafeRule(s, body);
 
         return r;
     }

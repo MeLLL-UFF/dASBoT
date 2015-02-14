@@ -85,7 +85,7 @@ public class SafeRule extends Rule {
         }
 
         for (ConcreteLiteral con : copy) {
-            if (safeTerms.containsAll(con.getTerms())) {
+            if (safeTerms.containsAll(con.getTerms()) && ! horn.getHead().equals(con.getHead())) {
                 result.add(con);
             }
         }

@@ -165,7 +165,7 @@ public class DLRulesCLI {
                 cvPrefix = queue.remove();
                 cvNumberOfFolds = Integer.parseInt(queue.remove());
             }
-            
+
             int depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
             double threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
 
@@ -176,7 +176,7 @@ public class DLRulesCLI {
             dlrcli.setRecursiveRuleAllowed(!noRec);
             dlrcli.setDepth(depth);
             dlrcli.setThreshold(threshold);
-            
+
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,13 +205,13 @@ public class DLRulesCLI {
 
         this.depth = 0;
         this.threshold = 0.0;
-        
+
         this.dlpContent = FileContent.getStringFromFile(dlpFilepaths);
         this.outER = outputDirectory + "ER" + "/";
         this.outRefinement = outputDirectory + "refinement/";
         this.outRefinementAll = outRefinement + "all/";
         this.outCV = outputDirectory + "CV" + "/";
-        
+
         createOutputDirectories();
 
         this.positiveTrainExample = FileContent.getStringFromFile(positiveTrainFilepath);
@@ -435,7 +435,11 @@ public class DLRulesCLI {
             EvaluatedRuleExample serializeRule;
 
             File[] listFiles = (new File(outER)).listFiles();
+            String eqvFile = "/Users/Victor/Desktop/ER" + outER.substring(outER.length() - 5, outER.length() - 4) + "/";
             for (File file : listFiles) {
+                if (!new File(eqvFile + file.getName()).exists()) {
+                    continue;
+                }
                 if (file.isFile() && file.getName().startsWith("rule") && file.getName().endsWith(".txt")) {
                     try {
                         System.out.println(Time.getTime(b));
@@ -447,7 +451,6 @@ public class DLRulesCLI {
                         Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
                         r.start();
                         r.join();
-
                         String fileName = file.getName();
                         fileName = fileName.substring(0, fileName.lastIndexOf('.'));
                         String outPath = outRefinementAll + fileName + "_";
@@ -479,7 +482,7 @@ public class DLRulesCLI {
                         dif /= 1000;
                         System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                         System.out.println("\n");
-                    } catch (FileNotFoundException | InterruptedException ex) {
+                    } catch (FileNotFoundException | InterruptedException | NullPointerException ex) {
                         Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

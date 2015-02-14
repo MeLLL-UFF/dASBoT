@@ -50,6 +50,7 @@ public class ResultSet {
 
     private int negatives;
     private int negativesCovered;
+    private int maxSideWayMovements = -1;
 
     public ResultSet(String dlpContent, String positiveExamples, String negativeExamples, String outputDirectory, RuleMeasurer measurer, String[] args) throws FileNotFoundException, ParseException {
         this.dlpContent = dlpContent;
@@ -58,7 +59,7 @@ public class ResultSet {
         this.outputDirectory = outputDirectory;
         this.measurer = measurer;
         this.args = args;
-        this.refinementStatistics = FileContent.getStringFromFile(outputDirectory + "/refinement/statistics.txt");
+        this.refinementStatistics = FileContent.getStringFromFile(outputDirectory + "refinement/statistics.txt");
         loadRules();
         loadResults();
     }
@@ -89,43 +90,93 @@ public class ResultSet {
         long time = 0;
 
         int count = 0;
-        double measure = threshold + 1, newMeasure = 0;
+        double measure = 0.0, newMeasure;
+
+        try {
+            Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveExamples));
+            Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeExamples));
+            EvaluatedRule er = new EvaluatedRule(null, posExamples.size(), negExamples.size(), 0, 0, measurer);
+            measure = er.getMeasure();
+        } catch (Exception e) {
+
+        }
 
         EvaluatedRuleExample ere;
         File file;
         Set<ConcreteLiteral> literals = new HashSet<>();
-        while (Math.abs(measure - newMeasure) > threshold && !evaluatedRuleExamples.isEmpty()) {
-            measure = newMeasure;
+        int sideMovements = 0;
+
+        while (!evaluatedRuleExamples.isEmpty() && count < evaluatedRuleExamples.size()) {
             try {
                 file = new File(outputDirectory + "/refinement/" + evaluatedRuleExamples.get(count).getSerializedFile().getName());
+                ere = new EvaluatedRuleExample(file);
+                count++;
             } catch (Exception e) {
                 count++;
                 continue;
             }
-            
-            ere = new EvaluatedRuleExample(file);
-            if (!sb.toString().contains(ere.getRule().toString().trim())) {
-                sb.append(ere.getRule()).append("\n");
-            }
 
-            newMeasure = compareRule(dlpContent + "\n" + sb.toString(), literals);
-            removeFromRulesList(literals);
-            count++;
             time += getFormatedTimeForRule(ere);
+            newMeasure = compareRule(dlpContent + "\n" + sb.toString() + "\n" + ere.getRule(), literals);
+
+            if (newMeasure - measure <= threshold) {
+                sideMovements++;
+                if (maxSideWayMovements > 0 && sideMovements > maxSideWayMovements) {
+                    break;
+                }
+            } else {
+                measure = newMeasure;
+                sideMovements = 0;
+                if (!sb.toString().contains(ere.getRule().toString().trim())) {
+                    sb.append(ere.getRule()).append("\n");
+                }
+                removeFromRulesList(literals);
+            }
         }
+
+//        while (Math.abs(measure - newMeasure) > threshold && !evaluatedRuleExamples.isEmpty()) {
+//            measure = newMeasure;
+//            try {
+//                file = new File(outputDirectory + "/refinement/" + evaluatedRuleExamples.get(count).getSerializedFile().getName());
+//            } catch (Exception e) {
+//                count++;
+//                continue;
+//            }
+//            
+//            ere = new EvaluatedRuleExample(file);
+//            if (!sb.toString().contains(ere.getRule().toString().trim())) {
+//                sb.append(ere.getRule()).append("\n");
+//            }
+//
+//            newMeasure = compareRule(dlpContent + "\n" + sb.toString(), literals);
+//            removeFromRulesList(literals);
+//            count++;
+//            time += getFormatedTimeForRule(ere);
+//        }
         System.out.println("\n");
         System.out.println(sb.toString());
-        System.out.println("\n");
+        System.out.println("\nTrain Measure:\t" + compareRule(dlpContent + "\n" + sb.toString(), literals));
         System.out.println("Positives: " + positives);
         System.out.println("Negatives: " + negatives);
         System.out.println("Covered positives: " + positivesCovered);
         System.out.println("Covered negatives: " + negativesCovered);
+
+        if (new File(positiveExamples.replace("train", "test")).exists() && new File(negativeExamples.replace("train", "test")).exists()) {
+            positiveExamples = positiveExamples.replace("train", "test");
+            negativeExamples = negativeExamples.replace("train", "test");
+            System.out.println("\nTest Measure:\t" + compareRule(dlpContent + "\n" + sb.toString(), literals));
+            System.out.println("Positives: " + positives);
+            System.out.println("Negatives: " + negatives);
+            System.out.println("Covered positives: " + positivesCovered);
+            System.out.println("Covered negatives: " + negativesCovered);
+        }
+
         System.out.println("Geração das regras:\t" + getGeneratedRulesTotalTime());
         System.out.println("Refinamento das regras:\t" + Time.getFormatedTime(time));
         System.out.println("Tempo total:\t\t" + Time.getFormatedTime(Time.getLongTime(getGeneratedRulesTotalTime()) + time));
     }
 
-    private double compareRule(String in, Set<ConcreteLiteral> literals) throws ParseException {
+    private double compareRule(String in, Set<ConcreteLiteral> literals) throws ParseException, FileNotFoundException {
         DReWRLCLILiteral drew = DReWRLCLILiteral.get(args);
         drew.setDLPContent(in);
         drew.go();
@@ -137,8 +188,8 @@ public class ResultSet {
             lits.addAll(set);
         }
 
-        Set<Literal> posExamples = FileContent.getExamplesLiterals(positiveExamples);
-        Set<Literal> negExamples = FileContent.getExamplesLiterals(negativeExamples);
+        Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveExamples));
+        Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeExamples));
 
         positives = posExamples.size();
         Set<Literal> covered = compareRuleWithExample(lits, posExamples);
@@ -191,6 +242,7 @@ public class ResultSet {
 
     private String getGeneratedRulesTotalTime() throws FileNotFoundException {
         String statistics = null;
+        String prefix = "Total time:";
         try {
             statistics = FileContent.getStringFromFile(outputDirectory + "/globalStatistics.txt");
             statistics = statistics.substring(statistics.indexOf(":") + 1, statistics.indexOf("\n")).trim();
@@ -202,7 +254,8 @@ public class ResultSet {
             }
         } catch (Exception e) {
             statistics = FileContent.getStringFromFile(outputDirectory + "/statistics.txt");
-            statistics = statistics.substring(statistics.indexOf("Total time:") + 1).trim();
+            int index = statistics.indexOf("Total time:") + 1 + prefix.length();
+            statistics = statistics.substring(index, statistics.indexOf("\n", index)).trim();
         }
 
         return statistics;

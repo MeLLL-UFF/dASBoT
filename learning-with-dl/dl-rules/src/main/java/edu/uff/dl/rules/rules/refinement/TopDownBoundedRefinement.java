@@ -100,6 +100,9 @@ public class TopDownBoundedRefinement extends Refinement {
             System.out.println("");
             //} while (count < limit);
         } while (measureIncrease >= threshold && count < limit);
+        if (measureIncrease <= 0) {
+            refinedRules.remove(count);
+        }
     }
 
     /**

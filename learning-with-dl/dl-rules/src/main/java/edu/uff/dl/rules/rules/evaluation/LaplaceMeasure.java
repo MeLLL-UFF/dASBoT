@@ -7,7 +7,7 @@ import edu.uff.dl.rules.rules.Rule;
 
 /**
  * Class to measure a rule based on the Laplace. The measure function is
- * <br><br> p / (p + n)<br><br>
+ * <br><br> (p + 1) / (p + n + 2)<br><br>
  * where:
  * <br> P is the number of positive examples.
  * <br> p is the number of covered positive examples.
