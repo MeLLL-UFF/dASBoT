@@ -22,6 +22,7 @@ import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.uff.dl.rules.rules.evaluation.F1ScoreMeasure;
 import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
@@ -114,14 +115,14 @@ public class App {
     }
 
     private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
-        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args3.txt").split("\n\n");
+        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args7.txt").split("\n\n");
 
         String dlpContent;
         String positiveExamples;
         String negativeExamples;
         String outputDirectory;
 
-        RuleMeasurer measurer = new LaplaceMeasure();
+        RuleMeasurer measurer = new F1ScoreMeasure();
         String[] args = DReWDefaultArgs.ARGS;
         String[] indidualArgs;
         PrintStream stream = System.out;
@@ -307,10 +308,10 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         //loadArguments1();
-
+        //loadResults();
         //System.out.println("Test");
         //evaluateAll();
-        //testCLI();
+        testCLI();
         //createFolds();
         //testRun();
         //measureAll();
@@ -332,7 +333,7 @@ public class App {
         //System.out.println("test");
         //checkParameters();
         //System.out.println("oi");
-        testDReW();
+        //testDReW();
         //loadResults();
         //testDReWReasoner(0);
         //System.out.println("Main");
@@ -363,7 +364,7 @@ public class App {
             "5"
         };
 
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/args3.txt").split("\n");
+        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/kb/args.txt").split("\n\n");
         for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split(" ");
             for (String argument : arguments) {
@@ -960,12 +961,32 @@ public class App {
         String[] arg = new String[7];
         arg[0] = "-rl";
         arg[1] = "-ontology";
-        arg[2] = "/Users/Victor/Desktop/sample.owl";
+        arg[2] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/sample.owl";
         arg[3] = "-dlp";
         arg[4] = "/Users/Victor/Desktop/kb.dlp";
+        arg[4] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/sample.owl";
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
+
+//        String[] input = {
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/ai.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/graphics.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/language.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/misc.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/systems.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/theory.yap"
+//        };
+        String examplePath = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.f";
+        String[] input = {
+            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb1.pl",
+            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb2.pl",
+            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb3.pl",
+            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb4.pl",
+            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.n"
+        };
+
         boolean printMySets = true;
+        String rules = "courseta(A, C) :- courseta(A, B), sameperson(C, C), student(C).";
         //String kb = "/Users/Victor/Desktop/kb.pl";
         try {
             //testDLProgram(arg[2], arg[4]);
@@ -978,11 +999,11 @@ public class App {
                 //String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/f0.f";
                 //String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap";
                 //String out = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/pair/pair.kb", "/Users/Victor/Desktop/rule.txt", arg[4]);// + "newnode(x1). newnode(x2).";//FileContent.getStringFromFile(samplesFilePath);
-                String out = FileContent.getStringFromFile(arg[4]);
+                String out = FileContent.getStringFromFile(input);
                 //out += "\nnewnode(x1). newnode(x2).";
                 //arg[4] = "/Users/Victor/Desktop/lattesRules-with-rule.dlp";
                 System.out.println("My Sets");
-                DReWRLCLILiteral d = DReWRLCLILiteral.run(out, arg);
+                DReWRLCLILiteral d = DReWRLCLILiteral.run(out + "\n" + rules, arg);
                 //testDataLogLiteral(d.getLiteralModelHandler().getAnswerSets().get(0));
                 for (Set<Literal> l : d.getLiteralModelHandler().getAnswerSets()) {
                     /*
@@ -1000,37 +1021,18 @@ public class App {
                      */
 
                     //AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet());
-                    System.out.println(l);
+                    //System.out.println(l);
                     //ar.init();
                     //System.out.println(ar.getRules().iterator().next().toString());
+                }
 
-                }
                 
-                Set<Literal> train = FileContent.getExamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Desktop/train1.f"));
-                int positive, negative, pCovered, nCovered;
-                positive = train.size();
-                pCovered = 0;
-                for (Literal literal : train) {
-                    if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
-                        System.out.println(literal);
-                        pCovered++;
-                    }
-                }
-                System.out.println("Positive Covered: " + pCovered);
-                System.out.println("\n");
-                train = FileContent.getExamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Desktop/train1.n"));
-                negative = train.size();
-                nCovered = 0;
-                for (Literal literal : train) {
-                    if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
-                        System.out.println(literal);
-                        nCovered++;
-                    }
-                }
-                System.out.println("Negative Covered: " + nCovered);
-                
-                EvaluatedRule er = new EvaluatedRule(null, positive, negative, pCovered, nCovered, new LaplaceMeasure());
-                System.out.println("\n\nMeasure: " + er.getMeasure());
+
+                System.out.println("Train:\n");
+                measureCovering(d, examplePath, examplePath.replace(".f", ".n"));
+
+                System.out.println("Test:\n");
+                measureCovering(d, examplePath.replace("train", "test"), examplePath.replace("train", "test").replace(".f", ".n"));
             } else {
                 System.out.println("DReW's Sets");
                 DReWRLCLI.main(arg);
@@ -1038,6 +1040,34 @@ public class App {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void measureCovering(DReWRLCLILiteral d, String positivePath, String negativePath) throws org.semanticweb.drew.dlprogram.parser.ParseException, FileNotFoundException {
+        Set<Literal> train = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positivePath));
+        int positive, negative, pCovered, nCovered;
+        positive = train.size();
+        pCovered = 0;
+        for (Literal literal : train) {
+            if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
+                //System.out.println(literal);
+                pCovered++;
+            }
+        }
+        System.out.println("Positive Covered: " + pCovered);
+        System.out.println("\n");
+
+        train = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativePath));
+        negative = train.size();
+        nCovered = 0;
+        for (Literal literal : train) {
+            if (d.getLiteralModelHandler().getAnswerSets().get(0).contains(literal)) {
+                //System.out.println(literal);
+                nCovered++;
+            }
+        }
+        System.out.println("Negative Covered: " + nCovered);
+        EvaluatedRule er = new EvaluatedRule(null, positive, negative, pCovered, nCovered, new LaplaceMeasure());
+        System.out.println("\n\nMeasure: " + er.getMeasure());
     }
 
     public static void testCLICV() throws ParseException, IOException, ReasoningMethodUnsupportedException {

@@ -393,7 +393,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
     private void removePredicatesPrefix(Set<DataLogPredicate> predicates) {
         String head;
         for (DataLogPredicate dataLogPredicate : predicates) {
-            head = dataLogPredicate.getHead();
+            head = dataLogPredicate.getPredicate();
             if (head.startsWith("<") && head.endsWith(">")) {
                 head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head.lastIndexOf(">"));
             }
@@ -543,7 +543,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
 
     @Override
     public Set<Clause> getTemplateFactsForPredicate(DataLogPredicate pred) {
-        if (!factsMap.containsKey(pred.getHead())) {
+        if (!factsMap.containsKey(pred.getPredicate())) {
             Set<Clause> answer = new LinkedHashSet<>();
 
             for (Clause fact : singleFacts) {
@@ -558,10 +558,10 @@ public class IndividualTemplate implements TypeTemplate, Component {
                 }
             }
 
-            factsMap.put(pred.getHead(), answer);
+            factsMap.put(pred.getPredicate(), answer);
         }
 
-        return factsMap.get(pred.getHead());
+        return factsMap.get(pred.getPredicate());
     }
 
     /**
@@ -575,7 +575,7 @@ public class IndividualTemplate implements TypeTemplate, Component {
     private boolean hasPredicateInClause(Clause c, DataLogPredicate p) {
         String cs = c.getHead().getPredicate().toString();
         cs = cs.substring(0, cs.lastIndexOf("/"));
-        return cs.equals(p.getHead());
+        return cs.equals(p.getPredicate());
     }
 
     @Override

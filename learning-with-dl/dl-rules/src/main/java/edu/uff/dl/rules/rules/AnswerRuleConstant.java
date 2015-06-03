@@ -59,7 +59,7 @@ public class AnswerRuleConstant extends AnswerRule {
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 
         while (it.hasNext()) {
-            if (it.next().getHead().equals(example.getHead())) {
+            if (it.next().getPredicate().equals(example.getPredicate())) {
                 it.remove();
             }
         }

@@ -7,6 +7,7 @@ import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
@@ -16,6 +17,7 @@ import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,7 +41,7 @@ public class ResultSet {
 
     private List<EvaluatedRuleExample> evaluatedRuleExamples;
 
-    private double threshold = 0.1;
+    private double threshold = 0.0;
     private RuleMeasurer measurer;
     private String[] args;
 
@@ -101,16 +103,21 @@ public class ResultSet {
 
         }
 
+        double initialMeasure = measure;
         EvaluatedRuleExample ere;
         File file;
         Set<ConcreteLiteral> literals = new HashSet<>();
         int sideMovements = 0;
+        List<EvaluatedRuleExample> resultRules = new ArrayList<>();
 
         while (!evaluatedRuleExamples.isEmpty() && count < evaluatedRuleExamples.size()) {
             try {
                 file = new File(outputDirectory + "/refinement/" + evaluatedRuleExamples.get(count).getSerializedFile().getName());
                 ere = new EvaluatedRuleExample(file);
                 count++;
+                if (containsEquivalentRule(resultRules, ere.getRule())) {
+                    continue;
+                }
             } catch (Exception e) {
                 count++;
                 continue;
@@ -127,9 +134,8 @@ public class ResultSet {
             } else {
                 measure = newMeasure;
                 sideMovements = 0;
-                if (!sb.toString().contains(ere.getRule().toString().trim())) {
-                    sb.append(ere.getRule()).append("\n");
-                }
+                resultRules.add(ere);
+                sb.append(ere.getRule()).append("\n");
                 removeFromRulesList(literals);
             }
         }
@@ -171,9 +177,22 @@ public class ResultSet {
             System.out.println("Covered negatives: " + negativesCovered);
         }
 
+        System.out.println("");
+        System.out.println("Avaliação Inicial: " + initialMeasure);
+        System.out.println("Limiar: " + threshold);
         System.out.println("Geração das regras:\t" + getGeneratedRulesTotalTime());
         System.out.println("Refinamento das regras:\t" + Time.getFormatedTime(time));
         System.out.println("Tempo total:\t\t" + Time.getFormatedTime(Time.getLongTime(getGeneratedRulesTotalTime()) + time));
+    }
+
+    private boolean containsEquivalentRule(List<EvaluatedRuleExample> rules, Rule rule) {
+        for (EvaluatedRuleExample r : rules) {
+            if (rule.isEquivalent(r.getRule())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private double compareRule(String in, Set<ConcreteLiteral> literals) throws ParseException, FileNotFoundException {

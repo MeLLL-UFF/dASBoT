@@ -85,7 +85,7 @@ public class ExpansionAnswerSet implements Component {
                 loadLiteralsFromFacts(expansionSet, facts);
             } else {
                 System.out.println(pred);
-                loadLiteralsFromFacts(expansionSet, facts, pred.getHead(), getGeneralPermuteMap(pred.getArity()));
+                loadLiteralsFromFacts(expansionSet, facts, pred.getPredicate(), getGeneralPermuteMap(pred.getArity()));
             }
         }
 

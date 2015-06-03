@@ -39,8 +39,8 @@ public class SafeRule extends Rule {
      * @param terms the rule's terms (body as a collection).
      */
     public SafeRule(ConcreteLiteral horn, Collection<? extends ConcreteLiteral> terms) {
-        this.horn = horn;
-        this.terms = filterForSafeLiterals(horn, terms);
+        this.head = horn;
+        this.body = filterForSafeLiterals(horn, terms);
     }
 
     /**
@@ -51,14 +51,14 @@ public class SafeRule extends Rule {
      * @param terms the rule's terms (body as an arbitrary number of arguments).
      */
     public SafeRule(ConcreteLiteral horn, ConcreteLiteral... terms) {
-        this.horn = horn;
+        this.head = horn;
         Collection<ConcreteLiteral> termsCollection = new LinkedHashSet<>();
 
         for (ConcreteLiteral term : terms) {
             termsCollection.add(term);
         }
 
-        this.terms = filterForSafeLiterals(horn, termsCollection);
+        this.body = filterForSafeLiterals(horn, termsCollection);
     }
 
     /**
@@ -85,7 +85,7 @@ public class SafeRule extends Rule {
         }
 
         for (ConcreteLiteral con : copy) {
-            if (safeTerms.containsAll(con.getTerms()) && ! horn.getHead().equals(con.getHead())) {
+            if (safeTerms.containsAll(con.getTerms()) && ! horn.getPredicate().equals(con.getPredicate())) {
                 result.add(con);
             }
         }

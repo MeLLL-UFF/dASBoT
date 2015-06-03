@@ -50,7 +50,7 @@ public class SimplePredicate implements DataLogPredicate, Component {
     }
 
     @Override
-    public String getHead() {
+    public String getPredicate() {
         return head;
     }
 

@@ -16,7 +16,7 @@ public interface DataLogPredicate extends Predicate {
      * Getter for the predicate's head.
      * @return the predicate's head.
      */
-    public String getHead();
+    public String getPredicate();
 
     /**
      * Setter for the predicate's head.

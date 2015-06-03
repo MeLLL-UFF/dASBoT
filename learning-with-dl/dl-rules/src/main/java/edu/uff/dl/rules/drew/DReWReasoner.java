@@ -127,6 +127,7 @@ public class DReWReasoner implements Component {
             drew.setDLPContent(getDlpAndExamples());
             drew.go();
 
+            templateContent = (templateContent == null ? "" : templateContent);
             individialTemplate = new IndividualTemplate(templateContent, dlpContent + examplesContent, FileContent.getStringFromFile(getOwlFilePath()));
             individialTemplate.init();
         } catch (ParseException | ComponentInitException | FileNotFoundException ex) {
@@ -207,7 +208,7 @@ public class DReWReasoner implements Component {
     private void removePredicatesPrefix(Set<DataLogPredicate> predicates) {
         String head;
         for (DataLogPredicate dataLogPredicate : predicates) {
-            head = dataLogPredicate.getHead();
+            head = dataLogPredicate.getPredicate();
             if (head.startsWith("<") && head.endsWith(">")) {
                 head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head.lastIndexOf(">"));
             }

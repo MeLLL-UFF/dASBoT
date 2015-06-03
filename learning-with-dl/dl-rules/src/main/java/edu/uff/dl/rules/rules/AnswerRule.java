@@ -155,7 +155,7 @@ public class AnswerRule implements Component {
         DataLogLiteral l;
 
         DataLogLiteral s;
-        s = new DataLogLiteral(example.getHead(), example.getTerms(), example.isNegative());
+        s = new DataLogLiteral(example.getPredicate(), example.getTerms(), example.isNegative());
         checkForCorrectTypes(example, typeMap);
         s.setFailed(true);
 
@@ -170,7 +170,7 @@ public class AnswerRule implements Component {
                 continue;
             }
 
-            constantList = getTermsWithConstants(constantsMap.get(con.getHead()), con, individualGroups);
+            constantList = getTermsWithConstants(constantsMap.get(con.getPredicate()), con, individualGroups);
             terms = new ArrayList<>(con.getArity());
             if (constantList == null) {
                 for (Term term : con.getTerms()) {
@@ -196,7 +196,7 @@ public class AnswerRule implements Component {
                 }
             }
 
-            l = new DataLogLiteral(con.getHead(), terms, con.isNegative());
+            l = new DataLogLiteral(con.getPredicate(), terms, con.isNegative());
             l.setFailed(con.hasFailed());
 
             body.add(l);
@@ -206,7 +206,7 @@ public class AnswerRule implements Component {
         for (Term term : example.getTerms()) {
             terms.add(new Constant(map.get(term)));
         }
-        s = new DataLogLiteral(example.getHead(), terms, example.isNegative());
+        s = new DataLogLiteral(example.getPredicate(), terms, example.isNegative());
 
         s.setFailed(false);
 
@@ -324,7 +324,7 @@ public class AnswerRule implements Component {
         Set<Term> terms = new HashSet<>(example.getTerms());
 
         for (ConcreteLiteral pred : answerSet) {
-            if (pred.isNegative() == example.isNegative() && pred.getHead().equals(example.getHead())
+            if (pred.isNegative() == example.isNegative() && pred.getPredicate().equals(example.getPredicate())
                     && pred.getTerms().size() == terms.size()
                     && terms.containsAll(pred.getTerms())) {
 
@@ -379,7 +379,7 @@ public class AnswerRule implements Component {
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 
         while (it.hasNext()) {
-            if (it.next().getHead().equals(head.getHead())) {
+            if (it.next().getPredicate().equals(head.getPredicate())) {
                 it.remove();
             }
         }

@@ -141,7 +141,7 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
             //if (this.failed != other.failed) return false;
             if (this.negative != other.isNegative())
                 return false;
-            if (!Objects.equals(this.head, other.getHead()))
+            if (!Objects.equals(this.head, other.getPredicate()))
                 return false;
             if (this.arity != other.getArity())
                 return false;
@@ -191,7 +191,7 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
         if (o instanceof DataLogPredicate) {
             final DataLogPredicate other = (DataLogPredicate) o;
             ret = 5;
-            if (!Objects.equals(this.head, other.getHead()))
+            if (!Objects.equals(this.head, other.getPredicate()))
                 ret++;
             if (this.arity != other.getArity())
                 ret++;
