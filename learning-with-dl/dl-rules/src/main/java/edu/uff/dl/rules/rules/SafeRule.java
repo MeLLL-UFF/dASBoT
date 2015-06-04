@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
@@ -35,12 +36,12 @@ public class SafeRule extends Rule {
      * Constructor with all needed parameters. This constructor will filter the
      * body's terms to ensure that the rule is safe.
      *
-     * @param horn the rule's horn (head).
+     * @param head the rule's horn (head).
      * @param terms the rule's terms (body as a collection).
      */
-    public SafeRule(ConcreteLiteral horn, Collection<? extends ConcreteLiteral> terms) {
-        this.head = horn;
-        this.body = filterForSafeLiterals(horn, terms);
+    public SafeRule(ConcreteLiteral head, Collection<? extends ConcreteLiteral> terms) {
+        this.head = head;
+        this.body = filterForSafeLiterals(head, terms);
     }
 
     /**
@@ -66,31 +67,43 @@ public class SafeRule extends Rule {
      * non-safe.
      *
      * @param horn the rule's horn.
-     * @param terms the rule's body.
+     * @param body the rule's body.
      * @return a set with only the terms that make the rule safe.
      */
-    private Set<ConcreteLiteral> filterForSafeLiterals(ConcreteLiteral horn, final Collection<? extends ConcreteLiteral> terms) {
-        Set<Term> safeTerms = new HashSet<>();
+    private Set<ConcreteLiteral> filterForSafeLiterals(ConcreteLiteral horn, final Collection<? extends ConcreteLiteral> body) {
+        Set<Constant> safeTerms = new HashSet<>();
         //safeTerms.addAll(horn.getTerms());
         Set<ConcreteLiteral> result = new LinkedHashSet<>();
-        List<? extends ConcreteLiteral> copy = new ArrayList<>(terms);
+        List<? extends ConcreteLiteral> copy = new ArrayList<>(body);
         Iterator<? extends ConcreteLiteral> it = copy.iterator();
         while (it.hasNext()) {
             ConcreteLiteral con = it.next();
             if (!con.hasFailed()) {
-                safeTerms.addAll(con.getTerms());
+                for (Term term : con.getTerms()) {
+                    safeTerms.add(new Constant(term.getName()));
+                }
+                //safeTerms.addAll(con.getTerms());
                 result.add(con);
                 it.remove();
             }
         }
 
         for (ConcreteLiteral con : copy) {
-            if (safeTerms.containsAll(con.getTerms()) && ! horn.getPredicate().equals(con.getPredicate())) {
+            if (containsAll(safeTerms, con.getTerms()) && ! horn.getPredicate().equals(con.getPredicate())) {
                 result.add(con);
             }
         }
 
         return result;
+    }
+    
+    private boolean containsAll(Set<Constant> safeTerms, List<Term> conTerms) {
+        Set<Constant> terms = new HashSet<>();
+        for (Term term : conTerms) {
+            terms.add(new Constant(term.getName()));
+        }
+        
+        return safeTerms.containsAll(terms);
     }
 
 }

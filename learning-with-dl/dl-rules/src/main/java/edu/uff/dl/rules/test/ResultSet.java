@@ -17,6 +17,7 @@ import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class ResultSet {
     private int negativesCovered;
     private int maxSideWayMovements = -1;
 
-    public ResultSet(String dlpContent, String positiveExamples, String negativeExamples, String outputDirectory, RuleMeasurer measurer, String[] args) throws FileNotFoundException, ParseException {
+    public ResultSet(String dlpContent, String positiveExamples, String negativeExamples, String outputDirectory, RuleMeasurer measurer, String[] args) throws IOException, ParseException {
         this.dlpContent = dlpContent;
         this.positiveExamples = positiveExamples;
         this.negativeExamples = negativeExamples;
@@ -66,7 +67,7 @@ public class ResultSet {
         loadResults();
     }
 
-    private void loadRules() throws FileNotFoundException {
+    private void loadRules() throws IOException {
         evaluatedRuleExamples = new LinkedList<>();
         File[] files = (new File(outputDirectory + "ER/")).listFiles();
         RuleMeasurer compression = new CompressionMeasure();

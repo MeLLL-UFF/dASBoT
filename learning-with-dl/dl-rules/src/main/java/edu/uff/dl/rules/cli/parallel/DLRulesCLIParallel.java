@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.cli.parallel;
 
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
@@ -17,9 +18,9 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
-import edu.uff.dl.rules.exception.TimeoutException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -356,7 +357,7 @@ public class DLRulesCLIParallel {
                         dif /= 1000;
                         System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                         System.out.println("\n");
-                    } catch (FileNotFoundException | InterruptedException ex) {
+                    } catch (IOException | InterruptedException ex) {
                         Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -389,7 +390,7 @@ public class DLRulesCLIParallel {
                     crossValidate(file, positiveFolds, negativeFolds);
                 }
             }
-        } catch (FileNotFoundException | ParseException | TimeoutException ex) {
+        } catch (IOException | ParseException | TimeoutException ex) {
             Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -406,7 +407,7 @@ public class DLRulesCLIParallel {
      * @throws ParseException In case of a file does not accord with the input
      * language.
      */
-    private void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds) throws FileNotFoundException, TimeoutException, ParseException {
+    private void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds) throws IOException, TimeoutException, ParseException {
         EvaluatedRuleExample cvRule = new EvaluatedRuleExample(ruleFile);
         EvaluatedRuleExample crossEvaluated;
         EvaluatedRule er;
@@ -443,7 +444,7 @@ public class DLRulesCLIParallel {
      * @throws FileNotFoundException in case of the ER output directory does not
      * exist.
      */
-    private void printMeasure() throws FileNotFoundException {
+    private void printMeasure() throws IOException {
         File folder = new File(outER);
         File[] listOfFiles = folder.listFiles();
         Set<EvaluatedRuleExample> ers = new TreeSet<>(new EvaluatedRuleComparator());

@@ -93,7 +93,7 @@ public class CrossValidationEvaluator implements Runnable {
                 index = Integer.parseInt(ruleName.substring(ruleName.indexOf(foldPrefix) + foldPrefix.length())) - 1;
                 ruleName = ruleName.substring(0, ruleName.indexOf(prefixSeparator));
                 insertMeasure(ruleName, index, evaluatedRuleExample.getMeasure());
-            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(CrossValidationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

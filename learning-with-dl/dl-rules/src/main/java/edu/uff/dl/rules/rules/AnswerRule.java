@@ -30,6 +30,7 @@ import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
+import org.semanticweb.drew.dlprogram.model.Variable;
 
 /**
  * Class that generates a rule based on a example and a given Expansion Answer
@@ -177,8 +178,7 @@ public class AnswerRule implements Component {
                     if (!map.containsKey(term)) {
                         map.put(term, v.getNextName());
                     }
-
-                    terms.add(new Constant(map.get(term)));
+                    terms.add(new Variable(map.get(term)));
                 }
             } else {
                 index = 0;
@@ -190,7 +190,7 @@ public class AnswerRule implements Component {
                             map.put(term, v.getNextName());
                         }
 
-                        terms.add(new Constant(map.get(term)));
+                        terms.add(new Variable(map.get(term)));
                     }
                     index++;
                 }
@@ -204,17 +204,16 @@ public class AnswerRule implements Component {
 
         terms = new ArrayList<>();
         for (Term term : example.getTerms()) {
-            terms.add(new Constant(map.get(term)));
+            terms.add(new Variable(map.get(term)));
         }
         s = new DataLogLiteral(example.getPredicate(), terms, example.isNegative());
 
         s.setFailed(false);
 
         Rule r;// = new SafeRule(example, relevants);
-        
+
         //System.out.println(r.toString());
-        
-         r = new SafeRule(s, body);
+        r = new SafeRule(s, body);
 
         return r;
     }
@@ -341,7 +340,7 @@ public class AnswerRule implements Component {
         SafeRule sf;
 
         Set<ConcreteLiteral> relevants = new LinkedHashSet<>(bodyLiterals);
-        
+
         int increase, size;
         while (count > 0 || allTransitivity) {
             increase = getTransitivity(relevants);
@@ -350,10 +349,10 @@ public class AnswerRule implements Component {
 
             size = bodyLiterals.size();
             bodyLiterals.addAll(relevants);
-            
-            if (size == bodyLiterals.size()) 
+
+            if (size == bodyLiterals.size())
                 break;
-            
+
             sf = new SafeRule(example, relevants);
             relevants.retainAll(sf.getBody());
 

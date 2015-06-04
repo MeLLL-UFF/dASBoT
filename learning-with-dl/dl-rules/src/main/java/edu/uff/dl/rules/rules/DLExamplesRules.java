@@ -109,7 +109,7 @@ public class DLExamplesRules extends Thread {
      * wrong.
      * @throws org.semanticweb.drew.dlprogram.parser.ParseException
      */
-    public void runDLRulesReasoner(int offset) throws ComponentInitException, FileNotFoundException, IOException, org.semanticweb.drew.dlprogram.parser.ParseException {
+    public void runDLRulesReasoner(int offset) throws ComponentInitException, FileNotFoundException, IOException, ParseException {
         reasoner.setOffset(offset);
         reasoner.run();
 

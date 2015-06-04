@@ -23,6 +23,7 @@ import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -388,12 +389,13 @@ public class DLRulesCLI {
                         } else {
                             example = examples.get(run.getOffset());
                         }
+                        FileContent.getRuleFromString(run.getAnwserSetRule().getAnswerRule().getRule().toString());
                         ere = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, null, example);
                     }
 
                     fOut = new File(outER + ruleName);
                     ere.serialize(fOut);
-                } catch (InterruptedException | FileNotFoundException | NullPointerException ex) {
+                } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
                     System.out.println(ex.getClass() + ": " + ex.getMessage());
                 }
             }
@@ -408,7 +410,7 @@ public class DLRulesCLI {
                 System.out.println("Total time:\t" + Time.getDiference(begin.getContent(), end.getContent()));
                 System.out.println("\n");
                 printMeasure();
-            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ComponentInitException ex) {
@@ -435,11 +437,11 @@ public class DLRulesCLI {
             EvaluatedRuleExample serializeRule;
 
             File[] listFiles = (new File(outER)).listFiles();
-            String eqvFile = "/Users/Victor/Desktop/ER" + outER.substring(outER.length() - 5, outER.length() - 4) + "/";
+//            String eqvFile = "/Users/Victor/Desktop/ER" + outER.substring(outER.length() - 5, outER.length() - 4) + "/";
             for (File file : listFiles) {
-                if (!new File(eqvFile + file.getName()).exists()) {
-                    continue;
-                }
+//                if (!new File(eqvFile + file.getName()).exists()) {
+//                    continue;
+//                }
                 if (file.isFile() && file.getName().startsWith("rule") && file.getName().endsWith(".txt")) {
                     try {
                         System.out.println(Time.getTime(b));
@@ -482,7 +484,7 @@ public class DLRulesCLI {
                         dif /= 1000;
                         System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                         System.out.println("\n");
-                    } catch (FileNotFoundException | InterruptedException | NullPointerException ex) {
+                    } catch (IOException | InterruptedException | NullPointerException ex) {
                         Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -521,7 +523,7 @@ public class DLRulesCLI {
                     crossValidate(file, positiveFolds, negativeFolds);
                 }
             }
-        } catch (FileNotFoundException | ParseException | TimeoutException ex) {
+        } catch (IOException | ParseException | TimeoutException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("");
@@ -541,7 +543,7 @@ public class DLRulesCLI {
      * @throws ParseException In case of a file does not accord with the input
      * language.
      */
-    protected void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds) throws FileNotFoundException, TimeoutException, ParseException {
+    protected void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds) throws IOException, TimeoutException, ParseException {
         Box<Long> b = new Box<>(null), e = new Box(null);
         EvaluatedRuleExample cvRule = new EvaluatedRuleExample(ruleFile);
         EvaluatedRuleExample crossEvaluated;
@@ -581,7 +583,7 @@ public class DLRulesCLI {
      * @throws FileNotFoundException in case of the ER output directory does not
      * exist.
      */
-    protected void printMeasure() throws FileNotFoundException {
+    protected void printMeasure() throws IOException {
         File folder = new File(outER);
         File[] listOfFiles = folder.listFiles();
         Set<EvaluatedRuleExample> ers = new TreeSet<>(new EvaluatedRuleComparator());

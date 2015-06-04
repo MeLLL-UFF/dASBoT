@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.cli;
 
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
@@ -16,10 +17,10 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.CLIArgumentsParser;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
-import edu.uff.dl.rules.exception.TimeoutException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -178,7 +179,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                 }
 
             }
-        } catch (FileNotFoundException | ParseException ex) {
+        } catch (IOException | ParseException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -216,7 +217,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * @throws FileNotFoundException in case a rule file could not be found.
      */
     @SuppressWarnings("Convert2Lambda")
-    private EvaluatedRuleExample[] getERESorted() throws FileNotFoundException {
+    private EvaluatedRuleExample[] getERESorted() throws IOException {
         @SuppressWarnings("Convert2Lambda")
         File[] erRules = (new File(outER)).listFiles(new FilenameFilter() {
 

@@ -53,7 +53,7 @@ public class EvaluatedRule implements Serializable<EvaluatedRule> {
      * @param file the file.
      * @throws FileNotFoundException in case the file does not exists.
      */
-    public EvaluatedRule(File file) throws FileNotFoundException {
+    public EvaluatedRule(File file) throws IOException {
         this.serializedFile = file;
         EvaluatedRule e = deserialize(serializedFile);
 
@@ -193,7 +193,7 @@ public class EvaluatedRule implements Serializable<EvaluatedRule> {
     }
 
     @Override
-    public EvaluatedRule deserialize(File file) throws FileNotFoundException {
+    public EvaluatedRule deserialize(File file) throws IOException {
         String fileContent = FileContent.getStringFromFile(file);
         EvaluatedRule er = deserialize(fileContent);
         er.serializedFile = file;

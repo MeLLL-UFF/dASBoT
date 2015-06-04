@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.dllearner.core.ComponentAnn;
+import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 import org.semanticweb.drew.dlprogram.model.Term;
+import org.semanticweb.drew.dlprogram.model.Variable;
 
 /**
  * A DataLog instantiated literal.
@@ -52,6 +54,7 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
 
     /**
      * Create a instance of {@link DataLogLiteral} from a {@link Literal}.
+     *
      * @param lit the {@link Literal} to base the instance.
      * @return a {@link DataLogLiteral} from a {@link Literal}.
      */
@@ -66,9 +69,12 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
     }
 
     /**
-     * Create a list of {@link DataLogLiteral} from a collection of {@link Literal}.
+     * Create a list of {@link DataLogLiteral} from a collection of
+     * {@link Literal}.
+     *
      * @param lit the collection of {@link Literal} to base the list.
-     * @return a list of {@link DataLogLiteral} from a collection of {@link Literal}.
+     * @return a list of {@link DataLogLiteral} from a collection of
+     * {@link Literal}.
      */
     public static List<ConcreteLiteral> getListOfLiterals(Collection<? extends Literal> lit) {
         List<ConcreteLiteral> resp = new ArrayList<>();
@@ -81,9 +87,12 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
     }
 
     /**
-     * Create a set of {@link DataLogLiteral} from a collection of {@link Literal}.
+     * Create a set of {@link DataLogLiteral} from a collection of
+     * {@link Literal}.
+     *
      * @param lit the collection of {@link Literal} to base the list.
-     * @return a set of {@link DataLogLiteral} from a collection of {@link Literal}.
+     * @return a set of {@link DataLogLiteral} from a collection of
+     * {@link Literal}.
      */
     public static Set<ConcreteLiteral> getSetOfLiterals(Collection<? extends Literal> lit) {
         Set<ConcreteLiteral> resp = new HashSet<>();
@@ -218,9 +227,18 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
         sb.append("(");
 
         for (int i = 0; i < terms.size(); i++) {
-            sb.append(terms.get(i).getName());
-            if (i < terms.size() - 1) {
-                sb.append(", ");
+            if (terms.get(i) instanceof Constant) {
+                sb.append("\"");
+                sb.append(terms.get(i).getName());
+                sb.append("\"");
+                if (i < terms.size() - 1) {
+                    sb.append(", ");
+                }
+            } else {
+                sb.append(terms.get(i).getName());
+                if (i < terms.size() - 1) {
+                    sb.append(", ");
+                }
             }
         }
 
@@ -230,7 +248,9 @@ public class DataLogLiteral extends SimplePredicate implements ConcreteLiteral, 
 
     /**
      * Clones the literal.
-     * @return a new instance of a {@link DataLogLiteral} that is a copy of this literal.
+     *
+     * @return a new instance of a {@link DataLogLiteral} that is a copy of this
+     * literal.
      */
     @SuppressWarnings({"CloneDeclaresCloneNotSupported", "CloneDoesntCallSuperClone"})
     @Override

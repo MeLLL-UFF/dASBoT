@@ -4,7 +4,7 @@
 package edu.uff.dl.rules.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Interface to describe a class that can be serialized into a file.
@@ -20,7 +20,7 @@ public interface Serializable<T> {
      * @param file the file.
      * @throws FileNotFoundException in case something goes wrong with the file.
      */
-    public void serialize(File file) throws FileNotFoundException;
+    public void serialize(File file) throws IOException;
 
     /**
      * Method to deserialize the class from a file.
@@ -29,6 +29,6 @@ public interface Serializable<T> {
      * @return the deserialized class.
      * @throws FileNotFoundException in case something goes wrong with the file.
      */
-    public T deserialize(File file) throws FileNotFoundException;
+    public T deserialize(File file) throws IOException;
 
 }

@@ -54,7 +54,7 @@ public class EvaluatedRuleExample extends EvaluatedRule {
      * @param file the file.
      * @throws FileNotFoundException in case the file does not exists.
      */
-    public EvaluatedRuleExample(File file) throws FileNotFoundException {
+    public EvaluatedRuleExample(File file) throws IOException {
         this.serializedFile = file;
         EvaluatedRuleExample e = deserialize(serializedFile);
 
@@ -122,13 +122,21 @@ public class EvaluatedRuleExample extends EvaluatedRule {
     }
 
     @Override
-    public EvaluatedRuleExample deserialize(File file) throws FileNotFoundException {
+    public EvaluatedRuleExample deserialize(File file) throws IOException {
         String serializedRule = "";
         int[] ints = new int[4];
         Scanner in = new Scanner(file);
 
         String literalLine = in.nextLine();
-        ConcreteLiteral serializedExample = FileContent.getLiteralFromString(literalLine);
+        ConcreteLiteral serializedExample;
+        if (!literalLine.endsWith(".")) {
+            literalLine += ".";
+        }
+        try {
+            serializedExample = FileContent.getLiteralFromString(literalLine);
+        } catch (ParseException ex) {
+            throw new IOException("Malformed rule file!");
+        }
 
         for (int i = 0; i < ints.length; i++) {
             ints[i] = in.nextInt();

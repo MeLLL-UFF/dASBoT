@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +24,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;
-import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
 import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
-import org.semanticweb.drew.dlprogram.model.Term;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
@@ -187,27 +184,19 @@ public class FileContent {
      * @param literalLine the {@link String}.
      * @return the {@link ConcreteLiteral}.
      */
-    public static ConcreteLiteral getLiteralFromString(String literalLine) {
-        int indexOfFirstParenteses = literalLine.indexOf("(");
-        String termLine = literalLine.substring(indexOfFirstParenteses + 1, literalLine.lastIndexOf(")"));
-        String[] termsString = termLine.split(",");
-        List<Term> terms = new ArrayList<>(termsString.length);
-        literalLine = literalLine.substring(0, indexOfFirstParenteses);
+    public static ConcreteLiteral getLiteralFromString(String literalLine) throws ParseException {
+        List<ProgramStatement> programStatements = getProgramStatements(literalLine);
 
-        boolean negative = literalLine.startsWith("-");
-        if (negative) {
-            literalLine = literalLine.substring(1);
+        Clause c;
+        for (ProgramStatement ps : programStatements) {
+            if (ps.isClause() && (c = ps.asClause()).isFact()) {
+                String predicate = c.getHead().getPredicate().toString();
+                predicate = predicate.substring(0, predicate.indexOf("/"));
+                return new DataLogLiteral(predicate, c.getHead().getTerms(), c.getHead().isNegative());
+            }
         }
 
-        int j = 0;
-        for (String term : termsString) {
-            terms.add(new Constant(term.trim()));
-            j++;
-        }
-        ConcreteLiteral literal = new DataLogLiteral(literalLine, terms, negative);
-
-        //ConcreteLiteral literal = new ConcreteLiteral(literalLine, terms);
-        return literal;
+        return null;
     }
 
     /**

@@ -37,10 +37,8 @@ import edu.uff.dl.rules.util.FoldFactory;
 import edu.uff.dl.rules.util.RuleFileNameComparator;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
@@ -59,13 +57,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import org.dllearner.confparser3.ParseException;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
 import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
 import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.Literal;
@@ -148,7 +143,7 @@ public class App {
 
                 System.setOut(stream);
                 System.out.println("Done: " + outputDirectory + "results.txt");
-            } catch (FileNotFoundException | org.semanticweb.drew.dlprogram.parser.ParseException e) {
+            } catch (IOException | org.semanticweb.drew.dlprogram.parser.ParseException e) {
                 System.err.println("Error: " + e.getMessage());
                 try {
                     (new File(out)).delete();
@@ -307,6 +302,7 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
+        //EvaluatedRuleExample eva = new EvaluatedRuleExample(new File("/Users/Victor/Desktop/rule0.txt"));
         //loadArguments1();
         //loadResults();
         //System.out.println("Test");
@@ -400,7 +396,7 @@ public class App {
         }
     }
 
-    public static void crossValidationAvaliation(String ruleFile, String testFilePrefix, int tests, String outFilePrefix, int timeout) throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException, TimeoutException {
+    public static void crossValidationAvaliation(String ruleFile, String testFilePrefix, int tests, String outFilePrefix, int timeout) throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, TimeoutException {
         EvaluatedRuleExample rule = new EvaluatedRuleExample(new File(ruleFile));
 
         Set<String> dlpFilepaths = new LinkedHashSet<>();
@@ -446,7 +442,7 @@ public class App {
 
     }
 
-    public static void testRefinement() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException, InterruptedException {
+    public static void testRefinement() throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, InterruptedException {
         Set<String> dlpFilepaths = new LinkedHashSet<>();
         dlpFilepaths.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap");
         dlpFilepaths.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap");
@@ -518,7 +514,7 @@ public class App {
         }
     }
 
-    public static void getInfo() throws FileNotFoundException {
+    public static void getInfo() throws IOException {
         File[] listFiles = (new File("/Users/Victor/Desktop/outER/")).listFiles();
         File[] rules = (new File("/Users/Victor/Desktop/evaluated/")).listFiles();
 
@@ -844,8 +840,6 @@ public class App {
 
         dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent);
         dr.setOffset(offset);
-        Set<Constant> individuals = new HashSet<>();
-        Set<DataLogPredicate> predicates = new HashSet<>();
 
         //dr.loadIndividualsAndPredicates(individuals, predicates);
         dr.init();

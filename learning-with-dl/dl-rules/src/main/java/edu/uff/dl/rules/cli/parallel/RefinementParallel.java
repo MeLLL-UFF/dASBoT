@@ -14,6 +14,7 @@ import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -116,7 +117,7 @@ public class RefinementParallel extends Thread {
                     dif /= 1000;
                     System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                     System.out.println("\n");
-                } catch (FileNotFoundException | InterruptedException ex) {
+                } catch (IOException | InterruptedException ex) {
                     Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

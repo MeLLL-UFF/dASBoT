@@ -20,7 +20,7 @@ public class DReWDefaultArgs {
         "-dlp",
         "",
         "-dlv",
-        "/usr/lib/dlv.i386-apple-darwin.bin"
+        System.getenv("DLV_PATH"),
     };
 
     /**
