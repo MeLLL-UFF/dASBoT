@@ -21,1500 +21,1753 @@ import org.semanticweb.drew.default_logic.OWLPredicate;
 
 public class DLProgramParser implements DLProgramParserConstants {
 
-        // namespace abbreviation to the full name
-  Map < String, String > namespaces = new HashMap < String, String > ();
+    // namespace abbreviation to the full name
+    Map< String, String> namespaces = new HashMap< String, String>();
 
-  // fragments to object properties
-  Map < String, OWLObjectProperty > objectProperties = new HashMap <String, OWLObjectProperty> ();
+    // fragments to object properties
+    Map< String, OWLObjectProperty> objectProperties = new HashMap<String, OWLObjectProperty>();
 
-  // fragments to object properties
-  Map < String, OWLDataProperty > dataProperties = new HashMap <String, OWLDataProperty> ();
+    // fragments to object properties
+    Map< String, OWLDataProperty> dataProperties = new HashMap<String, OWLDataProperty>();
 
-  // fragments to classes
-  Map < String, OWLClass> classes = new HashMap < String, OWLClass> ();
+    // fragments to classes
+    Map< String, OWLClass> classes = new HashMap< String, OWLClass>();
 
-  OWLOntology ontology;
+    OWLOntology ontology;
 
-  public void setOntology(OWLOntology ontology)
-  {
+    public void setOntology(OWLOntology ontology) {
         this.ontology = ontology;
 
-        for(OWLObjectProperty op: ontology.getObjectPropertiesInSignature()){
-                IRI iri = op.getIRI();
-                objectProperties.put(iri.getFragment(), op);
-                objectProperties.put(iri.toString(), op);
+        for (OWLObjectProperty op : ontology.getObjectPropertiesInSignature()) {
+            IRI iri = op.getIRI();
+            objectProperties.put(iri.getFragment(), op);
+            objectProperties.put(iri.toString(), op);
         }
 
-        for(OWLDataProperty op: ontology.getDataPropertiesInSignature()){
-                IRI iri = op.getIRI();
-                dataProperties.put(iri.getFragment(), op);
-                dataProperties.put(iri.toString(), op);
+        for (OWLDataProperty op : ontology.getDataPropertiesInSignature()) {
+            IRI iri = op.getIRI();
+            dataProperties.put(iri.getFragment(), op);
+            dataProperties.put(iri.toString(), op);
         }
 
-        for(OWLClass cls : ontology.getClassesInSignature()){
-                IRI iri = cls.getIRI();
-                classes.put(iri.getFragment(), cls);
-                classes.put(iri.toString(), cls);
+        for (OWLClass cls : ontology.getClassesInSignature()) {
+            IRI iri = cls.getIRI();
+            classes.put(iri.getFragment(), cls);
+            classes.put(iri.toString(), cls);
         }
-  }
-
-  private OWLLogicalEntity findLogicalEntity(String name) {
-                if (classes.containsKey(name)) {
-                        return classes.get(name);
-                } else if (objectProperties.containsKey(name)) {
-                        return objectProperties.get(name);
-                } else if (dataProperties.containsKey(name)) {
-                        return dataProperties.get(name);
-                } else {
-                        throw new IllegalArgumentException("No matched predicate from ontology: " + name);
-                }
-  }
-
-  public void process() throws ParseException
-  {}
-
-  public void adjustDLInputOperationArity(DLProgram program)
-  {
-    for (DLInputSignature signature : program.getDLInputSignatures())
-    {
-      for (DLInputOperation op : signature.getOperations())
-      {
-        NormalPredicate inputPredicate = op.getInputPredicate();
-        String name = inputPredicate.getName();
-        int arity = CacheManager.getInstance().getArity(name);
-        inputPredicate.setArity(arity);
-      }
     }
-  }
 
-  final public String dlPredicate() throws ParseException {
-  String name;
-    if (jj_2_1(2147483647)) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case UPPER_LEADING_ID:
-        jj_consume_token(UPPER_LEADING_ID);
-        break;
-      case LOWER_LEADING_ID:
-        jj_consume_token(LOWER_LEADING_ID);
-        break;
-      default:
-        jj_la1[0] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-        String key = token.image;
-        String namespace = namespaces.get(key);
-      jj_consume_token(COLON);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case UPPER_LEADING_ID:
-        jj_consume_token(UPPER_LEADING_ID);
-        break;
-      case LOWER_LEADING_ID:
-        jj_consume_token(LOWER_LEADING_ID);
-        break;
-      default:
-        jj_la1[1] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-        name = namespace + token.image;
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LOWER_LEADING_ID:
-      case UPPER_LEADING_ID:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case UPPER_LEADING_ID:
-          jj_consume_token(UPPER_LEADING_ID);
-          break;
-        case LOWER_LEADING_ID:
-          jj_consume_token(LOWER_LEADING_ID);
-          break;
-        default:
-          jj_la1[2] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+    private OWLLogicalEntity findLogicalEntity(String name) {
+        if (classes.containsKey(name)) {
+            return classes.get(name);
+        } else if (objectProperties.containsKey(name)) {
+            return objectProperties.get(name);
+        } else if (dataProperties.containsKey(name)) {
+            return dataProperties.get(name);
+        } else {
+            throw new IllegalArgumentException("No matched predicate from ontology: " + name);
         }
-      name = token.image;
-        break;
-      case STRING:
-        jj_consume_token(STRING);
-    name = token.image;
-    name = name.substring(1, name.length() - 1);
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
     }
-    {if (true) return name;}
-    throw new Error("Missing return statement in function");
-  }
 
-  final public DLInputOperation dlInputOperation() throws ParseException {
-  DLInputOperation op = new DLInputOperation();
-  String name;
-    name = dlPredicate();
-          OWLLogicalEntity dlPredicate = findLogicalEntity(name);
-      op.setDLPredicate(dlPredicate);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case UPLUS:
-      jj_consume_token(UPLUS);
-        op.setType(DLInputOperator.U_PLUS);
-      break;
-    case UMINUS:
-      jj_consume_token(UMINUS);
-        op.setType(DLInputOperator.U_MINUS);
-      break;
-    case CAPMINUS:
-      jj_consume_token(CAPMINUS);
-        op.setType(DLInputOperator.CAP_MINUS);
-      break;
-    default:
-      jj_la1[4] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    public void process() throws ParseException {
     }
-      name = dlPredicate();
-      //The arity will be set later
-      int arity = - 1;
-      NormalPredicate predicate = CacheManager.getInstance().getPredicate(name, arity);
-      op.setInputPredicate(predicate);
-    {if (true) return op;}
-    throw new Error("Missing return statement in function");
-  }
 
-  final public DLInputSignature dlInputSignature() throws ParseException {
-  DLInputSignature signature = new DLInputSignature();
-  DLInputOperation op;
-    if (jj_2_3(4)) {
-      if (jj_2_2(2)) {
-        op = dlInputOperation();
-              signature.getOperations().add(op);
-        label_1:
-        while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case CONJUNCTION:
-            ;
-            break;
-          default:
-            jj_la1[5] = jj_gen;
-            break label_1;
-          }
-          jj_consume_token(CONJUNCTION);
-          op = dlInputOperation();
-                signature.getOperations().add(op);
+    public void adjustDLInputOperationArity(DLProgram program) {
+        for (DLInputSignature signature : program.getDLInputSignatures()) {
+            for (DLInputOperation op : signature.getOperations()) {
+                NormalPredicate inputPredicate = op.getInputPredicate();
+                String name = inputPredicate.getName();
+                int arity = CacheManager.getInstance().getArity(name);
+                inputPredicate.setArity(arity);
+            }
         }
-      } else {
-        ;
-      }
-      jj_consume_token(32);
-    } else {
-      ;
-    }
-    {if (true) return signature;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public DLAtomPredicate dlAtomPredicate() throws ParseException {
-  DLAtomPredicate predicate = new DLAtomPredicate();
-  DLInputSignature signature;
-  String name;
-  OWLLogicalEntity query;
-    jj_consume_token(DL_ATOM);
-    jj_consume_token(LEFT_SQUARE_BRACKET);
-    signature = dlInputSignature();
-      predicate.setInputSignature(signature);
-    name = dlPredicate();
-      query = findLogicalEntity(name);
-      predicate.setQuery(query);
-    jj_consume_token(RIGHT_SQUARE_BRACKET);
-    {if (true) return predicate;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Constant constant() throws ParseException {
-  String name;
-  int type;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case INTEGER:
-      jj_consume_token(INTEGER);
-      name = token.image;
-      type = Types.INTEGER;
-      {if (true) return CacheManager.getInstance().getConstant(name, type);}
-      break;
-    case DOUBLE:
-      jj_consume_token(DOUBLE);
-    name = token.image;
-    type = Types.DOUBLE;
-    {if (true) return CacheManager.getInstance().getConstant(name, type);}
-      break;
-    case STRING:
-      jj_consume_token(STRING);
-      name = token.image.substring(1, token.image.length() - 1);
-      type = Types.VARCHAR;
-      {if (true) return CacheManager.getInstance().getConstant(name, type);}
-      break;
-    case LOWER_LEADING_ID:
-      jj_consume_token(LOWER_LEADING_ID);
-      name = token.image;
-      type = Types.VARCHAR;
-      {if (true) return CacheManager.getInstance().getConstant(name, type);}
-      break;
-    default:
-      jj_la1[6] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
     }
 
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Term variable() throws ParseException {
-    jj_consume_token(UPPER_LEADING_ID);
-    {if (true) return CacheManager.getInstance().getVariable(token.image);}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Functor functor() throws ParseException {
-  Functor functor = new Functor();
-    jj_consume_token(LOWER_LEADING_ID);
-    functor.setName(token.image);
-    {if (true) return functor;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Function function() throws ParseException {
-  Function function = new Function();
-  Functor functor;
-  Term term;
-    functor = functor();
-    function.setFunctor(functor);
-    jj_consume_token(LEFTBRACKET);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case LOWER_LEADING_ID:
-    case UPPER_LEADING_ID:
-    case INTEGER:
-    case DOUBLE:
-    case STRING:
-    case LEFTBRACKET:
-      term = term();
-      function.getTerms().add(term);
-      label_2:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CONJUNCTION:
-          ;
-          break;
-        default:
-          jj_la1[7] = jj_gen;
-          break label_2;
+    final public String dlPredicate() throws ParseException {
+        String name;
+        if (jj_2_1(2147483647)) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case UPPER_LEADING_ID:
+                    jj_consume_token(UPPER_LEADING_ID);
+                    break;
+                case LOWER_LEADING_ID:
+                    jj_consume_token(LOWER_LEADING_ID);
+                    break;
+                default:
+                    jj_la1[0] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+            String key = token.image;
+            String namespace = namespaces.get(key);
+            jj_consume_token(COLON);
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case UPPER_LEADING_ID:
+                    jj_consume_token(UPPER_LEADING_ID);
+                    break;
+                case LOWER_LEADING_ID:
+                    jj_consume_token(LOWER_LEADING_ID);
+                    break;
+                default:
+                    jj_la1[1] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+            name = namespace + token.image;
+        } else {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case LOWER_LEADING_ID:
+                case UPPER_LEADING_ID:
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case UPPER_LEADING_ID:
+                            jj_consume_token(UPPER_LEADING_ID);
+                            break;
+                        case LOWER_LEADING_ID:
+                            jj_consume_token(LOWER_LEADING_ID);
+                            break;
+                        default:
+                            jj_la1[2] = jj_gen;
+                            jj_consume_token(-1);
+                            throw new ParseException();
+                    }
+                    name = token.image;
+                    break;
+                case STRING:
+                    jj_consume_token(STRING);
+                    name = token.image;
+                    name = name.substring(1, name.length() - 1);
+                    break;
+                default:
+                    jj_la1[3] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
         }
-        jj_consume_token(CONJUNCTION);
-        term = term();
-        function.getTerms().add(term);
-      }
-      break;
-    default:
-      jj_la1[8] = jj_gen;
-      ;
-    }
-    jj_consume_token(RIGHTBRACKET);
-    {if (true) return function;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Term unary() throws ParseException {
-  Term term;
-    if (jj_2_4(2147483647)) {
-      term = function();
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LOWER_LEADING_ID:
-      case INTEGER:
-      case DOUBLE:
-      case STRING:
-        term = constant();
-        break;
-      case UPPER_LEADING_ID:
-        term = variable();
-        break;
-      case LEFTBRACKET:
-        jj_consume_token(LEFTBRACKET);
-        term = additive();
-        jj_consume_token(RIGHTBRACKET);
-        break;
-      default:
-        jj_la1[9] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    }
-    {if (true) return term;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Term multiplicative() throws ParseException {
-  Term left, right;
-  Token token;
-    left = unary();
-
-    label_3:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case TIMES:
-      case DIVIDE:
-        ;
-        break;
-      default:
-        jj_la1[10] = jj_gen;
-        break label_3;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case TIMES:
-        token = jj_consume_token(TIMES);
-        break;
-      case DIVIDE:
-        token = jj_consume_token(DIVIDE);
-        break;
-      default:
-        jj_la1[11] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      right = unary();
-      Function function = new Function();
-      Functor functor = new Functor();
-      functor.setName(token.image);
-      function.setFunctor(functor);
-      function.getTerms().add(left);
-      function.getTerms().add(right);
-      left = function;
-    }
-    {if (true) return left;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Term additive() throws ParseException {
-  Term left, right;
-  Token token;
-    left = multiplicative();
-
-    label_4:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PLUS:
-      case MINUS:
-        ;
-        break;
-      default:
-        jj_la1[12] = jj_gen;
-        break label_4;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PLUS:
-        token = jj_consume_token(PLUS);
-        break;
-      case MINUS:
-        token = jj_consume_token(MINUS);
-        break;
-      default:
-        jj_la1[13] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      right = multiplicative();
-      Function function = new Function();
-      Functor functor = new Functor();
-      functor.setName(token.image);
-      function.setFunctor(functor);
-      function.getTerms().add(left);
-      function.getTerms().add(right);
-      left = function;
-    }
-    {if (true) return left;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Term term() throws ParseException {
-  Term term;
-    term = additive();
-    {if (true) return term;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Literal literal() throws ParseException {
-  Literal literal = new Literal();
-  Predicate predicate = null;
-  String name = null;
-  Term term;
-  int arity = 0;
-  boolean isDLAtomPredicate = false;
-  boolean neg = false;
-    if (jj_2_5(2147483647)) {
-      term = term();
-    literal.getTerms().add(term);
-      jj_consume_token(COMPARISON);
-    predicate = CacheManager.getInstance().getPredicate(token.image, 2);
-    literal.setPredicate(predicate);
-      term = term();
-    literal.getTerms().add(term);
-    {if (true) return literal;}
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case DL_ATOM:
-      case HASH_LEADING_ID:
-      case LOWER_LEADING_ID:
-      case UPPER_LEADING_ID:
-      case MINUS:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case DL_ATOM:
-          predicate = dlAtomPredicate();
-      isDLAtomPredicate = true;
-          break;
-        case HASH_LEADING_ID:
-        case LOWER_LEADING_ID:
-        case UPPER_LEADING_ID:
-        case MINUS:
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case MINUS:
-            jj_consume_token(MINUS);
-          neg = true;
-            break;
-          default:
-            jj_la1[14] = jj_gen;
-            ;
-          }
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case HASH_LEADING_ID:
-            jj_consume_token(HASH_LEADING_ID);
-            break;
-          case LOWER_LEADING_ID:
-            jj_consume_token(LOWER_LEADING_ID);
-            break;
-          case UPPER_LEADING_ID:
-            jj_consume_token(UPPER_LEADING_ID);
-            break;
-          default:
-            jj_la1[15] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
-                name = token.image;
-                if(neg)
-                {
-                        literal.setNegative(true);
-                }
-          break;
-        default:
-          jj_la1[16] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+        {
+            if (true)
+                return name;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case LEFTBRACKET:
-          jj_consume_token(LEFTBRACKET);
-          term = term();
-      literal.getTerms().add(term);
-      arity++;
-          label_5:
-          while (true) {
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case CONJUNCTION:
-              ;
-              break;
+        throw new Error("Missing return statement in function");
+    }
+
+    final public DLInputOperation dlInputOperation() throws ParseException {
+        DLInputOperation op = new DLInputOperation();
+        String name;
+        name = dlPredicate();
+        OWLLogicalEntity dlPredicate = findLogicalEntity(name);
+        op.setDLPredicate(dlPredicate);
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case UPLUS:
+                jj_consume_token(UPLUS);
+                op.setType(DLInputOperator.U_PLUS);
+                break;
+            case UMINUS:
+                jj_consume_token(UMINUS);
+                op.setType(DLInputOperator.U_MINUS);
+                break;
+            case CAPMINUS:
+                jj_consume_token(CAPMINUS);
+                op.setType(DLInputOperator.CAP_MINUS);
+                break;
             default:
-              jj_la1[17] = jj_gen;
-              break label_5;
+                jj_la1[4] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+        }
+        name = dlPredicate();
+        //The arity will be set later
+        int arity = - 1;
+        NormalPredicate predicate = CacheManager.getInstance().getPredicate(name, arity);
+        op.setInputPredicate(predicate);
+        {
+            if (true)
+                return op;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public DLInputSignature dlInputSignature() throws ParseException {
+        DLInputSignature signature = new DLInputSignature();
+        DLInputOperation op;
+        if (jj_2_3(4)) {
+            if (jj_2_2(2)) {
+                op = dlInputOperation();
+                signature.getOperations().add(op);
+                label_1:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case CONJUNCTION:
+            ;
+                            break;
+                        default:
+                            jj_la1[5] = jj_gen;
+                            break label_1;
+                    }
+                    jj_consume_token(CONJUNCTION);
+                    op = dlInputOperation();
+                    signature.getOperations().add(op);
+                }
+            } else {
+                ;
+            }
+            jj_consume_token(32);
+        } else {
+            ;
+        }
+        {
+            if (true)
+                return signature;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public DLAtomPredicate dlAtomPredicate() throws ParseException {
+        DLAtomPredicate predicate = new DLAtomPredicate();
+        DLInputSignature signature;
+        String name;
+        OWLLogicalEntity query;
+        jj_consume_token(DL_ATOM);
+        jj_consume_token(LEFT_SQUARE_BRACKET);
+        signature = dlInputSignature();
+        predicate.setInputSignature(signature);
+        name = dlPredicate();
+        query = findLogicalEntity(name);
+        predicate.setQuery(query);
+        jj_consume_token(RIGHT_SQUARE_BRACKET);
+        {
+            if (true)
+                return predicate;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Constant constant() throws ParseException {
+        String name;
+        int type;
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case INTEGER:
+                jj_consume_token(INTEGER);
+                name = token.image;
+                type = Types.INTEGER;
+                 {
+                    if (true)
+                        return CacheManager.getInstance().getConstant(name, type);
+                }
+                break;
+            case DOUBLE:
+                jj_consume_token(DOUBLE);
+                name = token.image;
+                type = Types.DOUBLE;
+                 {
+                    if (true)
+                        return CacheManager.getInstance().getConstant(name, type);
+                }
+                break;
+            case STRING:
+                jj_consume_token(STRING);
+                name = token.image.substring(1, token.image.length() - 1);
+                type = Types.VARCHAR;
+                 {
+                    if (true)
+                        return CacheManager.getInstance().getConstant(name, type);
+                }
+                break;
+            case LOWER_LEADING_ID:
+                jj_consume_token(LOWER_LEADING_ID);
+                name = token.image;
+                type = Types.VARCHAR;
+                 {
+                    if (true)
+                        return CacheManager.getInstance().getConstant(name, type);
+                }
+                break;
+            default:
+                jj_la1[6] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+        }
+
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Term variable() throws ParseException {
+        jj_consume_token(UPPER_LEADING_ID);
+        {
+            if (true)
+                return CacheManager.getInstance().getVariable(token.image);
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Functor functor() throws ParseException {
+        Functor functor = new Functor();
+        jj_consume_token(LOWER_LEADING_ID);
+        functor.setName(token.image);
+        {
+            if (true)
+                return functor;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Function function() throws ParseException {
+        Function function = new Function();
+        Functor functor;
+        Term term;
+        functor = functor();
+        function.setFunctor(functor);
+        jj_consume_token(LEFTBRACKET);
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case LOWER_LEADING_ID:
+            case UPPER_LEADING_ID:
+            case INTEGER:
+            case DOUBLE:
+            case STRING:
+            case LEFTBRACKET:
+                term = term();
+                function.getTerms().add(term);
+                label_2:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case CONJUNCTION:
+          ;
+                            break;
+                        default:
+                            jj_la1[7] = jj_gen;
+                            break label_2;
+                    }
+                    jj_consume_token(CONJUNCTION);
+                    term = term();
+                    function.getTerms().add(term);
+                }
+                break;
+            default:
+                jj_la1[8] = jj_gen;
+                ;
+        }
+        jj_consume_token(RIGHTBRACKET);
+        {
+            if (true)
+                return function;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Term unary() throws ParseException {
+        Term term;
+        if (jj_2_4(2147483647)) {
+            term = function();
+        } else {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case LOWER_LEADING_ID:
+                case INTEGER:
+                case DOUBLE:
+                case STRING:
+                    term = constant();
+                    break;
+                case UPPER_LEADING_ID:
+                    term = variable();
+                    break;
+                case LEFTBRACKET:
+                    jj_consume_token(LEFTBRACKET);
+                    term = additive();
+                    jj_consume_token(RIGHTBRACKET);
+                    break;
+                default:
+                    jj_la1[9] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+        }
+        {
+            if (true)
+                return term;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Term multiplicative() throws ParseException {
+        Term left, right;
+        Token token;
+        left = unary();
+
+        label_3:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case TIMES:
+                case DIVIDE:
+        ;
+                    break;
+                default:
+                    jj_la1[10] = jj_gen;
+                    break label_3;
+            }
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case TIMES:
+                    token = jj_consume_token(TIMES);
+                    break;
+                case DIVIDE:
+                    token = jj_consume_token(DIVIDE);
+                    break;
+                default:
+                    jj_la1[11] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+            right = unary();
+            Function function = new Function();
+            Functor functor = new Functor();
+            functor.setName(token.image);
+            function.setFunctor(functor);
+            function.getTerms().add(left);
+            function.getTerms().add(right);
+            left = function;
+        }
+        {
+            if (true)
+                return left;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Term additive() throws ParseException {
+        Term left, right;
+        Token token;
+        left = multiplicative();
+
+        label_4:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case PLUS:
+                case MINUS:
+        ;
+                    break;
+                default:
+                    jj_la1[12] = jj_gen;
+                    break label_4;
+            }
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case PLUS:
+                    token = jj_consume_token(PLUS);
+                    break;
+                case MINUS:
+                    token = jj_consume_token(MINUS);
+                    break;
+                default:
+                    jj_la1[13] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+            right = multiplicative();
+            Function function = new Function();
+            Functor functor = new Functor();
+            functor.setName(token.image);
+            function.setFunctor(functor);
+            function.getTerms().add(left);
+            function.getTerms().add(right);
+            left = function;
+        }
+        {
+            if (true)
+                return left;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Term term() throws ParseException {
+        Term term;
+        term = additive();
+        {
+            if (true)
+                return term;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Literal literal() throws ParseException {
+        Literal literal = new Literal();
+        Predicate predicate = null;
+        String name = null;
+        Term term;
+        int arity = 0;
+        boolean isDLAtomPredicate = false;
+        boolean neg = false;
+        if (jj_2_5(2147483647)) {
+            term = term();
+            literal.getTerms().add(term);
+            jj_consume_token(COMPARISON);
+            predicate = CacheManager.getInstance().getPredicate(token.image, 2);
+            literal.setPredicate(predicate);
+            term = term();
+            literal.getTerms().add(term);
+            {
+                if (true)
+                    return literal;
+            }
+        } else {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case DL_ATOM:
+                case HASH_LEADING_ID:
+                case LOWER_LEADING_ID:
+                case UPPER_LEADING_ID:
+                case MINUS:
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case DL_ATOM:
+                            predicate = dlAtomPredicate();
+                            isDLAtomPredicate = true;
+                            break;
+                        case HASH_LEADING_ID:
+                        case LOWER_LEADING_ID:
+                        case UPPER_LEADING_ID:
+                        case MINUS:
+                            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                                case MINUS:
+                                    jj_consume_token(MINUS);
+                                    neg = true;
+                                    break;
+                                default:
+                                    jj_la1[14] = jj_gen;
+                                    ;
+                            }
+                            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                                case HASH_LEADING_ID:
+                                    jj_consume_token(HASH_LEADING_ID);
+                                    break;
+                                case LOWER_LEADING_ID:
+                                    jj_consume_token(LOWER_LEADING_ID);
+                                    break;
+                                case UPPER_LEADING_ID:
+                                    jj_consume_token(UPPER_LEADING_ID);
+                                    break;
+                                default:
+                                    jj_la1[15] = jj_gen;
+                                    jj_consume_token(-1);
+                                    throw new ParseException();
+                            }
+                            name = token.image;
+                            if (neg) {
+                                literal.setNegative(true);
+                            }
+                            break;
+                        default:
+                            jj_la1[16] = jj_gen;
+                            jj_consume_token(-1);
+                            throw new ParseException();
+                    }
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case LEFTBRACKET:
+                            jj_consume_token(LEFTBRACKET);
+                            term = term();
+                            literal.getTerms().add(term);
+                            arity++;
+                            label_5:
+                            while (true) {
+                                switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                                    case CONJUNCTION:
+              ;
+                                        break;
+                                    default:
+                                        jj_la1[17] = jj_gen;
+                                        break label_5;
+                                }
+                                jj_consume_token(CONJUNCTION);
+                                term = term();
+                                literal.getTerms().add(term);
+                                arity++;
+                            }
+                            jj_consume_token(RIGHTBRACKET);
+                            break;
+                        default:
+                            jj_la1[18] = jj_gen;
+                            ;
+                    }
+                    if (!isDLAtomPredicate) {
+                        predicate = CacheManager.getInstance().getPredicate(name, arity);
+                    } else {
+                        predicate.setArity(arity);
+                    }
+                    literal.setPredicate(predicate);
+                     {
+                        if (true)
+                            return literal;
+                    }
+                    break;
+                default:
+                    jj_la1[19] = jj_gen;
+                    jj_consume_token(-1);
+                    throw new ParseException();
+            }
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public Clause clause() throws ParseException {
+        Clause clause = new Clause();
+        Literal literal;
+        boolean not = false;
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case DL_ATOM:
+            case HASH_LEADING_ID:
+            case LOWER_LEADING_ID:
+            case UPPER_LEADING_ID:
+            case INTEGER:
+            case DOUBLE:
+            case STRING:
+            case MINUS:
+            case LEFTBRACKET:
+                literal = literal();
+                clause.setHead(literal);
+                break;
+            default:
+                jj_la1[20] = jj_gen;
+                ;
+        }
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case IMPLY:
+                jj_consume_token(IMPLY);
+                // initialize the not state
+                not = false;
+                switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                    case NAF:
+                        jj_consume_token(NAF);
+                        not = true;
+                        break;
+                    default:
+                        jj_la1[21] = jj_gen;
+                        ;
+                }
+                literal = literal();
+                if (not) {
+                    clause.getNegativeBody().add(literal);
+                } else {
+                    clause.getPositiveBody().add(literal);
+                }
+                label_6:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case CONJUNCTION:
+          ;
+                            break;
+                        default:
+                            jj_la1[22] = jj_gen;
+                            break label_6;
+                    }
+                    jj_consume_token(CONJUNCTION);
+                    // initialize the not state
+                    not = false;
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case NAF:
+                            jj_consume_token(NAF);
+                            not = true;
+                            break;
+                        default:
+                            jj_la1[23] = jj_gen;
+                            ;
+                    }
+                    literal = literal();
+                    if (not) {
+                        clause.getNegativeBody().add(literal);
+                    } else {
+                        clause.getPositiveBody().add(literal);
+                    }
+                }
+                break;
+            default:
+                jj_la1[24] = jj_gen;
+                ;
+        }
+        jj_consume_token(ENDOFSTATEMENT);
+        if (clause.getBody().size() == 0) {
+      //Why we need this?
+            //clause.getPositiveBody().add(Literal.TRUE);
+        }
+        {
+            if (true)
+                return clause;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public void namespace() throws ParseException {
+        String key, value;
+        jj_consume_token(NAMESPACE);
+        jj_consume_token(LEFTBRACKET);
+        jj_consume_token(STRING);
+        key = token.image.substring(1, token.image.length() - 1);
+        jj_consume_token(CONJUNCTION);
+        jj_consume_token(STRING);
+        value = token.image.substring(1, token.image.length() - 1);
+        jj_consume_token(RIGHTBRACKET);
+        jj_consume_token(ENDOFSTATEMENT);
+        namespaces.put(key, value);
+    }
+
+    final public DLProgram program() throws ParseException {
+        DLProgram program = new DLProgram();
+        Clause clause;
+        label_7:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case NAMESPACE:
+        ;
+                    break;
+                default:
+                    jj_la1[25] = jj_gen;
+                    break label_7;
+            }
+            namespace();
+        }
+        label_8:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case IMPLY:
+                case ENDOFSTATEMENT:
+                case DL_ATOM:
+                case HASH_LEADING_ID:
+                case LOWER_LEADING_ID:
+                case UPPER_LEADING_ID:
+                case INTEGER:
+                case DOUBLE:
+                case STRING:
+                case MINUS:
+                case LEFTBRACKET:
+        ;
+                    break;
+                default:
+                    jj_la1[26] = jj_gen;
+                    break label_8;
+            }
+            clause = clause();
+            if (clause.getHead().equals(Literal.FALSE) && (clause.getPositiveBody().contains(Literal.TRUE))) { // skip empty clause
+            } else {
+                program.add(clause);
+                //program.getClauses().add(clause);
+            }
+        }
+        jj_consume_token(0);
+        adjustDLInputOperationArity(program);
+        {
+            if (true)
+                return program;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public List< Literal> getModel() throws ParseException {
+        List< Literal> literals = new ArrayList< Literal>();
+        Literal literal;
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case TRUE:
+                jj_consume_token(TRUE);
+                jj_consume_token(COLON);
+                break;
+            default:
+                jj_la1[27] = jj_gen;
+                ;
+        }
+        jj_consume_token(33);
+        literal = literal();
+        literals.add(literal);
+        label_9:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case CONJUNCTION:
+        ;
+                    break;
+                default:
+                    jj_la1[28] = jj_gen;
+                    break label_9;
             }
             jj_consume_token(CONJUNCTION);
-            term = term();
-        literal.getTerms().add(term);
-        arity++;
-          }
-          jj_consume_token(RIGHTBRACKET);
-          break;
-        default:
-          jj_la1[18] = jj_gen;
-          ;
+            literal = literal();
+            literals.add(literal);
         }
-    if (!isDLAtomPredicate)
-    {
-      predicate = CacheManager.getInstance().getPredicate(name, arity);
-    }
-    else
-    {
-      predicate.setArity(arity);
-    }
-    literal.setPredicate(predicate);
-    {if (true) return literal;}
-        break;
-      default:
-        jj_la1[19] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Clause clause() throws ParseException {
-  Clause clause = new Clause();
-  Literal literal;
-  boolean not = false;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case DL_ATOM:
-    case HASH_LEADING_ID:
-    case LOWER_LEADING_ID:
-    case UPPER_LEADING_ID:
-    case INTEGER:
-    case DOUBLE:
-    case STRING:
-    case MINUS:
-    case LEFTBRACKET:
-      literal = literal();
-      clause.setHead(literal);
-      break;
-    default:
-      jj_la1[20] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IMPLY:
-      jj_consume_token(IMPLY);
-      // initialize the not state
-      not = false;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case NAF:
-        jj_consume_token(NAF);
-        not = true;
-        break;
-      default:
-        jj_la1[21] = jj_gen;
-        ;
-      }
-      literal = literal();
-      if (not)
-      {
-        clause.getNegativeBody().add(literal);
-      }
-      else
-      {
-        clause.getPositiveBody().add(literal);
-      }
-      label_6:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CONJUNCTION:
-          ;
-          break;
-        default:
-          jj_la1[22] = jj_gen;
-          break label_6;
-        }
-        jj_consume_token(CONJUNCTION);
-        // initialize the not state
-        not = false;
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case NAF:
-          jj_consume_token(NAF);
-          not = true;
-          break;
-        default:
-          jj_la1[23] = jj_gen;
-          ;
-        }
-        literal = literal();
-        if (not)
+        jj_consume_token(34);
         {
-          clause.getNegativeBody().add(literal);
+            if (true)
+                return literals;
         }
-        else
-        {
-          clause.getPositiveBody().add(literal);
-        }
-      }
-      break;
-    default:
-      jj_la1[24] = jj_gen;
-      ;
+        throw new Error("Missing return statement in function");
     }
-    jj_consume_token(ENDOFSTATEMENT);
-    if (clause.getBody().size() == 0)
-    {
-      //Why we need this?
-      //clause.getPositiveBody().add(Literal.TRUE);
-    }
-    {if (true) return clause;}
-    throw new Error("Missing return statement in function");
-  }
 
-  final public void namespace() throws ParseException {
-  String key, value;
-    jj_consume_token(NAMESPACE);
-    jj_consume_token(LEFTBRACKET);
-    jj_consume_token(STRING);
-    key = token.image.substring(1, token.image.length() - 1);
-    jj_consume_token(CONJUNCTION);
-    jj_consume_token(STRING);
-    value = token.image.substring(1, token.image.length() - 1);
-    jj_consume_token(RIGHTBRACKET);
-    jj_consume_token(ENDOFSTATEMENT);
-    namespaces.put(key, value);
-  }
-
-  final public DLProgram program() throws ParseException {
-  DLProgram program = new DLProgram();
-  Clause clause;
-    label_7:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case NAMESPACE:
-        ;
-        break;
-      default:
-        jj_la1[25] = jj_gen;
-        break label_7;
-      }
-      namespace();
-    }
-    label_8:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case IMPLY:
-      case ENDOFSTATEMENT:
-      case DL_ATOM:
-      case HASH_LEADING_ID:
-      case LOWER_LEADING_ID:
-      case UPPER_LEADING_ID:
-      case INTEGER:
-      case DOUBLE:
-      case STRING:
-      case MINUS:
-      case LEFTBRACKET:
-        ;
-        break;
-      default:
-        jj_la1[26] = jj_gen;
-        break label_8;
-      }
-      clause = clause();
-      if (clause.getHead().equals(Literal.FALSE) && (clause.getPositiveBody().contains(Literal.TRUE)))
-      { // skip empty clause
-      }
-      else
-      {
-        program.add(clause);
-        //program.getClauses().add(clause);
-      }
-    }
-    jj_consume_token(0);
-    adjustDLInputOperationArity(program);
-    {if (true) return program;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public List < Literal > getModel() throws ParseException {
-  List < Literal > literals = new ArrayList < Literal > ();
-  Literal literal;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case TRUE:
-      jj_consume_token(TRUE);
-      jj_consume_token(COLON);
-      break;
-    default:
-      jj_la1[27] = jj_gen;
-      ;
-    }
-    jj_consume_token(33);
-    literal = literal();
-    literals.add(literal);
-    label_9:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CONJUNCTION:
-        ;
-        break;
-      default:
-        jj_la1[28] = jj_gen;
-        break label_9;
-      }
-      jj_consume_token(CONJUNCTION);
-      literal = literal();
-      literals.add(literal);
-    }
-    jj_consume_token(34);
-    {if (true) return literals;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Literal defaultLiteral() throws ParseException {
+    final public Literal defaultLiteral() throws ParseException {
         Literal literal = new Literal();
         OWLPredicate predicate;
         String predicateName;
         Term term;
         int arity = 0;
         boolean neg = false;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case MINUS:
-      jj_consume_token(MINUS);
-          neg = true;
-      break;
-    default:
-      jj_la1[29] = jj_gen;
-      ;
-    }
-    predicateName = dlPredicate();
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case MINUS:
+                jj_consume_token(MINUS);
+                neg = true;
+                break;
+            default:
+                jj_la1[29] = jj_gen;
+                ;
+        }
+        predicateName = dlPredicate();
 
-    jj_consume_token(LEFTBRACKET);
-    term = term();
-      literal.getTerms().add(term);
-      arity++;
-    label_10:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CONJUNCTION:
-        ;
-        break;
-      default:
-        jj_la1[30] = jj_gen;
-        break label_10;
-      }
-      jj_consume_token(CONJUNCTION);
-      term = term();
+        jj_consume_token(LEFTBRACKET);
+        term = term();
         literal.getTerms().add(term);
         arity++;
-    }
-    jj_consume_token(RIGHTBRACKET);
-          OWLLogicalEntity e;
-          if (ontology != null) {
-                        e = findLogicalEntity(predicateName);
-                        literal.setPredicate(new OWLPredicate(e));
-                } else {
-                        if (ontology != null) {
-                                e = findLogicalEntity(predicateName);
-                        } else {
-                                if (arity == 1) {
-                                        e = OWLManager.getOWLDataFactory().getOWLClass(IRI.create(predicateName));
-                                } else if (arity == 2) {
-                                        e = OWLManager.getOWLDataFactory().getOWLObjectProperty(IRI.create(predicateName));
-                                } else {
-                                        {if (true) throw new IllegalStateException();}
-                                }
-                        }
-                        literal.setPredicate(new OWLPredicate(e));
-                }
-                literal.setNegative(neg);
-          {if (true) return literal;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public List< Literal > conjunction() throws ParseException {
-        List< Literal > literals = new ArrayList < Literal > ();
-        Literal literal;
-    literal = defaultLiteral();
-          literals.add(literal);
-    label_11:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 35:
+        label_10:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case CONJUNCTION:
         ;
-        break;
-      default:
-        jj_la1[31] = jj_gen;
-        break label_11;
-      }
-      jj_consume_token(35);
-      literal = defaultLiteral();
-          literals.add(literal);
-    }
-          {if (true) return literals;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public DefaultRule defaultRule() throws ParseException {
-  DefaultRule df = new DefaultRule();
-  List< Literal > prerequisite;
-  List< Literal > justification;
-  List< Literal > conclusion;
-  List< Literal > typing;
-    jj_consume_token(LEFT_SQUARE_BRACKET);
-    prerequisite = conjunction();
-          df.setPrerequisite(prerequisite);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 32:
-      jj_consume_token(32);
-      justification = conjunction();
-          df.getJustifications().add(justification);
-      label_12:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CONJUNCTION:
-          ;
-          break;
-        default:
-          jj_la1[32] = jj_gen;
-          break label_12;
-        }
-        jj_consume_token(CONJUNCTION);
-        justification = conjunction();
-          df.getJustifications().add(justification);
-      }
-      break;
-    default:
-      jj_la1[33] = jj_gen;
-      ;
-    }
-    jj_consume_token(RIGHT_SQUARE_BRACKET);
-    jj_consume_token(DIVIDE);
-    jj_consume_token(LEFT_SQUARE_BRACKET);
-    conclusion = conjunction();
-     df.setConclusion(conclusion);
-    jj_consume_token(RIGHT_SQUARE_BRACKET);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case COMPARISON:
-      jj_consume_token(COMPARISON);
-     if(!token.image.equals("<"))
-     {
-       {if (true) throw new ParseException("\u005c'<\u005c' is expected :" + token.image);}
-     }
-      typing = conjunction();
-     df.setTyping(typing);
-      jj_consume_token(COMPARISON);
-     if(!token.image.equals(">"))
-     {
-       {if (true) throw new ParseException("\u005c'>\u005c' is expected :" + token.image);}
-     }
-      break;
-    default:
-      jj_la1[34] = jj_gen;
-      ;
-    }
-        {if (true) return df;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public List<DefaultRule > defaultRules() throws ParseException {
-  List<DefaultRule > rules = new ArrayList<DefaultRule >();
-  DefaultRule rule;
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LEFT_SQUARE_BRACKET:
-        ;
-        break;
-      default:
-        jj_la1[35] = jj_gen;
-        break label_13;
-      }
-      rule = defaultRule();
-    rules.add(rule);
-    }
-    {if (true) return rules;}
-    throw new Error("Missing return statement in function");
-  }
-
-  private boolean jj_2_1(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_1(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(0, xla); }
-  }
-
-  private boolean jj_2_2(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_2(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(1, xla); }
-  }
-
-  private boolean jj_2_3(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_3(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(2, xla); }
-  }
-
-  private boolean jj_2_4(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_4(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(3, xla); }
-  }
-
-  private boolean jj_2_5(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_5(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(4, xla); }
-  }
-
-  private boolean jj_3_1() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(19)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) return true;
-    }
-    if (jj_scan_token(COLON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_scan_token(CONJUNCTION)) return true;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_3R_22()) return true;
-    if (jj_scan_token(LEFTBRACKET)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) jj_scanpos = xsp;
-    if (jj_scan_token(RIGHTBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_3R_14()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_21()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_25() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(19)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) return true;
-    }
-    if (jj_scan_token(COLON)) return true;
-    xsp = jj_scanpos;
-    if (jj_scan_token(19)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_25()) {
-    jj_scanpos = xsp;
-    if (jj_3R_26()) {
-    jj_scanpos = xsp;
-    if (jj_3R_27()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_22() {
-    if (jj_scan_token(LOWER_LEADING_ID)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_30() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(23)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(24)) return true;
-    }
-    if (jj_3R_29()) return true;
-    return false;
-  }
-
-  private boolean jj_3_3() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_2()) jj_scanpos = xsp;
-    if (jj_scan_token(32)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
-    if (jj_3R_29()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_30()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_38() {
-    if (jj_scan_token(UPPER_LEADING_ID)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    if (jj_scan_token(LOWER_LEADING_ID)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_scan_token(CAPMINUS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_41() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_32() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(25)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(26)) return true;
-    }
-    if (jj_3R_31()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_19() {
-    if (jj_scan_token(UMINUS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_scan_token(UPLUS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_29() {
-    if (jj_3R_31()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_32()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_39() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    if (jj_3R_16()) return true;
-    if (jj_scan_token(COMPARISON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_37() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_39()) {
-    jj_scanpos = xsp;
-    if (jj_3R_40()) {
-    jj_scanpos = xsp;
-    if (jj_3R_41()) {
-    jj_scanpos = xsp;
-    if (jj_3R_42()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_36() {
-    if (jj_scan_token(LEFTBRACKET)) return true;
-    if (jj_3R_24()) return true;
-    if (jj_scan_token(RIGHTBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_3R_17()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_18()) {
-    jj_scanpos = xsp;
-    if (jj_3R_19()) {
-    jj_scanpos = xsp;
-    if (jj_3R_20()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_34() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_31() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_33()) {
-    jj_scanpos = xsp;
-    if (jj_3R_34()) {
-    jj_scanpos = xsp;
-    if (jj_3R_35()) {
-    jj_scanpos = xsp;
-    if (jj_3R_36()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_28() {
-    if (jj_scan_token(CONJUNCTION)) return true;
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(19)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_3R_16()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_28()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  /** Generated Token Manager. */
-  public DLProgramParserTokenManager token_source;
-  JavaCharStream jj_input_stream;
-  /** Current token. */
-  public Token token;
-  /** Next token. */
-  public Token jj_nt;
-  private int jj_ntk;
-  private Token jj_scanpos, jj_lastpos;
-  private int jj_la;
-  private int jj_gen;
-  final private int[] jj_la1 = new int[36];
-  static private int[] jj_la1_0;
-  static private int[] jj_la1_1;
-  static {
-      jj_la1_init_0();
-      jj_la1_init_1();
-   }
-   private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xc0000,0xc0000,0xc0000,0x4c0000,0xe0000000,0x200,0x740000,0x200,0x87c0000,0x87c0000,0x6000000,0x6000000,0x1800000,0x1800000,0x1000000,0xe0000,0x10e4000,0x200,0x8000000,0x10e4000,0x97e4000,0x40,0x200,0x40,0x400,0x100,0x97e5400,0x80,0x200,0x1000000,0x200,0x0,0x200,0x0,0x2000,0x8000,};
-   }
-   private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x1,0x0,0x0,};
-   }
-  final private JJCalls[] jj_2_rtns = new JJCalls[5];
-  private boolean jj_rescan = false;
-  private int jj_gc = 0;
-
-  /** Constructor with InputStream. */
-  public DLProgramParser(java.io.InputStream stream) {
-     this(stream, null);
-  }
-  /** Constructor with InputStream and supplied encoding */
-  public DLProgramParser(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source = new DLProgramParserTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  /** Reinitialise. */
-  public void ReInit(java.io.InputStream stream) {
-     ReInit(stream, null);
-  }
-  /** Reinitialise. */
-  public void ReInit(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  /** Constructor. */
-  public DLProgramParser(java.io.Reader stream) {
-    jj_input_stream = new JavaCharStream(stream, 1, 1);
-    token_source = new DLProgramParserTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  /** Reinitialise. */
-  public void ReInit(java.io.Reader stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  /** Constructor with generated Token Manager. */
-  public DLProgramParser(DLProgramParserTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  /** Reinitialise. */
-  public void ReInit(DLProgramParserTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 36; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-  }
-
-  private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    if (token.kind == kind) {
-      jj_gen++;
-      if (++jj_gc > 100) {
-        jj_gc = 0;
-        for (int i = 0; i < jj_2_rtns.length; i++) {
-          JJCalls c = jj_2_rtns[i];
-          while (c != null) {
-            if (c.gen < jj_gen) c.first = null;
-            c = c.next;
-          }
-        }
-      }
-      return token;
-    }
-    token = oldToken;
-    jj_kind = kind;
-    throw generateParseException();
-  }
-
-  static private final class LookaheadSuccess extends java.lang.Error { }
-  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  private boolean jj_scan_token(int kind) {
-    if (jj_scanpos == jj_lastpos) {
-      jj_la--;
-      if (jj_scanpos.next == null) {
-        jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
-      } else {
-        jj_lastpos = jj_scanpos = jj_scanpos.next;
-      }
-    } else {
-      jj_scanpos = jj_scanpos.next;
-    }
-    if (jj_rescan) {
-      int i = 0; Token tok = token;
-      while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
-      if (tok != null) jj_add_error_token(kind, i);
-    }
-    if (jj_scanpos.kind != kind) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
-    return false;
-  }
-
-
-/** Get the next Token. */
-  final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    jj_gen++;
-    return token;
-  }
-
-/** Get the specific Token. */
-  final public Token getToken(int index) {
-    Token t = token;
-    for (int i = 0; i < index; i++) {
-      if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
-    }
-    return t;
-  }
-
-  private int jj_ntk() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
-  }
-
-  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
-  private int[] jj_expentry;
-  private int jj_kind = -1;
-  private int[] jj_lasttokens = new int[100];
-  private int jj_endpos;
-
-  private void jj_add_error_token(int kind, int pos) {
-    if (pos >= 100) return;
-    if (pos == jj_endpos + 1) {
-      jj_lasttokens[jj_endpos++] = kind;
-    } else if (jj_endpos != 0) {
-      jj_expentry = new int[jj_endpos];
-      for (int i = 0; i < jj_endpos; i++) {
-        jj_expentry[i] = jj_lasttokens[i];
-      }
-      boolean exists = false;
-      for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
-        exists = true;
-        int[] oldentry = (int[])(it.next());
-        if (oldentry.length == jj_expentry.length) {
-          for (int i = 0; i < jj_expentry.length; i++) {
-            if (oldentry[i] != jj_expentry[i]) {
-              exists = false;
-              break;
+                    break;
+                default:
+                    jj_la1[30] = jj_gen;
+                    break label_10;
             }
-          }
-          if (exists) break;
+            jj_consume_token(CONJUNCTION);
+            term = term();
+            literal.getTerms().add(term);
+            arity++;
         }
-      }
-      if (!exists) jj_expentries.add(jj_expentry);
-      if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
-    }
-  }
-
-  /** Generate ParseException. */
-  public ParseException generateParseException() {
-    jj_expentries.clear();
-    boolean[] la1tokens = new boolean[36];
-    if (jj_kind >= 0) {
-      la1tokens[jj_kind] = true;
-      jj_kind = -1;
-    }
-    for (int i = 0; i < 36; i++) {
-      if (jj_la1[i] == jj_gen) {
-        for (int j = 0; j < 32; j++) {
-          if ((jj_la1_0[i] & (1<<j)) != 0) {
-            la1tokens[j] = true;
-          }
-          if ((jj_la1_1[i] & (1<<j)) != 0) {
-            la1tokens[32+j] = true;
-          }
+        jj_consume_token(RIGHTBRACKET);
+        OWLLogicalEntity e;
+        if (ontology != null) {
+            e = findLogicalEntity(predicateName);
+            literal.setPredicate(new OWLPredicate(e));
+        } else {
+            if (ontology != null) {
+                e = findLogicalEntity(predicateName);
+            } else {
+                if (arity == 1) {
+                    e = OWLManager.getOWLDataFactory().getOWLClass(IRI.create(predicateName));
+                } else if (arity == 2) {
+                    e = OWLManager.getOWLDataFactory().getOWLObjectProperty(IRI.create(predicateName));
+                } else {
+                    {
+                        if (true)
+                            throw new IllegalStateException();
+                    }
+                }
+            }
+            literal.setPredicate(new OWLPredicate(e));
         }
-      }
-    }
-    for (int i = 0; i < 36; i++) {
-      if (la1tokens[i]) {
-        jj_expentry = new int[1];
-        jj_expentry[0] = i;
-        jj_expentries.add(jj_expentry);
-      }
-    }
-    jj_endpos = 0;
-    jj_rescan_token();
-    jj_add_error_token(0, 0);
-    int[][] exptokseq = new int[jj_expentries.size()][];
-    for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = jj_expentries.get(i);
-    }
-    return new ParseException(token, exptokseq, tokenImage);
-  }
-
-  /** Enable tracing. */
-  final public void enable_tracing() {
-  }
-
-  /** Disable tracing. */
-  final public void disable_tracing() {
-  }
-
-  private void jj_rescan_token() {
-    jj_rescan = true;
-    for (int i = 0; i < 5; i++) {
-    try {
-      JJCalls p = jj_2_rtns[i];
-      do {
-        if (p.gen > jj_gen) {
-          jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
-          switch (i) {
-            case 0: jj_3_1(); break;
-            case 1: jj_3_2(); break;
-            case 2: jj_3_3(); break;
-            case 3: jj_3_4(); break;
-            case 4: jj_3_5(); break;
-          }
+        literal.setNegative(neg);
+        {
+            if (true)
+                return literal;
         }
-        p = p.next;
-      } while (p != null);
-      } catch(LookaheadSuccess ls) { }
+        throw new Error("Missing return statement in function");
     }
-    jj_rescan = false;
-  }
 
-  private void jj_save(int index, int xla) {
-    JJCalls p = jj_2_rtns[index];
-    while (p.gen > jj_gen) {
-      if (p.next == null) { p = p.next = new JJCalls(); break; }
-      p = p.next;
+    final public List< Literal> conjunction() throws ParseException {
+        List< Literal> literals = new ArrayList< Literal>();
+        Literal literal;
+        literal = defaultLiteral();
+        literals.add(literal);
+        label_11:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case 35:
+        ;
+                    break;
+                default:
+                    jj_la1[31] = jj_gen;
+                    break label_11;
+            }
+            jj_consume_token(35);
+            literal = defaultLiteral();
+            literals.add(literal);
+        }
+        {
+            if (true)
+                return literals;
+        }
+        throw new Error("Missing return statement in function");
     }
-    p.gen = jj_gen + xla - jj_la; p.first = token; p.arg = xla;
-  }
 
-  static final class JJCalls {
-    int gen;
-    Token first;
-    int arg;
-    JJCalls next;
-  }
+    final public DefaultRule defaultRule() throws ParseException {
+        DefaultRule df = new DefaultRule();
+        List< Literal> prerequisite;
+        List< Literal> justification;
+        List< Literal> conclusion;
+        List< Literal> typing;
+        jj_consume_token(LEFT_SQUARE_BRACKET);
+        prerequisite = conjunction();
+        df.setPrerequisite(prerequisite);
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case 32:
+                jj_consume_token(32);
+                justification = conjunction();
+                df.getJustifications().add(justification);
+                label_12:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                        case CONJUNCTION:
+          ;
+                            break;
+                        default:
+                            jj_la1[32] = jj_gen;
+                            break label_12;
+                    }
+                    jj_consume_token(CONJUNCTION);
+                    justification = conjunction();
+                    df.getJustifications().add(justification);
+                }
+                break;
+            default:
+                jj_la1[33] = jj_gen;
+                ;
+        }
+        jj_consume_token(RIGHT_SQUARE_BRACKET);
+        jj_consume_token(DIVIDE);
+        jj_consume_token(LEFT_SQUARE_BRACKET);
+        conclusion = conjunction();
+        df.setConclusion(conclusion);
+        jj_consume_token(RIGHT_SQUARE_BRACKET);
+        switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+            case COMPARISON:
+                jj_consume_token(COMPARISON);
+                if (!token.image.equals("<")) {
+                    {
+                        if (true)
+                            throw new ParseException("\u005c'<\u005c' is expected :" + token.image);
+                    }
+                }
+                typing = conjunction();
+                df.setTyping(typing);
+                jj_consume_token(COMPARISON);
+                if (!token.image.equals(">")) {
+                    {
+                        if (true)
+                            throw new ParseException("\u005c'>\u005c' is expected :" + token.image);
+                    }
+                }
+                break;
+            default:
+                jj_la1[34] = jj_gen;
+                ;
+        }
+        {
+            if (true)
+                return df;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    final public List<DefaultRule> defaultRules() throws ParseException {
+        List<DefaultRule> rules = new ArrayList<DefaultRule>();
+        DefaultRule rule;
+        label_13:
+        while (true) {
+            switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
+                case LEFT_SQUARE_BRACKET:
+        ;
+                    break;
+                default:
+                    jj_la1[35] = jj_gen;
+                    break label_13;
+            }
+            rule = defaultRule();
+            rules.add(rule);
+        }
+        {
+            if (true)
+                return rules;
+        }
+        throw new Error("Missing return statement in function");
+    }
+
+    private boolean jj_2_1(int xla) {
+        jj_la = xla;
+        jj_lastpos = jj_scanpos = token;
+        try {
+            return !jj_3_1();
+        } catch (LookaheadSuccess ls) {
+            return true;
+        } finally {
+            jj_save(0, xla);
+        }
+    }
+
+    private boolean jj_2_2(int xla) {
+        jj_la = xla;
+        jj_lastpos = jj_scanpos = token;
+        try {
+            return !jj_3_2();
+        } catch (LookaheadSuccess ls) {
+            return true;
+        } finally {
+            jj_save(1, xla);
+        }
+    }
+
+    private boolean jj_2_3(int xla) {
+        jj_la = xla;
+        jj_lastpos = jj_scanpos = token;
+        try {
+            return !jj_3_3();
+        } catch (LookaheadSuccess ls) {
+            return true;
+        } finally {
+            jj_save(2, xla);
+        }
+    }
+
+    private boolean jj_2_4(int xla) {
+        jj_la = xla;
+        jj_lastpos = jj_scanpos = token;
+        try {
+            return !jj_3_4();
+        } catch (LookaheadSuccess ls) {
+            return true;
+        } finally {
+            jj_save(3, xla);
+        }
+    }
+
+    private boolean jj_2_5(int xla) {
+        jj_la = xla;
+        jj_lastpos = jj_scanpos = token;
+        try {
+            return !jj_3_5();
+        } catch (LookaheadSuccess ls) {
+            return true;
+        } finally {
+            jj_save(4, xla);
+        }
+    }
+
+    private boolean jj_3_1() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(19)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(18))
+                return true;
+        }
+        if (jj_scan_token(COLON))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_21() {
+        if (jj_scan_token(CONJUNCTION))
+            return true;
+        if (jj_3R_14())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_15() {
+        if (jj_3R_22())
+            return true;
+        if (jj_scan_token(LEFTBRACKET))
+            return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_23())
+            jj_scanpos = xsp;
+        if (jj_scan_token(RIGHTBRACKET))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3_2() {
+        if (jj_3R_14())
+            return true;
+        Token xsp;
+        while (true) {
+            xsp = jj_scanpos;
+            if (jj_3R_21()) {
+                jj_scanpos = xsp;
+                break;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_25() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(19)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(18))
+                return true;
+        }
+        if (jj_scan_token(COLON))
+            return true;
+        xsp = jj_scanpos;
+        if (jj_scan_token(19)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(18))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean jj_3R_17() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_25()) {
+            jj_scanpos = xsp;
+            if (jj_3R_26()) {
+                jj_scanpos = xsp;
+                if (jj_3R_27())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_22() {
+        if (jj_scan_token(LOWER_LEADING_ID))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_30() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(23)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(24))
+                return true;
+        }
+        if (jj_3R_29())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3_3() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3_2())
+            jj_scanpos = xsp;
+        if (jj_scan_token(32))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_24() {
+        if (jj_3R_29())
+            return true;
+        Token xsp;
+        while (true) {
+            xsp = jj_scanpos;
+            if (jj_3R_30()) {
+                jj_scanpos = xsp;
+                break;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_38() {
+        if (jj_scan_token(UPPER_LEADING_ID))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_42() {
+        if (jj_scan_token(LOWER_LEADING_ID))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_20() {
+        if (jj_scan_token(CAPMINUS))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_41() {
+        if (jj_scan_token(STRING))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_32() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(25)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(26))
+                return true;
+        }
+        if (jj_3R_31())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_19() {
+        if (jj_scan_token(UMINUS))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_18() {
+        if (jj_scan_token(UPLUS))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_29() {
+        if (jj_3R_31())
+            return true;
+        Token xsp;
+        while (true) {
+            xsp = jj_scanpos;
+            if (jj_3R_32()) {
+                jj_scanpos = xsp;
+                break;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_40() {
+        if (jj_scan_token(DOUBLE))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3_4() {
+        if (jj_3R_15())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_39() {
+        if (jj_scan_token(INTEGER))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3_5() {
+        if (jj_3R_16())
+            return true;
+        if (jj_scan_token(COMPARISON))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_37() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_39()) {
+            jj_scanpos = xsp;
+            if (jj_3R_40()) {
+                jj_scanpos = xsp;
+                if (jj_3R_41()) {
+                    jj_scanpos = xsp;
+                    if (jj_3R_42())
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_36() {
+        if (jj_scan_token(LEFTBRACKET))
+            return true;
+        if (jj_3R_24())
+            return true;
+        if (jj_scan_token(RIGHTBRACKET))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_35() {
+        if (jj_3R_38())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_14() {
+        if (jj_3R_17())
+            return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_18()) {
+            jj_scanpos = xsp;
+            if (jj_3R_19()) {
+                jj_scanpos = xsp;
+                if (jj_3R_20())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_34() {
+        if (jj_3R_37())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_33() {
+        if (jj_3R_15())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_31() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_33()) {
+            jj_scanpos = xsp;
+            if (jj_3R_34()) {
+                jj_scanpos = xsp;
+                if (jj_3R_35()) {
+                    jj_scanpos = xsp;
+                    if (jj_3R_36())
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_27() {
+        if (jj_scan_token(STRING))
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_28() {
+        if (jj_scan_token(CONJUNCTION))
+            return true;
+        if (jj_3R_16())
+            return true;
+        return false;
+    }
+
+    private boolean jj_3R_26() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(19)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(18))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean jj_3R_23() {
+        if (jj_3R_16())
+            return true;
+        Token xsp;
+        while (true) {
+            xsp = jj_scanpos;
+            if (jj_3R_28()) {
+                jj_scanpos = xsp;
+                break;
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_16() {
+        if (jj_3R_24())
+            return true;
+        return false;
+    }
+
+    /**
+     * Generated Token Manager.
+     */
+    public DLProgramParserTokenManager token_source;
+    JavaCharStream jj_input_stream;
+    /**
+     * Current token.
+     */
+    public Token token;
+    /**
+     * Next token.
+     */
+    public Token jj_nt;
+    private int jj_ntk;
+    private Token jj_scanpos, jj_lastpos;
+    private int jj_la;
+    private int jj_gen;
+    final private int[] jj_la1 = new int[36];
+    static private int[] jj_la1_0;
+    static private int[] jj_la1_1;
+
+    static {
+        jj_la1_init_0();
+        jj_la1_init_1();
+    }
+
+    private static void jj_la1_init_0() {
+        jj_la1_0 = new int[]{0xc0000, 0xc0000, 0xc0000, 0x4c0000, 0xe0000000, 0x200, 0x740000, 0x200, 0x87c0000, 0x87c0000, 0x6000000, 0x6000000, 0x1800000, 0x1800000, 0x1000000, 0xe0000, 0x10e4000, 0x200, 0x8000000, 0x10e4000, 0x97e4000, 0x40, 0x200, 0x40, 0x400, 0x100, 0x97e5400, 0x80, 0x200, 0x1000000, 0x200, 0x0, 0x200, 0x0, 0x2000, 0x8000,};
+    }
+
+    private static void jj_la1_init_1() {
+        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0x0, 0x1, 0x0, 0x0,};
+    }
+    final private JJCalls[] jj_2_rtns = new JJCalls[5];
+    private boolean jj_rescan = false;
+    private int jj_gc = 0;
+
+    /**
+     * Constructor with InputStream.
+     */
+    public DLProgramParser(java.io.InputStream stream) {
+        this(stream, null);
+    }
+
+    /**
+     * Constructor with InputStream and supplied encoding
+     */
+    public DLProgramParser(java.io.InputStream stream, String encoding) {
+        try {
+            jj_input_stream = new JavaCharStream(stream, encoding, 1, 1);
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        token_source = new DLProgramParserTokenManager(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    /**
+     * Reinitialise.
+     */
+    public void ReInit(java.io.InputStream stream) {
+        ReInit(stream, null);
+    }
+
+    /**
+     * Reinitialise.
+     */
+    public void ReInit(java.io.InputStream stream, String encoding) {
+        try {
+            jj_input_stream.ReInit(stream, encoding, 1, 1);
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    /**
+     * Constructor.
+     */
+    public DLProgramParser(java.io.Reader stream) {
+        jj_input_stream = new JavaCharStream(stream, 1, 1);
+        token_source = new DLProgramParserTokenManager(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    /**
+     * Reinitialise.
+     */
+    public void ReInit(java.io.Reader stream) {
+        jj_input_stream.ReInit(stream, 1, 1);
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    /**
+     * Constructor with generated Token Manager.
+     */
+    public DLProgramParser(DLProgramParserTokenManager tm) {
+        token_source = tm;
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    /**
+     * Reinitialise.
+     */
+    public void ReInit(DLProgramParserTokenManager tm) {
+        token_source = tm;
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 36; i++) {
+            jj_la1[i] = -1;
+        }
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+            jj_2_rtns[i] = new JJCalls();
+        }
+    }
+
+    private Token jj_consume_token(int kind) throws ParseException {
+        Token oldToken;
+        if ((oldToken = token).next != null)
+            token = token.next;
+        else
+            token = token.next = token_source.getNextToken();
+        jj_ntk = -1;
+        if (token.kind == kind) {
+            jj_gen++;
+            if (++jj_gc > 100) {
+                jj_gc = 0;
+                for (int i = 0; i < jj_2_rtns.length; i++) {
+                    JJCalls c = jj_2_rtns[i];
+                    while (c != null) {
+                        if (c.gen < jj_gen)
+                            c.first = null;
+                        c = c.next;
+                    }
+                }
+            }
+            return token;
+        }
+        token = oldToken;
+        jj_kind = kind;
+        throw generateParseException();
+    }
+
+    static private final class LookaheadSuccess extends java.lang.Error {
+    }
+    final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+
+    private boolean jj_scan_token(int kind) {
+        if (jj_scanpos == jj_lastpos) {
+            jj_la--;
+            if (jj_scanpos.next == null) {
+                jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
+            } else {
+                jj_lastpos = jj_scanpos = jj_scanpos.next;
+            }
+        } else {
+            jj_scanpos = jj_scanpos.next;
+        }
+        if (jj_rescan) {
+            int i = 0;
+            Token tok = token;
+            while (tok != null && tok != jj_scanpos) {
+                i++;
+                tok = tok.next;
+            }
+            if (tok != null)
+                jj_add_error_token(kind, i);
+        }
+        if (jj_scanpos.kind != kind)
+            return true;
+        if (jj_la == 0 && jj_scanpos == jj_lastpos)
+            throw jj_ls;
+        return false;
+    }
+
+    /**
+     * Get the next Token.
+     */
+    final public Token getNextToken() {
+        if (token.next != null)
+            token = token.next;
+        else
+            token = token.next = token_source.getNextToken();
+        jj_ntk = -1;
+        jj_gen++;
+        return token;
+    }
+
+    /**
+     * Get the specific Token.
+     */
+    final public Token getToken(int index) {
+        Token t = token;
+        for (int i = 0; i < index; i++) {
+            if (t.next != null)
+                t = t.next;
+            else
+                t = t.next = token_source.getNextToken();
+        }
+        return t;
+    }
+
+    private int jj_ntk() {
+        if ((jj_nt = token.next) == null)
+            return (jj_ntk = (token.next = token_source.getNextToken()).kind);
+        else
+            return (jj_ntk = jj_nt.kind);
+    }
+
+    private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+    private int[] jj_expentry;
+    private int jj_kind = -1;
+    private int[] jj_lasttokens = new int[100];
+    private int jj_endpos;
+
+    private void jj_add_error_token(int kind, int pos) {
+        if (pos >= 100)
+            return;
+        if (pos == jj_endpos + 1) {
+            jj_lasttokens[jj_endpos++] = kind;
+        } else if (jj_endpos != 0) {
+            jj_expentry = new int[jj_endpos];
+            for (int i = 0; i < jj_endpos; i++) {
+                jj_expentry[i] = jj_lasttokens[i];
+            }
+            boolean exists = false;
+            for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
+                exists = true;
+                int[] oldentry = (int[]) (it.next());
+                if (oldentry.length == jj_expentry.length) {
+                    for (int i = 0; i < jj_expentry.length; i++) {
+                        if (oldentry[i] != jj_expentry[i]) {
+                            exists = false;
+                            break;
+                        }
+                    }
+                    if (exists)
+                        break;
+                }
+            }
+            if (!exists)
+                jj_expentries.add(jj_expentry);
+            if (pos != 0)
+                jj_lasttokens[(jj_endpos = pos) - 1] = kind;
+        }
+    }
+
+    /**
+     * Generate ParseException.
+     */
+    public ParseException generateParseException() {
+        jj_expentries.clear();
+        boolean[] la1tokens = new boolean[36];
+        if (jj_kind >= 0) {
+            la1tokens[jj_kind] = true;
+            jj_kind = -1;
+        }
+        for (int i = 0; i < 36; i++) {
+            if (jj_la1[i] == jj_gen) {
+                for (int j = 0; j < 32; j++) {
+                    if ((jj_la1_0[i] & (1 << j)) != 0) {
+                        la1tokens[j] = true;
+                    }
+                    if ((jj_la1_1[i] & (1 << j)) != 0) {
+                        la1tokens[32 + j] = true;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 36; i++) {
+            if (la1tokens[i]) {
+                jj_expentry = new int[1];
+                jj_expentry[0] = i;
+                jj_expentries.add(jj_expentry);
+            }
+        }
+        jj_endpos = 0;
+        jj_rescan_token();
+        jj_add_error_token(0, 0);
+        int[][] exptokseq = new int[jj_expentries.size()][];
+        for (int i = 0; i < jj_expentries.size(); i++) {
+            exptokseq[i] = jj_expentries.get(i);
+        }
+        return new ParseException(token, exptokseq, tokenImage);
+    }
+
+    /**
+     * Enable tracing.
+     */
+    final public void enable_tracing() {
+    }
+
+    /**
+     * Disable tracing.
+     */
+    final public void disable_tracing() {
+    }
+
+    private void jj_rescan_token() {
+        jj_rescan = true;
+        for (int i = 0; i < 5; i++) {
+            try {
+                JJCalls p = jj_2_rtns[i];
+                do {
+                    if (p.gen > jj_gen) {
+                        jj_la = p.arg;
+                        jj_lastpos = jj_scanpos = p.first;
+                        switch (i) {
+                            case 0:
+                                jj_3_1();
+                                break;
+                            case 1:
+                                jj_3_2();
+                                break;
+                            case 2:
+                                jj_3_3();
+                                break;
+                            case 3:
+                                jj_3_4();
+                                break;
+                            case 4:
+                                jj_3_5();
+                                break;
+                        }
+                    }
+                    p = p.next;
+                } while (p != null);
+            } catch (LookaheadSuccess ls) {
+            }
+        }
+        jj_rescan = false;
+    }
+
+    private void jj_save(int index, int xla) {
+        JJCalls p = jj_2_rtns[index];
+        while (p.gen > jj_gen) {
+            if (p.next == null) {
+                p = p.next = new JJCalls();
+                break;
+            }
+            p = p.next;
+        }
+        p.gen = jj_gen + xla - jj_la;
+        p.first = token;
+        p.arg = xla;
+    }
+
+    static final class JJCalls {
+
+        int gen;
+        Token first;
+        int arg;
+        JJCalls next;
+    }
 
 }

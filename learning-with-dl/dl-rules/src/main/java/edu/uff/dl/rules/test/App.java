@@ -305,9 +305,9 @@ public class App {
         //EvaluatedRuleExample eva = new EvaluatedRuleExample(new File("/Users/Victor/Desktop/rule0.txt"));
         //loadArguments1();
         //loadResults();
-        //System.out.println("Test");
+        System.out.println("Test");
         //evaluateAll();
-        testCLI();
+//        testCLI();
         //createFolds();
         //testRun();
         //measureAll();
