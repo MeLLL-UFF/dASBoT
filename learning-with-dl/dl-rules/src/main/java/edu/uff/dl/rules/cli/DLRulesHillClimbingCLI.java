@@ -126,7 +126,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     System.out.println(Time.getTime(b));
                     System.out.println("File: " + genericRuleExample.getSerializedFile().getName());
 
-                    Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                    Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
                     r.start();
                     r.join();
 
@@ -201,7 +201,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * measure.
      */
     private double evaluateRule(EvaluatedRuleExample rule, RuleMeasurer ruleMeasure, double measure) throws TimeoutException {
-        RuleEvaluator re = new RuleEvaluator(rule.getRule(), args, fullDLPContent.toString(), positiveTrain, negativeTrain);
+        RuleEvaluator re = new RuleEvaluator(rule.getRule(), drewArgs, fullDLPContent.toString(), positiveTrain, negativeTrain);
         EvaluatedRule er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
         if (er == null)
             return measure;

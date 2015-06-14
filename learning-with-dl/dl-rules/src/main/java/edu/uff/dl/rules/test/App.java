@@ -57,6 +57,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.dllearner.confparser3.ParseException;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
@@ -66,12 +68,31 @@ import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
+import org.apache.commons.io.FileUtils;
 
 public class App {
 
     public static void redirectOutputStream(String filepath) throws FileNotFoundException {
-        PrintStream out = new PrintStream(new FileOutputStream(filepath));
+        redirectOutputStream(filepath, false);
+    }
+    
+    public static void redirectOutputStream(String filepath, boolean append) throws FileNotFoundException {
+        boolean writeNewLine = false;
+        File file = new File(filepath);
+        if (append) {
+            try {
+                writeNewLine = !FileUtils.readFileToString(file).isEmpty();
+            } catch (IOException ex) {
+                
+            }
+        }
+        
+        PrintStream out = new PrintStream(new FileOutputStream(filepath, append));
         System.setOut(out);
+        
+        if (writeNewLine) {
+            System.out.println("\n");
+        }
     }
 
     private static void evaluateCrossValidation(String cvDirectory, String out) throws IOException {
@@ -110,7 +131,7 @@ public class App {
     }
 
     private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
-        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/args7.txt").split("\n\n");
+        String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/argsResults.txt").split("\n\n");
 
         String dlpContent;
         String positiveExamples;
@@ -305,7 +326,7 @@ public class App {
         //EvaluatedRuleExample eva = new EvaluatedRuleExample(new File("/Users/Victor/Desktop/rule0.txt"));
         //loadArguments1();
         //loadResults();
-        System.out.println("Test");
+//        System.out.println("Test");
         //evaluateAll();
 //        testCLI();
         //createFolds();
@@ -330,7 +351,7 @@ public class App {
         //checkParameters();
         //System.out.println("oi");
         //testDReW();
-        //loadResults();
+        loadResults();
         //testDReWReasoner(0);
         //System.out.println("Main");
     }
@@ -360,7 +381,7 @@ public class App {
             "5"
         };
 
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/kb/args.txt").split("\n\n");
+        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB2/args.txt").split("\n\n");
         for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split(" ");
             for (String argument : arguments) {

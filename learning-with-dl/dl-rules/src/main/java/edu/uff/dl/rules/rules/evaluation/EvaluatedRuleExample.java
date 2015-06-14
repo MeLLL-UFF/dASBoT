@@ -45,8 +45,8 @@ public class EvaluatedRuleExample extends EvaluatedRule {
     }
 
     /**
-     * Contructor to create a {@link EvaluatedRuleExample} from a serialized file.
-     * Careful, when a {@link EvaluatedRuleExample} is serialized the
+     * Contructor to create a {@link EvaluatedRuleExample} from a serialized
+     * file. Careful, when a {@link EvaluatedRuleExample} is serialized the
      * {@link RuleMeasurer} is not serialized with it, if you deserialize a file
      * the {@link RuleMeasurer} will be null. You must provide a new
      * {@link RuleMeasurer} in case you want to get new measures.
@@ -70,6 +70,19 @@ public class EvaluatedRuleExample extends EvaluatedRule {
      * @param example the based example.
      */
     public EvaluatedRuleExample(final EvaluatedRule er, ConcreteLiteral example) {
+        this.example = example;
+        setEvaluatedRule(er);
+    }
+
+    /**
+     * Constructor with all needed parameters. Used to create an
+     * {@link EvaluatedRuleExample} from an {@link EvaluatedRule}.
+     *
+     * @param er the {@link EvaluatedRule}.
+     * @param example the based example.
+     * @param ruleMeasureFunction the rule measurer.
+     */
+    public EvaluatedRuleExample(final EvaluatedRule er, ConcreteLiteral example, RuleMeasurer ruleMeasureFunction) {
         this.example = example;
         setEvaluatedRule(er);
     }
@@ -119,6 +132,7 @@ public class EvaluatedRuleExample extends EvaluatedRule {
         } catch (IOException ex) {
             Logger.getLogger(EvaluatedRule.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.serializedFile = file;
     }
 
     @Override

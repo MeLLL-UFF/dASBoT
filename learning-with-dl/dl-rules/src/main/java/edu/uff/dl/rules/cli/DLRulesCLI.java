@@ -22,10 +22,13 @@ import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +42,7 @@ import java.util.logging.Logger;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Class to call the program by command line interface. This class can be used
@@ -68,27 +72,30 @@ public class DLRulesCLI {
 
     protected boolean rule;
     protected boolean refinement;
+    protected boolean generic;
     protected boolean crossValidation;
     protected boolean recursiveRuleAllowed = true;
 
     protected int depth;
     protected double threshold;
 
-    protected String[] args = DReWDefaultArgs.ARGS;
+    protected String[] drewArgs = DReWDefaultArgs.ARGS;
+    private String[] initArgs;
 
     /**
      * Main function, used to start the program.
      *
      * @param args the parameters needed for the program execution.<br>-rule to
-     * generate the rules (optional),<br>-ref to refine the rules
-     * (optional),<br>-cv to cross validate the rules (optional),<br>-norec to
-     * not allow recursive rules,<br>an integer number of bk files (omitted =
-     * 1),<br>a set of paths for the bk files, according with the number of
-     * files previous setted,<br>-tp to use template (file to type the
-     * individuos according with its relationships) (optional),<br>if -tp was
-     * used, the path of the template file,<br>an output directory for the
-     * program's output,<br>a timeout for the rule's inferences,<br>the cross
-     * validation directory with the folds,<br>the fold's prefix name.
+     * generate the rules (optional),<br>-ref to refine the rules (optional),
+     * gen, right after -ref, to refine most generic rules (option),<br>-cv to
+     * cross validate the rules (optional),<br>-norec to not allow recursive
+     * rules,<br>an integer number of bk files (omitted = 1),<br>a set of paths
+     * for the bk files, according with the number of files previous
+     * setted,<br>-tp to use template (file to type the individuos according
+     * with its relationships) (optional),<br>if -tp was used, the path of the
+     * template file,<br>an output directory for the program's output,<br>a
+     * timeout for the rule's inferences,<br>the cross validation directory with
+     * the folds,<br>the fold's prefix name.
      * @throws FileNotFoundException in case of a file path does not exist.
      */
     public static void main(String[] args) throws FileNotFoundException {
@@ -104,15 +111,22 @@ public class DLRulesCLI {
         boolean ref = false;
         boolean cv = false;
         boolean noRec = false;
+        boolean generic = false;
         try {
-
+            String peek;
             while (queue.peek().startsWith("-")) {
-                switch (queue.peek().toLowerCase()) {
+                peek = queue.peek().toLowerCase();
+                queue.remove();
+                switch (peek) {
                     case "-rule":
                         rule = true;
                         break;
                     case "-ref":
                         ref = true;
+                        if (queue.peek().toLowerCase().equals("gen")) {
+                            generic = true;
+                            queue.remove();
+                        }
                         break;
                     case "-cv":
                         cv = true;
@@ -121,7 +135,6 @@ public class DLRulesCLI {
                         noRec = true;
                         break;
                 }
-                queue.remove();
             }
 
             try {
@@ -173,11 +186,12 @@ public class DLRulesCLI {
             DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positeveTrain, negativeTrain, outputDirectory, timeout, template, cvDirectory, cvPrefix, cvNumberOfFolds);
             dlrcli.setRule(rule);
             dlrcli.setRefinement(ref);
+            dlrcli.setGeneric(generic);
             dlrcli.setCrossValidation(cv);
             dlrcli.setRecursiveRuleAllowed(!noRec);
             dlrcli.setDepth(depth);
             dlrcli.setThreshold(threshold);
-
+            dlrcli.setInitArgs(args);
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -226,7 +240,7 @@ public class DLRulesCLI {
         this.cvPrefix = cvPrefix;
         this.cvNumberOfFolds = cvNumberOfFolds;
 
-        args[2] = owlFilepath;
+        drewArgs[2] = owlFilepath;
     }
 
     /**
@@ -271,6 +285,13 @@ public class DLRulesCLI {
         Box<Long> localBegin;
         Box<Long> localEnd;
 
+        if (initArgs != null) {
+            for (int i = 0; i < initArgs.length; i++) {
+                sb.append(initArgs[i]).append("\n");
+            }
+            sb.append("\n");
+        }
+
         Time.getTime(globalBegin);
         if (rule) {
             localBegin = new Box<>(null);
@@ -307,17 +328,14 @@ public class DLRulesCLI {
 
         Time.getTime(globalEnd);
         sb.append("Global Total Time:\t").append(Time.getDiference(globalBegin, globalEnd));
-        PrintStream out = null;
+        
         try {
-            out = new PrintStream(outputDirectory + "globalStatistics.txt");
-            out.print(sb.toString().trim());
-
-        } catch (FileNotFoundException ex) {
+            FileUtils.write(new File(outputDirectory + "globalStatistics.txt"), sb.toString().trim(), true);
+        } catch (IOException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (out != null)
-                out.close();
         }
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
     }
 
     /**
@@ -335,7 +353,7 @@ public class DLRulesCLI {
             Box<Long> begin = new Box<>(null), end = new Box(null);
             int size;
             EvaluatedRule er = null;
-            EvaluatedRuleExample ere;
+            EvaluatedRuleExample evaluatedRuleExample;
             File fOut;
             String ruleName;
             List<ConcreteLiteral> examples;
@@ -348,6 +366,9 @@ public class DLRulesCLI {
 
             size = reasoner.getExamples().size();
 
+            List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
+            RuleMeasurer measure = new CompressionMeasure();
+            
             for (int i = 0; i < size; i++) {
                 ruleName = "rule" + i + ".txt";
                 try {
@@ -380,7 +401,7 @@ public class DLRulesCLI {
                     }
 
                     if (er != null) {
-                        ere = new EvaluatedRuleExample(er, run.getExamples().get(0));
+                        evaluatedRuleExample = new EvaluatedRuleExample(er, run.getExamples().get(0));
                     } else {
                         examples = run.getExamples();
 
@@ -390,26 +411,29 @@ public class DLRulesCLI {
                             example = examples.get(run.getOffset());
                         }
                         FileContent.getRuleFromString(run.getAnwserSetRule().getAnswerRule().getRule().toString());
-                        ere = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, null, example);
+                        evaluatedRuleExample = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, measure, example);
                     }
-
+                    
                     fOut = new File(outER + ruleName);
-                    ere.serialize(fOut);
+                    evaluatedRuleExample.serialize(fOut);
+                    
+                    evaluatedRuleExamples.add(evaluatedRuleExample);
                 } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
                     System.out.println(ex.getClass() + ": " + ex.getMessage());
                 }
             }
-
+            Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
+            
             try {
                 Time.getTime(end);
                 redirectOutputStream(outputDirectory + "statistics.txt");
-                System.out.println("Total of " + count + "rule(s)");
+                System.out.println("Total of " + count + " infered rule(s)");
                 System.out.println("Max time:\t" + max + "\tfor rule " + maxR);
                 System.out.println("Min time:\t" + min + "\tfor rule " + minR);
                 System.out.println("Avg time:\t" + (sun / (double) count));
                 System.out.println("Total time:\t" + Time.getDiference(begin.getContent(), end.getContent()));
                 System.out.println("\n");
-                printMeasure();
+                printMeasure(evaluatedRuleExamples);
             } catch (IOException ex) {
                 Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -426,7 +450,7 @@ public class DLRulesCLI {
     protected void refinement() {
         Box<Long> b = new Box<>(null), e = new Box(null);
         try {
-            redirectOutputStream(outRefinement + "statistics.txt");
+            redirectOutputStream(outRefinement + "statistics.txt", true);
 
             System.out.println("Begin time:\t" + Time.getTime(b));
             System.out.println("Refinement Threshold: " + threshold);
@@ -450,7 +474,7 @@ public class DLRulesCLI {
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
                         r.start();
                         r.join();
                         String fileName = file.getName();
@@ -458,25 +482,37 @@ public class DLRulesCLI {
                         String outPath = outRefinementAll + fileName + "_";
 
                         Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
-                        Set<Integer> keys = rules.keySet();
+                        List<Integer> keys = new ArrayList<>(rules.keySet());
+                        Collections.sort(keys);
                         Time.getTime(e);
 
                         File outputFile;
-                        Integer biggestKey = 0;
 
                         for (Integer key : keys) {
                             outputFile = new File(outPath + key + ".txt");
                             serializeRule = new EvaluatedRuleExample(rules.get(key), genericRuleExample.getExample());
                             serializeRule.serialize(outputFile);
-                            if (key > biggestKey) {
-                                biggestKey = key;
-                            }
                         }
 
                         outPath = outRefinement + fileName;
                         outputFile = new File(outPath + ".txt");
 
-                        serializeRule = new EvaluatedRuleExample(rules.get(biggestKey), genericRuleExample.getExample());
+                        int refinedRuleIndex = keys.size() - 1;
+                        serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), ruleMeasure);
+                        double measure = serializeRule.getMeasure();
+                        if (generic) {
+                            EvaluatedRuleExample otherRule;
+                            double otherMeasure;
+                            for (int i = refinedRuleIndex - 1; i > -1; i++) {
+                                otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), ruleMeasure);
+                                otherMeasure = otherRule.getMeasure();
+                                if (otherMeasure == measure) {
+                                    measure = otherMeasure;
+                                    serializeRule = otherRule;
+                                }
+                            }
+                        }
+
                         serializeRule.serialize(outputFile);
 
                         System.out.println(Time.getTime(e));
@@ -505,7 +541,7 @@ public class DLRulesCLI {
     protected void crossValidation() {
         Box<Long> b = new Box<>(null), e = new Box(null);
         try {
-            redirectOutputStream(outCV + "statistics.txt");
+            redirectOutputStream(outCV + "statistics.txt", true);
             System.out.println("Begin Time:\t" + Time.getTime(b));
             System.out.println("");
             System.out.println("");
@@ -554,7 +590,7 @@ public class DLRulesCLI {
         String fileName = ruleFile.getName();
         fileName = fileName.substring(0, fileName.lastIndexOf('.'));
 
-        re = new RuleEvaluator(cvRule.getRule(), args, dlpContent, positiveFolds.get(0), negativeFolds.get(0));
+        re = new RuleEvaluator(cvRule.getRule(), drewArgs, dlpContent, positiveFolds.get(0), negativeFolds.get(0));
         er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
         if (er == null)
             return;
@@ -580,24 +616,11 @@ public class DLRulesCLI {
      * Print a measure of the generated rules. Format: Rule name, measure, based
      * example.
      *
+     * @param ers List of sorted rules to print
      * @throws FileNotFoundException in case of the ER output directory does not
      * exist.
      */
-    protected void printMeasure() throws IOException {
-        File folder = new File(outER);
-        File[] listOfFiles = folder.listFiles();
-        Set<EvaluatedRuleExample> ers = new TreeSet<>(new EvaluatedRuleComparator());
-        EvaluatedRuleExample er;
-        RuleMeasurer measure = new CompressionMeasure();
-
-        for (File file : listOfFiles) {
-            if (file.isFile() && !file.isHidden()) {
-                er = new EvaluatedRuleExample(file);
-                er.setRuleMeasureFunction(measure);
-
-                ers.add(er);
-            }
-        }
+    protected void printMeasure(List<EvaluatedRuleExample> ers) throws IOException {
         int count = 1;
         String line, name;
         for (EvaluatedRuleExample evaluatedRule : ers) {
@@ -645,6 +668,25 @@ public class DLRulesCLI {
      */
     public void setRefinement(boolean refinement) {
         this.refinement = refinement;
+    }
+
+    /**
+     * Getter for most generic rule option at refinement.
+     *
+     * @return return true if most generic rule was setted, false otherwise.
+     */
+    public boolean isGeneric() {
+        return generic;
+    }
+
+    /**
+     * Setter for most generic rule option at refinement.
+     *
+     * @param generic true to enable most generic rule, false to most specific
+     * rule.
+     */
+    public void setGeneric(boolean generic) {
+        this.generic = generic;
     }
 
     /**
@@ -720,6 +762,10 @@ public class DLRulesCLI {
      */
     public void setThreshold(double threshold) {
         this.threshold = threshold;
+    }
+
+    private void setInitArgs(String[] initArgs) {
+        this.initArgs = initArgs;
     }
 
 }

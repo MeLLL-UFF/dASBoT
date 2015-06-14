@@ -6,7 +6,6 @@ package edu.uff.dl.rules.test;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
-import edu.uff.dl.rules.drew.DReWReasoner;
 import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -254,7 +254,7 @@ public class ResultSet {
 
     private long getFormatedTimeForRule(EvaluatedRuleExample rule) {
         String key = "Total time for file(" + rule.getSerializedFile().getName() + "): ";
-        int index = refinementStatistics.indexOf(key) + key.length();
+        int index = refinementStatistics.lastIndexOf(key) + key.length();
         long value = (long) (Double.parseDouble(refinementStatistics.substring(index, refinementStatistics.indexOf("s", index))) * 1000);
         //System.out.println("Values: " + value);
         return value;
@@ -262,23 +262,29 @@ public class ResultSet {
 
     private String getGeneratedRulesTotalTime() throws FileNotFoundException {
         String statistics = null;
-        String prefix = "Total time:";
         try {
-            statistics = FileContent.getStringFromFile(outputDirectory + "/globalStatistics.txt");
-            statistics = statistics.substring(statistics.indexOf(":") + 1, statistics.indexOf("\n")).trim();
-            if (statistics.startsWith("-")) {
-                try {
-                    statistics = Time.getFormatedTime(Long.parseLong(statistics.substring(1, statistics.length() - 1)));
-                } catch (Exception e) {
-                }
+            statistics = getTimeFromSource(outputDirectory + "/globalStatistics.txt", "Rules Total Time:");
+        } catch (IOException e) {
+            try {
+                statistics = getTimeFromSource(outputDirectory + "/statistics.txt", "Total time:");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-        } catch (Exception e) {
-            statistics = FileContent.getStringFromFile(outputDirectory + "/statistics.txt");
-            int index = statistics.indexOf("Total time:") + 1 + prefix.length();
-            statistics = statistics.substring(index, statistics.indexOf("\n", index)).trim();
         }
 
         return statistics;
+    }
+
+    private String getTimeFromSource(String sourceFile, String prefix) throws IOException {
+        long time = 0;
+        List<String> lines = FileUtils.readLines(new File(sourceFile));
+        for (String line : lines) {
+            if (line.startsWith(prefix)) {
+                time += Time.getLongTime(line.substring(prefix.length() + 1).trim());
+            }
+        }
+
+        return Time.getFormatedTime(time);
     }
 
 }
