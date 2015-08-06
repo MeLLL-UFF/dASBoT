@@ -18,14 +18,14 @@ import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.rules.DLExamplesRules;
-import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.evaluation.F1ScoreMeasure;
-import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.evaluation.F1ScoreMeasure;
+import edu.uff.dl.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.AlphabetCounter;
@@ -381,7 +381,7 @@ public class App {
             "5"
         };
 
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB2/args.txt").split("\n\n");
+        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
         for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split(" ");
             for (String argument : arguments) {

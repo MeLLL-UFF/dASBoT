@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.rules.evaluation;
 
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.Rule;
 
 /**

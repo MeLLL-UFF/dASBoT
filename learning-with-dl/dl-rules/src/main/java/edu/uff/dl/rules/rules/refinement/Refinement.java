@@ -4,7 +4,7 @@
 package edu.uff.dl.rules.rules.refinement;
 
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

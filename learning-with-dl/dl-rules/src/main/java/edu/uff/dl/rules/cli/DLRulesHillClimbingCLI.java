@@ -4,12 +4,12 @@
 package edu.uff.dl.rules.cli;
 
 import edu.uff.dl.rules.exception.TimeoutException;
-import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import static edu.uff.dl.rules.test.App.redirectOutputStream;

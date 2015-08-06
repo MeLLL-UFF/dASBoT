@@ -3,6 +3,7 @@
  */
 package edu.uff.dl.rules.datalog;
 
+import java.io.Serializable;
 import java.util.List;
 import org.semanticweb.drew.dlprogram.model.Term;
 
@@ -12,7 +13,7 @@ import org.semanticweb.drew.dlprogram.model.Term;
  *
  * @author Victor Guimarães
  */
-public interface ConcreteLiteral extends DataLogPredicate {
+public interface ConcreteLiteral extends DataLogPredicate, Serializable {
 
     /**
      * Getter to see if the literal has failed to be proved.

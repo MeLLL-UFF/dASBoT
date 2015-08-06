@@ -7,11 +7,11 @@ import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.rules.Rule;
-import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
@@ -161,7 +161,7 @@ public class ResultSet {
 //            time += getFormatedTimeForRule(ere);
 //        }
         System.out.println("\n");
-        System.out.println(sb.toString());
+        System.out.println(sb.toString().trim());
         System.out.println("\nTrain Measure:\t" + compareRule(dlpContent + "\n" + sb.toString(), literals));
         System.out.println("Positives: " + positives);
         System.out.println("Negatives: " + negatives);

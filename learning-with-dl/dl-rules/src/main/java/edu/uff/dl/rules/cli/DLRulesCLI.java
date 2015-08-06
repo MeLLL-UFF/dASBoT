@@ -5,17 +5,18 @@ package edu.uff.dl.rules.cli;
 
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+import edu.uff.dl.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.DLExamplesRules;
-import edu.uff.dl.rules.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
+import static edu.uff.dl.rules.test.App.redirectOutputStream;
 import static edu.uff.dl.rules.test.App.redirectOutputStream;
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
@@ -39,10 +40,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
-import org.apache.commons.io.FileUtils;
 
 /**
  * Class to call the program by command line interface. This class can be used
@@ -483,6 +484,10 @@ public class DLRulesCLI {
 
                         Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
                         List<Integer> keys = new ArrayList<>(rules.keySet());
+                        if (keys.isEmpty()) {
+                            continue;
+                        }
+                        
                         Collections.sort(keys);
                         Time.getTime(e);
 
@@ -503,7 +508,7 @@ public class DLRulesCLI {
                         if (generic) {
                             EvaluatedRuleExample otherRule;
                             double otherMeasure;
-                            for (int i = refinedRuleIndex - 1; i > -1; i++) {
+                            for (int i = refinedRuleIndex - 1; i > -1; i--) {
                                 otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), ruleMeasure);
                                 otherMeasure = otherRule.getMeasure();
                                 if (otherMeasure == measure) {
@@ -521,6 +526,8 @@ public class DLRulesCLI {
                         System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                         System.out.println("\n");
                     } catch (IOException | InterruptedException | NullPointerException ex) {
+                        Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
                         Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

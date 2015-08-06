@@ -9,12 +9,13 @@ import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.rules.SafeRule;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.util.answerpool.AnswerPool;
 import edu.uff.dl.rules.util.answerpool.RuleSizeComparator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -118,26 +119,28 @@ public class TopDownBoundedRefinement extends Refinement {
     private int loadBestMinimalRule(ConcreteLiteral head, final Set<? extends ConcreteLiteral> candidates, Comparator<EvaluatedRule> com) throws TimeoutException {
         AnswerPool<Rule> pool = loadMinimalRule(head, candidates);
         EvaluatedRule er;
-        SortedSet<EvaluatedRule> rules = new TreeSet<>(com);
-        int count = 0, error = 0;
+        //SortedSet<EvaluatedRule> rules = new TreeSet<>(com);
+        List<EvaluatedRule> rules = new ArrayList<>();
+//        int count = 0, error = 0;
         for (Rule rule : pool.getAnswerPool()) {
             RuleEvaluator re = new RuleEvaluator(rule, args, dlpContent, positiveSamples, negativeSamples);
             er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
             if (er == null) {
-                error++;
+//                error++;
                 System.out.println(rule);
             } else {
                 er.setRuleMeasureFunction(ruleMeasure);
                 rules.add(er);
             }
 
-            count++;
+//            count++;
         }
-        er = rules.first();
+        Collections.sort(rules, com);
+        er = rules.get(0);
         int size = er.getRule().getBody().size();
-        double measure1 = er.getMeasure();
-
-        double measure2 = rules.last().getMeasure();
+//        double measure1 = er.getMeasure();
+//
+//        double measure2 = rules.last().getMeasure();
 
         refinedRules.put(size, er);
 

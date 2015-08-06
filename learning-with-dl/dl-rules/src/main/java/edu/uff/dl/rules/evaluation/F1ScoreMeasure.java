@@ -2,7 +2,7 @@
  * UFF Project Semantic Learning
  */
 
-package edu.uff.dl.rules.rules.evaluation;
+package edu.uff.dl.rules.evaluation;
 
 import edu.uff.dl.rules.rules.Rule;
 
