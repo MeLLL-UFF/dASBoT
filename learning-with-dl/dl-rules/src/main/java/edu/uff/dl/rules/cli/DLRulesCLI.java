@@ -81,7 +81,7 @@ public class DLRulesCLI {
     protected double threshold;
 
     protected String[] drewArgs = DReWDefaultArgs.ARGS;
-    private String[] initArgs;
+    protected String[] initArgs;
 
     /**
      * Main function, used to start the program.
@@ -331,7 +331,7 @@ public class DLRulesCLI {
         sb.append("Global Total Time:\t").append(Time.getDiference(globalBegin, globalEnd));
         
         try {
-            FileUtils.write(new File(outputDirectory + "globalStatistics.txt"), sb.toString().trim(), true);
+            FileUtils.writeStringToFile(new File(outputDirectory + "globalStatistics.txt"), sb.toString().trim(), true);
         } catch (IOException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -504,15 +504,15 @@ public class DLRulesCLI {
 
                         int refinedRuleIndex = keys.size() - 1;
                         serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), ruleMeasure);
-                        double measure = serializeRule.getMeasure();
+                        double localMeasure = serializeRule.getMeasure();
                         if (generic) {
                             EvaluatedRuleExample otherRule;
                             double otherMeasure;
                             for (int i = refinedRuleIndex - 1; i > -1; i--) {
                                 otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), ruleMeasure);
                                 otherMeasure = otherRule.getMeasure();
-                                if (otherMeasure == measure) {
-                                    measure = otherMeasure;
+                                if (otherMeasure == localMeasure) {
+                                    localMeasure = otherMeasure;
                                     serializeRule = otherRule;
                                 }
                             }
@@ -771,7 +771,7 @@ public class DLRulesCLI {
         this.threshold = threshold;
     }
 
-    private void setInitArgs(String[] initArgs) {
+    protected void setInitArgs(String[] initArgs) {
         this.initArgs = initArgs;
     }
 

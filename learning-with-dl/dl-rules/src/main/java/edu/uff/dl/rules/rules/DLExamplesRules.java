@@ -7,7 +7,9 @@ import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+
 import static edu.uff.dl.rules.util.Time.getTime;
+
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
@@ -27,14 +29,13 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  * @author Victor Guimarães
  */
 public class DLExamplesRules extends Thread {
-
-    //In parametres
+    //Input parametres
     protected String dlpContent;
 
     protected String dlpPositivesExamples;
     protected String dlpNegativesExamples;
 
-    //Out parametres
+    //Output parametres
     protected DReWReasoner reasoner;
     protected double duration;
     protected AnswerSetRule answerSetRule;
@@ -80,10 +81,11 @@ public class DLExamplesRules extends Thread {
         Box<Long> b = new Box<>(null), e = new Box(null);
         begin = getTime(b);
         getTime();
+        
         try {
             runDLRulesReasoner(offset);
         } catch (ComponentInitException | IOException | ParseException ex) {
-            System.out.println(ex.getClass().getName() + ": " + ex.getMessage());
+            //Logger.getLogger(DLExamplesRules.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         end = getTime(e);

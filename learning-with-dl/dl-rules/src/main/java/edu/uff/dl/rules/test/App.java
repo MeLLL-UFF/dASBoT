@@ -328,7 +328,7 @@ public class App {
         //loadResults();
 //        System.out.println("Test");
         //evaluateAll();
-//        testCLI();
+        testCLI();
         //createFolds();
         //testRun();
         //measureAll();
@@ -387,7 +387,8 @@ public class App {
             for (String argument : arguments) {
                 System.out.println(argument);
             }
-            DLRulesCLI.main(arguments);
+//            DLRulesCLI.main(arguments);
+            DLRulesHillClimbingCLI.main(arguments);
         }
         args = DReWDefaultArgs.ARGS;
         //args[2]

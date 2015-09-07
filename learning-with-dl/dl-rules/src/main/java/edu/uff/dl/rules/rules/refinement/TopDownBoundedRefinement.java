@@ -72,7 +72,7 @@ public class TopDownBoundedRefinement extends Refinement {
         try {
             count = loadBestMinimalRule(head, candidates, com);
         } catch (TimeoutException ex) {
-            Logger.getLogger(TopDownBoundedRefinement.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(TopDownBoundedRefinement.class.getName()).log(Level.SEVERE, null, ex);
         }
         EvaluatedRule previousRule = refinedRules.get(count);
         EvaluatedRule currentRule;

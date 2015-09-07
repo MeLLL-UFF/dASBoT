@@ -7,8 +7,11 @@ import edu.uff.dl.rules.cli.DLRulesCLI;
 import java.io.FileNotFoundException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
@@ -28,18 +31,21 @@ public class CLIArgumentsParser {
     public String outputDirectory;
     public int timeout;
     public String templateFilepath;
-    public String cvDirectory;
-    public String cvPrefix;
-    public int cvNumberOfFolds;
+    
+    public String cvDirectory = null;
+    public String cvPrefix = null;
+    public int cvNumberOfFolds = 0;
 
     public boolean rule = false;
     public boolean ref = false;
     public boolean cv = false;
     public boolean noRec = false;
+    public boolean generic = false;
 
     public int depth;
     public double threshold;
     public int sideWayMoves;
+    public double theoryThreshold;
 
     /**
      * The constructor with the command line arguments.
@@ -55,7 +61,6 @@ public class CLIArgumentsParser {
      * Method to parse the arguments and load the values into variables.
      */
     public void parser() {
-        String template = null;
         int numberOfDLPFiles = 0;
         Queue<String> queue = new LinkedList<>();
 
@@ -63,70 +68,79 @@ public class CLIArgumentsParser {
             queue.add(arg);
         }
 
-        while (queue.peek().startsWith("-")) {
-            switch (queue.peek().toLowerCase()) {
-                case "-rule":
-                    rule = true;
-                    break;
-                case "-ref":
-                    ref = true;
-                    break;
-                case "-cv":
-                    cv = true;
-                    break;
-                case "-norec":
-                    noRec = true;
-                    break;
-            }
-            queue.remove();
-        }
-
         try {
-            numberOfDLPFiles = Integer.parseInt(queue.peek());
-        } catch (NumberFormatException ex) {
+            String peek;
+            while (queue.peek().startsWith("-")) {
+                peek = queue.peek().toLowerCase();
+                queue.remove();
+                switch (peek) {
+                    case "-rule":
+                        rule = true;
+                        break;
+                    case "-ref":
+                        ref = true;
+                        if (queue.peek().toLowerCase().equals("gen")) {
+                            generic = true;
+                            queue.remove();
+                        }
+                        break;
+                    case "-cv":
+                        cv = true;
+                        break;
+                    case "-norec":
+                        noRec = true;
+                        break;
+                }
+            }
 
+            try {
+                numberOfDLPFiles = Integer.parseInt(queue.peek());
+            } catch (NumberFormatException ex) {
+
+            }
+
+            if (numberOfDLPFiles != 0) {
+                queue.remove();
+            } else {
+                numberOfDLPFiles++;
+            }
+
+            dlpFilepaths = new LinkedHashSet<>(numberOfDLPFiles);
+            for (int i = 0; i < numberOfDLPFiles; i++) {
+                dlpFilepaths.add(queue.remove());
+            }
+
+            owlFilepath = queue.remove();
+            positiveTrainFilepath = queue.remove();
+            negativeTrainFilepath = queue.remove();
+
+            if (queue.peek().toLowerCase().equals("-tp")) {
+                queue.remove();
+                templateFilepath = queue.remove();
+            }
+
+            outputDirectory = queue.remove();
+            if (!outputDirectory.endsWith("/")) {
+                outputDirectory += "/";
+            }
+
+            timeout = Integer.parseInt(queue.remove());
+
+            if (cv) {
+                cvDirectory = queue.remove();
+                cvPrefix = queue.remove();
+                cvNumberOfFolds = Integer.parseInt(queue.remove());
+            }
+
+            depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
+            threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
+            
+            sideWayMoves = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : -1);
+            theoryThreshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
+            
+        } catch (NoSuchElementException | NumberFormatException ex) {
+            Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (numberOfDLPFiles != 0) {
-            queue.remove();
-        } else {
-            numberOfDLPFiles++;
-        }
-
-        dlpFilepaths = new LinkedHashSet<>(numberOfDLPFiles);
-        for (int i = 0; i < numberOfDLPFiles; i++) {
-            dlpFilepaths.add(queue.remove());
-        }
-
-        owlFilepath = queue.remove();
-        String positeveTrain = queue.remove();
-        String negativeTrain = queue.remove();
-
-        if (queue.peek().toLowerCase().equals("-tp")) {
-            queue.remove();
-            template = queue.remove();
-        }
-
-        outputDirectory = queue.remove();
-        if (!outputDirectory.endsWith("/")) {
-            outputDirectory += "/";
-        }
-
-        timeout = Integer.parseInt(queue.remove());
-
-        cvDirectory = null;
-        cvPrefix = null;
-        cvNumberOfFolds = 0;
-
-        if (cv) {
-            cvDirectory = queue.remove();
-            cvPrefix = queue.remove();
-            cvNumberOfFolds = Integer.parseInt(queue.remove());
-        }
-
-        depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
-        threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
-        sideWayMoves = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
     }
 
     /**

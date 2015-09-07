@@ -139,14 +139,25 @@ public class RuleEvaluator extends Thread {
      * @return the number of literals from listExamples appears on literals.
      */
     protected static int compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples) {
-        int positive = 0;
+        int covered = 0;
         for (Literal s : listExamples) {
             if (literals.contains(s)) {
                 //System.out.println(s);
-                positive++;
+                covered++;
             }
         }
-        return positive;
+        return covered;
+    }
+    
+    protected static int compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples, Set<Literal> coveredExamples) {
+        int covered = 0;
+        for (Literal s : listExamples) {
+            if (literals.contains(s)) {
+                coveredExamples.add(s);
+                covered++;
+            }
+        }
+        return covered;
     }
 
     /**

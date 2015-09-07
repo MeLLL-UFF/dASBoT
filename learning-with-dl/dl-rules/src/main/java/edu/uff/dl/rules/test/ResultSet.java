@@ -186,7 +186,7 @@ public class ResultSet {
         System.out.println("Tempo total:\t\t" + Time.getFormatedTime(Time.getLongTime(getGeneratedRulesTotalTime()) + time));
     }
 
-    private boolean containsEquivalentRule(List<EvaluatedRuleExample> rules, Rule rule) {
+    private static boolean containsEquivalentRule(List<EvaluatedRuleExample> rules, Rule rule) {
         for (EvaluatedRuleExample r : rules) {
             if (rule.isEquivalent(r.getRule())) {
                 return true;
@@ -234,14 +234,13 @@ public class ResultSet {
         }
     }
 
-    private ConcreteLiteral createConcreteLiteral(Literal literal) {
+    private static ConcreteLiteral createConcreteLiteral(Literal literal) {
         String head = literal.getPredicate().toString();
         head = head.substring(0, Math.min(head.indexOf("/"), head.length()));
         return new DataLogLiteral(head, literal.getTerms(), literal.isNegative());
     }
 
     protected static Set<Literal> compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples) {
-        int positive = 0;
         Set<Literal> covered = new HashSet<>();
         for (Literal s : listExamples) {
             if (literals.contains(s)) {
@@ -275,7 +274,7 @@ public class ResultSet {
         return statistics;
     }
 
-    private String getTimeFromSource(String sourceFile, String prefix) throws IOException {
+    private static String getTimeFromSource(String sourceFile, String prefix) throws IOException {
         long time = 0;
         List<String> lines = FileUtils.readLines(new File(sourceFile));
         for (String line : lines) {
