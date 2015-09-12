@@ -161,7 +161,7 @@ public class App {
                 out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4).replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
                 ResultSet rs = new ResultSet(dlpContent, positiveExamples, negativeExamples, outputDirectory, measurer, args);
-
+                System.out.println(rs.toString());
                 System.setOut(stream);
                 System.out.println("Done: " + outputDirectory + "results.txt");
             } catch (IOException | org.semanticweb.drew.dlprogram.parser.ParseException e) {
@@ -328,7 +328,7 @@ public class App {
         //loadResults();
 //        System.out.println("Test");
         //evaluateAll();
-        testCLI();
+//        testCLI();
         //createFolds();
         //testRun();
         //measureAll();
@@ -387,8 +387,8 @@ public class App {
             for (String argument : arguments) {
                 System.out.println(argument);
             }
-//            DLRulesCLI.main(arguments);
-            DLRulesHillClimbingCLI.main(arguments);
+            DLRulesCLI.main(arguments);
+//            DLRulesHillClimbingCLI.main(arguments);
         }
         args = DReWDefaultArgs.ARGS;
         //args[2]

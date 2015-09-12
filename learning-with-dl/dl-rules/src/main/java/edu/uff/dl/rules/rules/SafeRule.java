@@ -89,20 +89,50 @@ public class SafeRule extends Rule {
         }
 
         for (ConcreteLiteral con : copy) {
-            if (containsAll(safeTerms, con.getTerms()) && ! horn.getPredicate().equals(con.getPredicate())) {
+            if (containsAll(safeTerms, con.getTerms()) && !horn.getPredicate().equals(con.getPredicate())) {
                 result.add(con);
             }
         }
 
         return result;
     }
-    
-    private boolean containsAll(Set<Constant> safeTerms, List<Term> conTerms) {
+
+    /**
+     * Checks if the rule is impossible to be safe.
+     *
+     * @param rule the rule
+     * 
+     * @return True if is impossible, false otherwise.
+     */
+    public static boolean isImpossibleSafe(Rule rule) {
+        Set<Constant> safeTerms = new HashSet<>();
+        List<? extends ConcreteLiteral> copy = new ArrayList<>(rule.getBody());
+        Iterator<? extends ConcreteLiteral> it = copy.iterator();
+        while (it.hasNext()) {
+            ConcreteLiteral con = it.next();
+            if (!con.hasFailed()) {
+                for (Term term : con.getTerms()) {
+                    safeTerms.add(new Constant(term.getName()));
+                }
+                //safeTerms.addAll(con.getTerms());
+                
+                it.remove();
+            }
+        }
+
+        if (!containsAll(safeTerms, rule.getHead().getTerms())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean containsAll(Set<Constant> safeTerms, List<Term> conTerms) {
         Set<Constant> terms = new HashSet<>();
         for (Term term : conTerms) {
             terms.add(new Constant(term.getName()));
         }
-        
+
         return safeTerms.containsAll(terms);
     }
 

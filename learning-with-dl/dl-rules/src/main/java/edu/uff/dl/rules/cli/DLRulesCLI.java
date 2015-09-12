@@ -54,6 +54,8 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  */
 public class DLRulesCLI {
 
+    public static final String RULE_MEASURE_PACKAGE_NAME = "edu.uff.dl.rules.evaluation";
+
     protected String owlFilepath;
     protected String outputDirectory;
 
@@ -82,6 +84,9 @@ public class DLRulesCLI {
 
     protected String[] drewArgs = DReWDefaultArgs.ARGS;
     protected String[] initArgs;
+
+    protected RuleMeasurer generateRuleMeasure;
+    protected RuleMeasurer refinementRuleMeasure;
 
     /**
      * Main function, used to start the program.
@@ -184,6 +189,9 @@ public class DLRulesCLI {
             int depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
             double threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
 
+            String generateMeasure = (!queue.isEmpty() ? queue.remove() : "CompressionMeasure");
+            String refinementMeasure = (!queue.isEmpty() ? queue.remove() : "LaplaceMeasure");
+
             DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positeveTrain, negativeTrain, outputDirectory, timeout, template, cvDirectory, cvPrefix, cvNumberOfFolds);
             dlrcli.setRule(rule);
             dlrcli.setRefinement(ref);
@@ -193,6 +201,10 @@ public class DLRulesCLI {
             dlrcli.setDepth(depth);
             dlrcli.setThreshold(threshold);
             dlrcli.setInitArgs(args);
+
+            dlrcli.setGenerateRuleMeasure(generateMeasure);
+            dlrcli.setRefinementRuleMeasure(refinementMeasure);
+
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -279,6 +291,14 @@ public class DLRulesCLI {
      * Function used to initiate the process.
      */
     public void init() {
+        if (generateRuleMeasure == null) {
+            setGenerateRuleMeasure(null);
+        }
+
+        if (refinementRuleMeasure == null) {
+            setRefinementRuleMeasure(null);
+        }
+
         StringBuilder sb = new StringBuilder();
 
         Box<Long> globalBegin = new Box<>(null);
@@ -329,7 +349,7 @@ public class DLRulesCLI {
 
         Time.getTime(globalEnd);
         sb.append("Global Total Time:\t").append(Time.getDiference(globalBegin, globalEnd));
-        
+
         try {
             FileUtils.writeStringToFile(new File(outputDirectory + "globalStatistics.txt"), sb.toString().trim(), true);
         } catch (IOException ex) {
@@ -368,8 +388,7 @@ public class DLRulesCLI {
             size = reasoner.getExamples().size();
 
             List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
-            RuleMeasurer measure = new CompressionMeasure();
-            
+
             for (int i = 0; i < size; i++) {
                 ruleName = "rule" + i + ".txt";
                 try {
@@ -412,19 +431,19 @@ public class DLRulesCLI {
                             example = examples.get(run.getOffset());
                         }
                         FileContent.getRuleFromString(run.getAnwserSetRule().getAnswerRule().getRule().toString());
-                        evaluatedRuleExample = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, measure, example);
+                        evaluatedRuleExample = new EvaluatedRuleExample(run.getAnwserSetRule().getAnswerRule().getRule(), 0, 0, 0, 0, generateRuleMeasure, example);
                     }
-                    
+
                     fOut = new File(outER + ruleName);
                     evaluatedRuleExample.serialize(fOut);
-                    
+
                     evaluatedRuleExamples.add(evaluatedRuleExample);
                 } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
                     System.out.println(ex.getClass() + ": " + ex.getMessage());
                 }
             }
             Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
-            
+
             try {
                 Time.getTime(end);
                 redirectOutputStream(outputDirectory + "statistics.txt");
@@ -448,6 +467,7 @@ public class DLRulesCLI {
      * directory. If succeeded, store the rule on the refinement directory on
      * the serialized version of the <code>{@link EvaluatedRuleExample}</code>
      */
+    @SuppressWarnings("UseSpecificCatch")
     protected void refinement() {
         Box<Long> b = new Box<>(null), e = new Box(null);
         try {
@@ -455,7 +475,7 @@ public class DLRulesCLI {
 
             System.out.println("Begin time:\t" + Time.getTime(b));
             System.out.println("Refinement Threshold: " + threshold);
-            RuleMeasurer ruleMeasure = new LaplaceMeasure();
+
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
@@ -475,7 +495,7 @@ public class DLRulesCLI {
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure);
                         r.start();
                         r.join();
                         String fileName = file.getName();
@@ -487,7 +507,7 @@ public class DLRulesCLI {
                         if (keys.isEmpty()) {
                             continue;
                         }
-                        
+
                         Collections.sort(keys);
                         Time.getTime(e);
 
@@ -503,13 +523,13 @@ public class DLRulesCLI {
                         outputFile = new File(outPath + ".txt");
 
                         int refinedRuleIndex = keys.size() - 1;
-                        serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), ruleMeasure);
+                        serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), refinementRuleMeasure);
                         double localMeasure = serializeRule.getMeasure();
                         if (generic) {
                             EvaluatedRuleExample otherRule;
                             double otherMeasure;
                             for (int i = refinedRuleIndex - 1; i > -1; i--) {
-                                otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), ruleMeasure);
+                                otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), refinementRuleMeasure);
                                 otherMeasure = otherRule.getMeasure();
                                 if (otherMeasure == localMeasure) {
                                     localMeasure = otherMeasure;
@@ -599,16 +619,18 @@ public class DLRulesCLI {
 
         re = new RuleEvaluator(cvRule.getRule(), drewArgs, dlpContent, positiveFolds.get(0), negativeFolds.get(0));
         er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
-        if (er == null)
+        if (er == null) {
             return;
+        }
         crossEvaluated = new EvaluatedRuleExample(er, cvRule.getExample());
 
         out = new File(outCV + fileName + "_Fold" + 1 + ".txt");
         crossEvaluated.serialize(out);
         for (int i = 1; i < positiveFolds.size(); i++) {
             er = RuleEvaluator.reEvaluateRule(re, positiveFolds.get(i), negativeFolds.get(i));
-            if (er == null)
+            if (er == null) {
                 return;
+            }
             crossEvaluated = new EvaluatedRuleExample(er, cvRule.getExample());
 
             out = new File(outCV + fileName + "_Fold" + (i + 1) + ".txt");
@@ -633,8 +655,9 @@ public class DLRulesCLI {
         for (EvaluatedRuleExample evaluatedRule : ers) {
             name = evaluatedRule.getSerializedFile().getName();
             line = count + ":\tRule: " + name;
-            if (Integer.parseInt(name.substring(4, name.lastIndexOf("."))) < 10)
+            if (Integer.parseInt(name.substring(4, name.lastIndexOf("."))) < 10) {
                 line += "\t";
+            }
             line += "\tMeasure: " + evaluatedRule.getMeasure() + "\tExamaple: " + evaluatedRule.getExample().toString();
             System.out.println(line);
             count++;
@@ -773,6 +796,34 @@ public class DLRulesCLI {
 
     protected void setInitArgs(String[] initArgs) {
         this.initArgs = initArgs;
+    }
+
+    public RuleMeasurer getGenerateRuleMeasure() {
+        return generateRuleMeasure;
+    }
+
+    public void setGenerateRuleMeasure(String generateRuleMeasureClassName) {
+        try {
+            this.generateRuleMeasure = (RuleMeasurer) Class.forName(RULE_MEASURE_PACKAGE_NAME + "." + generateRuleMeasureClassName).newInstance();
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | NullPointerException |
+                ClassCastException ex) {
+            this.generateRuleMeasure = new CompressionMeasure();
+        }
+    }
+
+    public RuleMeasurer getRefinementRuleMeasure() {
+        return refinementRuleMeasure;
+    }
+
+    public void setRefinementRuleMeasure(String refinementRuleMeasureClassName) {
+        try {
+            this.refinementRuleMeasure = (RuleMeasurer) Class.forName(RULE_MEASURE_PACKAGE_NAME + "." + refinementRuleMeasureClassName).newInstance();
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | NullPointerException |
+                ClassCastException ex) {
+            this.refinementRuleMeasure = new LaplaceMeasure();
+        }
     }
 
 }

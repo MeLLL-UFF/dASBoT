@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
 
@@ -69,6 +67,11 @@ public class TopDownBoundedRefinement extends Refinement {
         //Trocar as duas linhas a seguir pela regra safe mínima e count = tamanho do corpo da regra
         //refineRule(new Rule(head, null), candidates, count, com);
         int count = 0;
+        
+        if (SafeRule.isImpossibleSafe(boundRule.getRule())) {
+            return;
+        }
+        
         try {
             count = loadBestMinimalRule(head, candidates, com);
         } catch (TimeoutException ex) {

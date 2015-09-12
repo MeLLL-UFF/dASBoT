@@ -35,8 +35,11 @@ import org.apache.commons.io.FileUtils;
 public class ResultSet {
 
     private String dlpContent;
-    private String positiveExamples;
-    private String negativeExamples;
+    private String positiveTrainFilePath;
+    private String negativeTrainFilePath;
+    
+    private String positiveTestFilePath;
+    private String negativeTestFilePath;
 
     private String outputDirectory;
 
@@ -54,22 +57,31 @@ public class ResultSet {
     private int negatives;
     private int negativesCovered;
     private int maxSideWayMovements = -1;
+    
+    private StringBuilder description;
 
-    public ResultSet(String dlpContent, String positiveExamples, String negativeExamples, String outputDirectory, RuleMeasurer measurer, String[] args) throws IOException, ParseException {
+    public ResultSet(String dlpContent, String positiveTrainFilePath, String negativeTrainFilePath, String outputDirectory, RuleMeasurer measurer, String[] args) throws IOException, ParseException {
         this.dlpContent = dlpContent;
-        this.positiveExamples = positiveExamples;
-        this.negativeExamples = negativeExamples;
+        this.positiveTrainFilePath = positiveTrainFilePath;
+        this.negativeTrainFilePath = negativeTrainFilePath;
         this.outputDirectory = outputDirectory;
         this.measurer = measurer;
         this.args = args;
-        this.refinementStatistics = FileContent.getStringFromFile(outputDirectory + "refinement/statistics.txt");
+        this.refinementStatistics = FileContent.getStringFromFile(new File(outputDirectory, "refinement/statistics.txt"));
+        description = new StringBuilder();
         loadRules();
         loadResults();
     }
 
+    public ResultSet(String dlpContent, String positiveTrainFilePath, String negativeTrainFilePath, String positiveTestFilePath, String negativeTestFilePath, String outputDirectory, RuleMeasurer measurer, String[] args) throws IOException, ParseException {
+        this(dlpContent, positiveTrainFilePath, negativeTrainFilePath, outputDirectory, measurer, args);
+        this.positiveTestFilePath = positiveTestFilePath;
+        this.negativeTestFilePath = negativeTestFilePath;
+    }
+    
     private void loadRules() throws IOException {
         evaluatedRuleExamples = new LinkedList<>();
-        File[] files = (new File(outputDirectory + "ER/")).listFiles();
+        File[] files = (new File(outputDirectory, "ER/")).listFiles();
         RuleMeasurer compression = new CompressionMeasure();
         EvaluatedRuleExample evaluatedRuleExample;
         for (File file : files) {
@@ -84,7 +96,7 @@ public class ResultSet {
         Collections.sort(evaluatedRuleExamples, com);
 
         for (EvaluatedRuleExample ere : evaluatedRuleExamples) {
-            System.out.println("Measure: " + ere.getMeasure() + "\tExample: " + ere.getExample());
+            description.append("Measure: ").append(ere.getMeasure()).append("\tExample: ").append(ere.getExample()).append("\n");
         }
     }
 
@@ -96,8 +108,8 @@ public class ResultSet {
         double measure = 0.0, newMeasure;
 
         try {
-            Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveExamples));
-            Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeExamples));
+            Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveTrainFilePath));
+            Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeTrainFilePath));
             EvaluatedRule er = new EvaluatedRule(null, posExamples.size(), negExamples.size(), 0, 0, measurer);
             measure = er.getMeasure();
         } catch (Exception e) {
@@ -160,30 +172,32 @@ public class ResultSet {
 //            count++;
 //            time += getFormatedTimeForRule(ere);
 //        }
-        System.out.println("\n");
-        System.out.println(sb.toString().trim());
-        System.out.println("\nTrain Measure:\t" + compareRule(dlpContent + "\n" + sb.toString(), literals));
-        System.out.println("Positives: " + positives);
-        System.out.println("Negatives: " + negatives);
-        System.out.println("Covered positives: " + positivesCovered);
-        System.out.println("Covered negatives: " + negativesCovered);
+        description.append("\n\n");
+        description.append(sb.toString().trim()).append("\n");
+        description.append("\nTrain Measure:\t").append(compareRule(dlpContent + "\n" + sb.toString(), literals)).append("\n");
+        description.append("Positives: ").append(positives).append("\n");
+        description.append("Negatives: ").append(negatives).append("\n");
+        description.append("Covered positives: ").append(positivesCovered).append("\n");
+        description.append("Covered negatives: ").append(negativesCovered).append("\n");
 
-        if (new File(positiveExamples.replace("train", "test")).exists() && new File(negativeExamples.replace("train", "test")).exists()) {
-            positiveExamples = positiveExamples.replace("train", "test");
-            negativeExamples = negativeExamples.replace("train", "test");
-            System.out.println("\nTest Measure:\t" + compareRule(dlpContent + "\n" + sb.toString(), literals));
-            System.out.println("Positives: " + positives);
-            System.out.println("Negatives: " + negatives);
-            System.out.println("Covered positives: " + positivesCovered);
-            System.out.println("Covered negatives: " + negativesCovered);
+        if (positiveTestFilePath != null && negativeTestFilePath != null
+                && new File(positiveTestFilePath).exists() && new File(negativeTestFilePath).exists()) {
+            positiveTrainFilePath = positiveTrainFilePath.replace("train", "test");
+            negativeTrainFilePath = negativeTrainFilePath.replace("train", "test");
+            description.append("\nTest Measure:\t").append(compareRule(dlpContent + "\n" + sb.toString(), literals)).append("\n");
+            description.append("Positives: ").append(positives).append("\n");
+            description.append("Negatives: ").append(negatives).append("\n");
+            description.append("Covered positives: ").append(positivesCovered).append("\n");
+            description.append("Covered negatives: ").append(negativesCovered).append("\n");
         }
 
-        System.out.println("");
-        System.out.println("Avaliação Inicial: " + initialMeasure);
-        System.out.println("Limiar: " + threshold);
-        System.out.println("Geração das regras:\t" + getGeneratedRulesTotalTime());
-        System.out.println("Refinamento das regras:\t" + Time.getFormatedTime(time));
-        System.out.println("Tempo total:\t\t" + Time.getFormatedTime(Time.getLongTime(getGeneratedRulesTotalTime()) + time));
+        description.append("\n");
+        description.append("Measure Class: ").append(measurer.getClass().getName()).append("\n");
+        description.append("Initial Measure: ").append(initialMeasure).append("\n");
+        description.append("Threshold: ").append(threshold).append("\n");
+        description.append("Rules generation:\t").append(getGeneratedRulesTotalTime()).append("\n");
+        description.append("Rule refinement:\t").append(Time.getFormatedTime(time)).append("\n");
+        description.append("Total time:\t\t").append(Time.getFormatedTime(Time.getLongTime(getGeneratedRulesTotalTime()) + time)).append("\n");
     }
 
     private static boolean containsEquivalentRule(List<EvaluatedRuleExample> rules, Rule rule) {
@@ -208,8 +222,8 @@ public class ResultSet {
             lits.addAll(set);
         }
 
-        Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveExamples));
-        Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeExamples));
+        Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveTrainFilePath));
+        Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeTrainFilePath));
 
         positives = posExamples.size();
         Set<Literal> covered = compareRuleWithExample(lits, posExamples);
@@ -244,7 +258,6 @@ public class ResultSet {
         Set<Literal> covered = new HashSet<>();
         for (Literal s : listExamples) {
             if (literals.contains(s)) {
-                //System.out.println(s);
                 covered.add(s);
             }
         }
@@ -255,7 +268,7 @@ public class ResultSet {
         String key = "Total time for file(" + rule.getSerializedFile().getName() + "): ";
         int index = refinementStatistics.lastIndexOf(key) + key.length();
         long value = (long) (Double.parseDouble(refinementStatistics.substring(index, refinementStatistics.indexOf("s", index))) * 1000);
-        //System.out.println("Values: " + value);
+        
         return value;
     }
 
@@ -284,6 +297,11 @@ public class ResultSet {
         }
 
         return Time.getFormatedTime(time);
+    }
+
+    @Override
+    public String toString() {
+        return description.toString().trim();
     }
 
 }

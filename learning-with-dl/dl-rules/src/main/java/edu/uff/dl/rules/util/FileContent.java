@@ -6,11 +6,14 @@ package edu.uff.dl.rules.util;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.rules.Rule;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -208,12 +211,14 @@ public class FileContent {
     public static Rule getRuleFromString(String rule) throws ParseException {
         ProgramStatement ps = getProgramStatements(rule).get(0);
 
-        if (!ps.isClause())
+        if (!ps.isClause()) {
             return null;
+        }
         Clause c = ps.asClause();
 
-        if (c.getType() != ClauseType.RULE)
+        if (c.getType() != ClauseType.RULE) {
             return null;
+        }
 
         SortedSet<DataLogLiteral> lits = new TreeSet<>();
 
@@ -278,6 +283,22 @@ public class FileContent {
         bw.write(content);
 
         bw.close();
+    }
+
+    public static void saveConcreteLiteralToFile(Collection<? extends ConcreteLiteral> concreteLiterals, File outputFile, String encode) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encode))) {
+            for (ConcreteLiteral concreteLiteral : concreteLiterals) {
+                bw.write(concreteLiteral.toString() + "\n");
+            }
+        } catch (IOException ex) {
+            throw ex;
+        }
+    }
+
+    public static Set<ConcreteLiteral> readConcreteLiteralToFile(String fileContent) throws ParseException {
+        Set<Literal> literals = getExamplesLiterals(fileContent);
+
+        return DataLogLiteral.getSetOfLiterals(literals);
     }
 
 }
