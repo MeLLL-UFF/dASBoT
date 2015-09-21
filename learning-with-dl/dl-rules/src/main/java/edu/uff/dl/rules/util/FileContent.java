@@ -288,7 +288,7 @@ public class FileContent {
     public static void saveConcreteLiteralToFile(Collection<? extends ConcreteLiteral> concreteLiterals, File outputFile, String encode) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encode))) {
             for (ConcreteLiteral concreteLiteral : concreteLiterals) {
-                bw.write(concreteLiteral.toString() + "\n");
+                bw.write(concreteLiteral.toString() + ".\n");
             }
         } catch (IOException ex) {
             throw ex;
