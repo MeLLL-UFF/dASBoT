@@ -78,6 +78,7 @@ public class DLRulesCLI {
     protected boolean generic;
     protected boolean crossValidation;
     protected boolean recursiveRuleAllowed = true;
+    protected String dlvPath = null;
 
     protected int depth;
     protected double threshold;
@@ -118,11 +119,13 @@ public class DLRulesCLI {
         boolean cv = false;
         boolean noRec = false;
         boolean generic = false;
+
+        String dlvPath = "";
+
         try {
             String peek;
             while (queue.peek().startsWith("-")) {
-                peek = queue.peek().toLowerCase();
-                queue.remove();
+                peek = queue.remove().toLowerCase();
                 switch (peek) {
                     case "-rule":
                         rule = true;
@@ -139,6 +142,9 @@ public class DLRulesCLI {
                         break;
                     case "-norec":
                         noRec = true;
+                        break;
+                    case "-dlv":
+                        dlvPath = queue.remove();
                         break;
                 }
             }
@@ -197,11 +203,11 @@ public class DLRulesCLI {
             dlrcli.setRefinement(ref);
             dlrcli.setGeneric(generic);
             dlrcli.setCrossValidation(cv);
+            dlrcli.setDLVPath(dlvPath);
             dlrcli.setRecursiveRuleAllowed(!noRec);
             dlrcli.setDepth(depth);
             dlrcli.setThreshold(threshold);
             dlrcli.setInitArgs(args);
-
             dlrcli.setGenerateRuleMeasure(generateMeasure);
             dlrcli.setRefinementRuleMeasure(refinementMeasure);
 
@@ -291,6 +297,10 @@ public class DLRulesCLI {
      * Function used to initiate the process.
      */
     public void init() {
+        if (dlvPath != null) {
+            drewArgs[drewArgs.length - 1] = dlvPath;
+        }
+        
         if (generateRuleMeasure == null) {
             setGenerateRuleMeasure(null);
         }
@@ -756,6 +766,14 @@ public class DLRulesCLI {
      */
     public void setRecursiveRuleAllowed(boolean recursiveRuleAllowed) {
         this.recursiveRuleAllowed = recursiveRuleAllowed;
+    }
+
+    public String getDLVPath() {
+        return dlvPath;
+    }
+
+    public void setDLVPath(String dlvPath) {
+        this.dlvPath = dlvPath;
     }
 
     /**

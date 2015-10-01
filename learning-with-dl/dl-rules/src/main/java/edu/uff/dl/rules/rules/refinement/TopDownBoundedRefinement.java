@@ -157,7 +157,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param candidates the candidate literals.
      * @return a pool with all the minimal rules.
      */
-    private AnswerPool<Rule> loadMinimalRule(ConcreteLiteral head, final Set<? extends ConcreteLiteral> candidates) {
+    public static AnswerPool<Rule> loadMinimalRule(ConcreteLiteral head, final Set<? extends ConcreteLiteral> candidates) {
         SafeRule r;
         AnswerPool<Rule> pool = new AnswerPool<>(new RuleSizeComparator());
 
@@ -188,7 +188,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param body the rule's body.
      * @param pool the pool to insert the rule.
      */
-    private void loadMinimalRule(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates, final Set<? extends ConcreteLiteral> body, AnswerPool<Rule> pool) {
+    public static void loadMinimalRule(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates, final Set<? extends ConcreteLiteral> body, AnswerPool<Rule> pool) {
         SafeRule r;
         Set<ConcreteLiteral> newBody;
         Set<ConcreteLiteral> newCandidates;
@@ -212,7 +212,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param rule the rule.
      * @return true if it is, false otherwise.
      */
-    private boolean isRuleSafe(Rule rule) {
+    public static boolean isRuleSafe(Rule rule) {
         Set<Term> terms = getAllTermsFromRule(rule);
         Set<Term> safe = new HashSet<>();
         for (ConcreteLiteral bodyLit : rule.getBody()) {
@@ -279,7 +279,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param candidates the general candidates.
      * @return a set of candidates.
      */
-    private Set<? extends ConcreteLiteral> getCandidates(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates) {
+    public static Set<? extends ConcreteLiteral> getCandidates(ConcreteLiteral head, Set<? extends ConcreteLiteral> candidates) {
         return getCandidates(new Rule(head, null), candidates);
     }
 
@@ -290,7 +290,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param candidates the general candidates.
      * @return a set of candidates.
      */
-    private Set<? extends ConcreteLiteral> getCandidates(Rule r, Set<? extends ConcreteLiteral> candidates) {
+    public static Set<? extends ConcreteLiteral> getCandidates(Rule r, Set<? extends ConcreteLiteral> candidates) {
         Set<ConcreteLiteral> answer = new LinkedHashSet<>();
         Set<Term> allTerms = getAllTermsFromRule(r);
         List<Term> candidateTerms;
@@ -334,7 +334,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param r the rule.
      * @return true if it is, false otherwise.
      */
-    private boolean isSafe(ConcreteLiteral lit, Rule r) {
+    public static boolean isSafe(ConcreteLiteral lit, Rule r) {
         return (existAllTerms(r.getBody(), lit.getTerms()));
     }
 
@@ -345,7 +345,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param literals the set of literals.
      * @return true if it is, false otherwise.
      */
-    private boolean existAllTerms(Set<? extends ConcreteLiteral> body, Collection<Term> literals) {
+    public static boolean existAllTerms(Set<? extends ConcreteLiteral> body, Collection<Term> literals) {
         if (literals == null || literals.isEmpty())
             return true;
         if (body == null || body.isEmpty())
@@ -364,7 +364,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param part the part.
      * @return true if it is, false otherwise.
      */
-    private boolean existAllTerms(Collection<Term> all, Term... part) {
+    public static boolean existAllTerms(Collection<Term> all, Term... part) {
         if (part == null || part.length == 0)
             return true;
         if (all == null || all.isEmpty())
@@ -384,7 +384,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param part the part.
      * @return true if it is, false otherwise.
      */
-    private boolean existAllTerms(Collection<Term> all, Collection<Term> part) {
+    public static boolean existAllTerms(Collection<Term> all, Collection<Term> part) {
         if (part == null || part.isEmpty())
             return true;
         if (all == null || all.isEmpty())
@@ -404,7 +404,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param part the part.
      * @return true if it is, false otherwise.
      */
-    private boolean existAnyTerms(Collection<Term> all, Term... part) {
+    public static boolean existAnyTerms(Collection<Term> all, Term... part) {
         if (all == null || all.isEmpty() || part == null || part.length == 0)
             return false;
         for (Term term : part) {
@@ -422,7 +422,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param part the part.
      * @return true if it is, false otherwise.
      */
-    private boolean existAnyTerms(Collection<Term> all, Collection<Term> part) {
+    public static boolean existAnyTerms(Collection<Term> all, Collection<Term> part) {
         if (all == null || all.isEmpty() || part == null || part.isEmpty())
             return false;
         for (Term term : part) {
@@ -442,7 +442,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param r the rule.
      * @return true if it is, false otherwise.
      */
-    private boolean isEquivalent(final ConcreteLiteral a, final ConcreteLiteral b, Rule r) {
+    public static boolean isEquivalent(final ConcreteLiteral a, final ConcreteLiteral b, Rule r) {
         List<Term> termsA = new ArrayList<>(a.getTerms());
         List<Term> termsB = new ArrayList<>(b.getTerms());
         if (termsA.size() != termsB.size() || !existAnyTerms(termsA, termsB))
@@ -485,7 +485,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param r the rule.
      * @return a set with all the rule's terms.
      */
-    private Set<Term> getAllTermsFromRule(Rule r) {
+    public static Set<Term> getAllTermsFromRule(Rule r) {
         Set<Term> answer = new HashSet<>();
         answer.addAll(r.getHead().getTerms());
 
