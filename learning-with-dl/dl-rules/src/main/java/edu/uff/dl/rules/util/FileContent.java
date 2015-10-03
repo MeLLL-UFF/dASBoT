@@ -295,7 +295,7 @@ public class FileContent {
         }
     }
 
-    public static Set<ConcreteLiteral> readConcreteLiteralToFile(String fileContent) throws ParseException {
+    public static Set<ConcreteLiteral> readConcreteLiteralFromFile(String fileContent) throws ParseException {
         Set<Literal> literals = getExamplesLiterals(fileContent);
 
         return DataLogLiteral.getSetOfLiterals(literals);
