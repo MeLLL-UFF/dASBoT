@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
@@ -72,6 +73,28 @@ public class Theory {
         }
 
         return sb.toString().trim();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.rules);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Theory other = (Theory) obj;
+        if (!Objects.equals(this.rules, other.rules)) {
+            return false;
+        }
+        return true;
     }
 
 }
