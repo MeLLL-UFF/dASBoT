@@ -120,7 +120,7 @@ public class DLRulesCLI {
         boolean noRec = false;
         boolean generic = false;
 
-        String dlvPath = "";
+        String dlvPath = null;
 
         try {
             String peek;
@@ -297,7 +297,7 @@ public class DLRulesCLI {
      * Function used to initiate the process.
      */
     public void init() {
-        if (dlvPath != null) {
+        if (dlvPath != null && !dlvPath.isEmpty()) {
             drewArgs[drewArgs.length - 1] = dlvPath;
         }
         
