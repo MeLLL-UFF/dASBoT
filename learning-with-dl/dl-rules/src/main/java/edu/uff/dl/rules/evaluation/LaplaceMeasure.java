@@ -18,6 +18,8 @@ import edu.uff.dl.rules.rules.Rule;
  */
 public class LaplaceMeasure implements RuleMeasurer {
 
+    public final String className = this.getClass().getName();
+    
     @Override
     public double getRuleMeasure(Rule rule, int positives, int negatives, int positivesCovered, int negativesCovered) {
         return ((double) (positivesCovered + 1)) / ((double) (positivesCovered + negativesCovered + 2));

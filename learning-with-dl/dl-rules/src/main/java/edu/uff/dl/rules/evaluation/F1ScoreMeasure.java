@@ -12,6 +12,8 @@ import edu.uff.dl.rules.rules.Rule;
  */
 public class F1ScoreMeasure implements RuleMeasurer {
 
+    public final String className = this.getClass().getName();
+    
     private double precision(int positivesCovered, int negativesCovered) {
         return (double) positivesCovered / (positivesCovered + negativesCovered);
     }
