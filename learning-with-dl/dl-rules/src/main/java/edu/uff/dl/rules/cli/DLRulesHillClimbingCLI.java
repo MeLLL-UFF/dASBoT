@@ -12,9 +12,6 @@ import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
-
-import static edu.uff.dl.rules.test.App.redirectOutputStream;
-
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.CLIArgumentsParser;
 import edu.uff.dl.rules.util.FileContent;

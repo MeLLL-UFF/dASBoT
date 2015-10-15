@@ -16,8 +16,6 @@ import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
-import static edu.uff.dl.rules.test.App.redirectOutputStream;
-import static edu.uff.dl.rules.test.App.redirectOutputStream;
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
@@ -89,6 +87,124 @@ public class DLRulesCLI {
     protected RuleMeasurer generateRuleMeasure;
     protected RuleMeasurer refinementRuleMeasure;
 
+    protected synchronized Queue<String> parseArguments(String[] args) throws FileNotFoundException {
+        String template = null;
+        int numberOfDLPFiles = 0;
+        Queue<String> queue = new LinkedList<>();
+
+        for (String arg : args) {
+            queue.add(arg);
+        }
+
+        boolean lRule = false;
+        boolean ref = false;
+        boolean cv = false;
+        boolean noRec = false;
+        boolean lGeneric = false;
+
+        String lDLVPath = null;
+
+        String peek;
+        while (queue.peek().startsWith("-")) {
+            peek = queue.remove().toLowerCase();
+            switch (peek) {
+                case "-rule":
+                    lRule = true;
+                    break;
+                case "-ref":
+                    ref = true;
+                    if (queue.peek().toLowerCase().equals("gen")) {
+                        lGeneric = true;
+                        queue.remove();
+                    }
+                    break;
+                case "-cv":
+                    cv = true;
+                    break;
+                case "-norec":
+                    noRec = true;
+                    break;
+                case "-dlv":
+                    lDLVPath = queue.remove();
+                    break;
+            }
+        }
+
+        try {
+            numberOfDLPFiles = Integer.parseInt(queue.peek());
+        } catch (NumberFormatException ex) {
+
+        }
+
+        if (numberOfDLPFiles != 0) {
+            queue.remove();
+        } else {
+            numberOfDLPFiles++;
+        }
+
+        Set<String> dlpFilepaths = new LinkedHashSet<>(numberOfDLPFiles);
+        for (int i = 0; i < numberOfDLPFiles; i++) {
+            dlpFilepaths.add(queue.remove());
+        }
+
+        String lOWLFilepath = queue.remove();
+        String positeveTrain = queue.remove();
+        String negativeTrain = queue.remove();
+
+        if (queue.peek().toLowerCase().equals("-tp")) {
+            queue.remove();
+            template = queue.remove();
+        }
+
+        String lOutputDirectory = queue.remove();
+        if (!lOutputDirectory.endsWith("/")) {
+            lOutputDirectory += "/";
+        }
+
+        int lTimeout = Integer.parseInt(queue.remove());
+
+        String lCVDirectory = null;
+        String lCVPrefix = null;
+        int lCVNumberOfFolds = 0;
+
+        if (cv) {
+            lCVDirectory = queue.remove();
+            lCVPrefix = queue.remove();
+            lCVNumberOfFolds = Integer.parseInt(queue.remove());
+        }
+
+        int lDepth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
+        double lThreshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
+
+        String generateMeasure = (!queue.isEmpty() ? queue.remove() : "CompressionMeasure");
+        String refinementMeasure = (!queue.isEmpty() ? queue.remove() : "LaplaceMeasure");
+
+        this.setDLPFilepaths(dlpFilepaths);
+        this.setOWLFilepath(lOWLFilepath);
+        this.setPositiveTrainFilepath(positeveTrain);
+        this.setNegativeTrainFilepath(negativeTrain);
+        this.setOutputDirectory(lOutputDirectory);
+        this.setTimeout(lTimeout);
+        this.setTemplateFilepath(template);
+        this.setCvDirectory(lCVDirectory);
+        this.setCvPrefix(lCVPrefix);
+        this.setCvNumberOfFolds(lCVNumberOfFolds);
+
+        this.setRule(lRule);
+        this.setRefinement(ref);
+        this.setGeneric(lGeneric);
+        this.setCrossValidation(cv);
+        this.setDLVPath(lDLVPath);
+        this.setRecursiveRuleAllowed(!noRec);
+        this.setDepth(lDepth);
+        this.setThreshold(lThreshold);
+        this.setInitArgs(args);
+        this.setGenerateRuleMeasure(generateMeasure);
+        this.setRefinementRuleMeasure(refinementMeasure);
+        
+        return queue;
+    }
+
     /**
      * Main function, used to start the program.
      *
@@ -105,116 +221,18 @@ public class DLRulesCLI {
      * the folds,<br>the fold's prefix name.
      * @throws FileNotFoundException in case of a file path does not exist.
      */
-    public synchronized static void main(String[] args) throws FileNotFoundException {
-        String template = null;
-        int numberOfDLPFiles = 0;
-        Queue<String> queue = new LinkedList<>();
-
-        for (String arg : args) {
-            queue.add(arg);
-        }
-
-        boolean rule = false;
-        boolean ref = false;
-        boolean cv = false;
-        boolean noRec = false;
-        boolean generic = false;
-
-        String dlvPath = null;
-
+    public static void main(String[] args) throws FileNotFoundException {
         try {
-            String peek;
-            while (queue.peek().startsWith("-")) {
-                peek = queue.remove().toLowerCase();
-                switch (peek) {
-                    case "-rule":
-                        rule = true;
-                        break;
-                    case "-ref":
-                        ref = true;
-                        if (queue.peek().toLowerCase().equals("gen")) {
-                            generic = true;
-                            queue.remove();
-                        }
-                        break;
-                    case "-cv":
-                        cv = true;
-                        break;
-                    case "-norec":
-                        noRec = true;
-                        break;
-                    case "-dlv":
-                        dlvPath = queue.remove();
-                        break;
-                }
-            }
-
-            try {
-                numberOfDLPFiles = Integer.parseInt(queue.peek());
-            } catch (NumberFormatException ex) {
-
-            }
-
-            if (numberOfDLPFiles != 0) {
-                queue.remove();
-            } else {
-                numberOfDLPFiles++;
-            }
-
-            Set<String> dlpFilepaths = new LinkedHashSet<>(numberOfDLPFiles);
-            for (int i = 0; i < numberOfDLPFiles; i++) {
-                dlpFilepaths.add(queue.remove());
-            }
-
-            String owlFilepath = queue.remove();
-            String positeveTrain = queue.remove();
-            String negativeTrain = queue.remove();
-
-            if (queue.peek().toLowerCase().equals("-tp")) {
-                queue.remove();
-                template = queue.remove();
-            }
-
-            String outputDirectory = queue.remove();
-            if (!outputDirectory.endsWith("/")) {
-                outputDirectory += "/";
-            }
-
-            int timeout = Integer.parseInt(queue.remove());
-
-            String cvDirectory = null;
-            String cvPrefix = null;
-            int cvNumberOfFolds = 0;
-
-            if (cv) {
-                cvDirectory = queue.remove();
-                cvPrefix = queue.remove();
-                cvNumberOfFolds = Integer.parseInt(queue.remove());
-            }
-
-            int depth = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
-            double threshold = (!queue.isEmpty() ? Double.parseDouble(queue.remove()) : 0.0);
-
-            String generateMeasure = (!queue.isEmpty() ? queue.remove() : "CompressionMeasure");
-            String refinementMeasure = (!queue.isEmpty() ? queue.remove() : "LaplaceMeasure");
-
-            DLRulesCLI dlrcli = new DLRulesCLI(dlpFilepaths, owlFilepath, positeveTrain, negativeTrain, outputDirectory, timeout, template, cvDirectory, cvPrefix, cvNumberOfFolds);
-            dlrcli.setRule(rule);
-            dlrcli.setRefinement(ref);
-            dlrcli.setGeneric(generic);
-            dlrcli.setCrossValidation(cv);
-            dlrcli.setDLVPath(dlvPath);
-            dlrcli.setRecursiveRuleAllowed(!noRec);
-            dlrcli.setDepth(depth);
-            dlrcli.setThreshold(threshold);
-            dlrcli.setInitArgs(args);
-            dlrcli.setGenerateRuleMeasure(generateMeasure);
-            dlrcli.setRefinementRuleMeasure(refinementMeasure);
-
+            DLRulesCLI dlrcli = new DLRulesCLI();
+            dlrcli.parseArguments(args);
+            
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public DLRulesCLI() {
     }
 
     /**
@@ -234,19 +252,16 @@ public class DLRulesCLI {
      */
     public DLRulesCLI(Set<String> dlpFilepaths, String owlFilepath, String positiveTrainFilepath, String negativeTrainFilepath, String outputDirectory, int timeout, String templateFilepath, String cvDirectory, String cvPrefix, int cvNumberOfFolds) throws FileNotFoundException {
         this.owlFilepath = owlFilepath;
+        drewArgs[2] = owlFilepath;
+
         this.outputDirectory = outputDirectory;
         this.timeout = timeout;
-
-        this.depth = 0;
-        this.threshold = 0.0;
 
         this.dlpContent = FileContent.getStringFromFile(dlpFilepaths);
         this.outER = outputDirectory + "ER" + "/";
         this.outRefinement = outputDirectory + "refinement/";
         this.outRefinementAll = outRefinement + "all/";
         this.outCV = outputDirectory + "CV" + "/";
-
-        createOutputDirectories();
 
         this.positiveTrainExample = FileContent.getStringFromFile(positiveTrainFilepath);
         this.negativeTrainExample = FileContent.getStringFromFile(negativeTrainFilepath);
@@ -258,8 +273,6 @@ public class DLRulesCLI {
         this.cvDirectory = cvDirectory;
         this.cvPrefix = cvPrefix;
         this.cvNumberOfFolds = cvNumberOfFolds;
-
-        drewArgs[2] = owlFilepath;
     }
 
     /**
@@ -297,6 +310,8 @@ public class DLRulesCLI {
      * Function used to initiate the process.
      */
     public void init() {
+        createOutputDirectories();
+
         if (dlvPath != null && !dlvPath.isEmpty()) {
             drewArgs[drewArgs.length - 1] = dlvPath;
         }
@@ -595,8 +610,6 @@ public class DLRulesCLI {
     protected void crossValidation() {
         Box<Long> b = new Box<>(null), e = new Box(null);
         try (PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true))) {
-            redirectOutputStream(outCV + "statistics.txt", true);
-
             outStream.println("Begin Time:\t" + Time.getTime(b));
             outStream.println("");
             outStream.println("");
@@ -862,5 +875,53 @@ public class DLRulesCLI {
             this.refinementRuleMeasure = new LaplaceMeasure();
         }
     }
+    
+    public void setDLPFilepaths(Set<String> dlpFilepaths) throws FileNotFoundException {
+        this.dlpContent = FileContent.getStringFromFile(dlpFilepaths);
+    }
 
+    public void setOWLFilepath(String owlFilepath) {
+        this.owlFilepath = owlFilepath;
+        drewArgs[2] = owlFilepath;
+    }
+
+    public void setPositiveTrainFilepath(String positiveTrainFilepath) throws FileNotFoundException {
+        this.positiveTrainExample = FileContent.getStringFromFile(positiveTrainFilepath);
+    }
+
+    public void setNegativeTrainFilepath(String negativeTrainFilepath) throws FileNotFoundException {
+        this.negativeTrainExample = FileContent.getStringFromFile(negativeTrainFilepath);
+    }
+
+    public void setOutputDirectory(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
+
+        this.outER = outputDirectory + "ER" + "/";
+        this.outRefinement = outputDirectory + "refinement/";
+        this.outRefinementAll = outRefinement + "all/";
+        this.outCV = outputDirectory + "CV" + "/";
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public void setTemplateFilepath(String templateFilepath) throws FileNotFoundException {
+        if (templateFilepath != null && !templateFilepath.isEmpty()) {
+            templateContent = FileContent.getStringFromFile(templateFilepath);
+        }
+    }
+
+    public void setCvDirectory(String cvDirectory) {
+        this.cvDirectory = cvDirectory;
+    }
+
+    public void setCvPrefix(String cvPrefix) {
+        this.cvPrefix = cvPrefix;
+    }
+
+    public void setCvNumberOfFolds(int cvNumberOfFolds) {
+        this.cvNumberOfFolds = cvNumberOfFolds;
+    }
+    
 }

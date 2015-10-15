@@ -72,11 +72,11 @@ import org.apache.commons.io.FileUtils;
 
 public class App {
 
-    public static void redirectOutputStream(String filepath) throws FileNotFoundException {
+    private static void redirectOutputStream(String filepath) throws FileNotFoundException {
         redirectOutputStream(filepath, false);
     }
 
-    public static void redirectOutputStream(String filepath, boolean append) throws FileNotFoundException {
+    private static void redirectOutputStream(String filepath, boolean append) throws FileNotFoundException {
         boolean writeNewLine = false;
         File file = new File(filepath);
         if (append) {
