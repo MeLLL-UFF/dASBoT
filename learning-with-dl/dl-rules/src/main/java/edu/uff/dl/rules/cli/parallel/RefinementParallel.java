@@ -85,7 +85,7 @@ public class RefinementParallel extends Thread {
 
                     genericRuleExample = new EvaluatedRuleExample(file);
 
-                    Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                    Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure, System.out);
                     r.start();
                     r.join();
 
@@ -118,7 +118,7 @@ public class RefinementParallel extends Thread {
                     System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
                     System.out.println("\n");
                 } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RefinementParallel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

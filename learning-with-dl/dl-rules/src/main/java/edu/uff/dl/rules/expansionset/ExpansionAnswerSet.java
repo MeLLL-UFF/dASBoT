@@ -7,6 +7,7 @@ import edu.uff.dl.rules.template.TypeTemplate;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogPredicate;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +40,8 @@ public class ExpansionAnswerSet implements Component {
     protected Map<List<Term>, List<List<Term>>> permuteMap;
     protected Map<Integer, List<List<Term>>> generalPermuteMap;
     protected TypeTemplate individualsClasses;
+    
+    protected PrintStream outStream;
 
     /**
      * Constructor with only the variables allocation.
@@ -47,6 +50,7 @@ public class ExpansionAnswerSet implements Component {
     public ExpansionAnswerSet() {
         this.permuteMap = new HashMap<>();
         this.generalPermuteMap = new HashMap<>();
+        
     }
 
     /**
@@ -58,8 +62,9 @@ public class ExpansionAnswerSet implements Component {
      * individual. This class is needed, if you do not have a template, create a
      * instance of this class by passing a empty file.
      */
-    public ExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses) {
+    public ExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses, PrintStream outStream){
         this();
+        this.outStream = outStream;
         this.answerSet = DataLogLiteral.getListOfLiterals(answerSet);
         this.examples = DataLogLiteral.getListOfLiterals(examples);
 
@@ -84,7 +89,7 @@ public class ExpansionAnswerSet implements Component {
             if (facts != null && !facts.isEmpty()) {
                 loadLiteralsFromFacts(expansionSet, facts);
             } else {
-                System.out.println(pred);
+                outStream.println(pred);
                 loadLiteralsFromFacts(expansionSet, facts, pred.getPredicate(), getGeneralPermuteMap(pred.getArity()));
             }
         }
@@ -330,4 +335,12 @@ public class ExpansionAnswerSet implements Component {
         this.individualsClasses = individualsClasses;
     }
 
+    public PrintStream getOutStream() {
+        return outStream;
+    }
+
+    public void setOutStream(PrintStream outStream) {
+        this.outStream = outStream;
+    }
+    
 }

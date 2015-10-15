@@ -28,7 +28,6 @@ public class Time {
         int millis = now.get(Calendar.MILLISECOND);
 
         return String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
-        //System.out.println("");
     }
 
     /**

@@ -13,11 +13,14 @@ import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.template.IndividualTemplate;
 import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
+
 import static edu.uff.dl.rules.util.Time.getTime;
+
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -80,14 +83,16 @@ public class DReWReasoner implements Component {
 
     protected int depth;
     
-    private String[] arg;
+    protected PrintStream outStream;
+    
+    private String[] args;
 
     /**
      * Constructor without parameters. Needed to load the class by a file
      * (Spring).
      */
     public DReWReasoner() {
-        arg = DReWDefaultArgs.ARGS;
+        args = DReWDefaultArgs.ARGS;
         this.individuals = new HashSet<>();
         this.predicates = new HashSet<>();
         this.examples = new HashSet<>();
@@ -103,12 +108,18 @@ public class DReWReasoner implements Component {
      * @param examplesContent the examples's content.
      * @param templateContent the template's content.
      */
-    public DReWReasoner(String owlFilePath, String dlpContent, String examplesContent, String templateContent) {
+    public DReWReasoner(String owlFilePath, String dlpContent, String examplesContent, String templateContent, PrintStream outStream) {
         this();
-        this.arg[2] = owlFilePath;
+        this.args[2] = owlFilePath;
         this.dlpContent = dlpContent;
         this.examplesContent = examplesContent;
         this.templateContent = templateContent;
+        this.outStream = outStream;
+    }
+    
+    public DReWReasoner(String dlvPath, String owlFilePath, String dlpContent, String examplesContent, String templateContent, PrintStream outStream) {
+        this(owlFilePath, dlpContent, examplesContent, templateContent, outStream);
+        this.args[args.length - 1] = dlvPath;
     }
 
     /**
@@ -123,7 +134,7 @@ public class DReWReasoner implements Component {
             loadIndividualsAndPredicates(individuals, predicates);
 
             loadExample(individuals, predicates);
-            drew = DReWRLCLILiteral.get(arg);
+            drew = DReWRLCLILiteral.get(args);
             drew.setDLPContent(getDlpAndExamples());
             drew.go();
 
@@ -152,25 +163,23 @@ public class DReWReasoner implements Component {
         ExpansionAnswerSet e;
         try {
             for (Set<Literal> answerSet : drew.getLiteralModelHandler().getAnswerSets()) {
-                System.out.println("Iniciar Configuração do Template: " + getTime());
+                outStream.println("Iniciar Configuração do Template: " + getTime());
 
-                System.out.println("Iniciar Geração do Conjunto Expandido: " + getTime());
-                e = new ExampleExpansionAnswerSet(answerSet, examples, individialTemplate);
+                outStream.println("Iniciar Geração do Conjunto Expandido: " + getTime());
+                e = new ExampleExpansionAnswerSet(answerSet, examples, individialTemplate, outStream);
                 ((ExampleExpansionAnswerSet) e).setOffset(offset);
-                System.out.println("");
-                System.out.println(e.getClass());
-                System.out.println("");
+                outStream.println("");
+                outStream.println(e.getClass());
+                outStream.println("");
                 //e = s;
 
                 e.init();
 
-                //System.out.println(e);
-
-                System.out.println("Iniciar Geração da Regra: " + getTime());
-                System.out.println("");
+                outStream.println("Iniciar Geração da Regra: " + getTime());
+                outStream.println("");
                 //depth = 1;
-                System.out.println("Gerando regra com profundidade de variáveis: " + depth);
-                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), depth, individialTemplate);
+                outStream.println("Gerando regra com profundidade de variáveis: " + depth);
+                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), depth, individialTemplate, outStream);
                 ar.setRecursive(recursiveRuleAllowed);
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
@@ -494,7 +503,7 @@ public class DReWReasoner implements Component {
      * @return the owl's filepath of the problem.
      */
     public String getOwlFilePath() {
-        return arg[2];
+        return args[2];
     }
 
     /**
@@ -503,7 +512,7 @@ public class DReWReasoner implements Component {
      * @param owlFilePath the owl filepath.
      */
     public void setOwlFilePath(String owlFilePath) {
-        arg[2] = owlFilePath;
+        args[2] = owlFilePath;
     }
 
     /**
@@ -512,7 +521,7 @@ public class DReWReasoner implements Component {
      * @return the command line arguments of the problem.
      */
     public String[] getArg() {
-        return arg;
+        return args;
     }
 
     /**
@@ -613,7 +622,13 @@ public class DReWReasoner implements Component {
     public void setDepth(int depth) {
         this.depth = depth;
     }
-    
-    
 
+    public PrintStream getOutStream() {
+        return outStream;
+    }
+
+    public void setOutStream(PrintStream outStream) {
+        this.outStream = outStream;
+    }
+    
 }

@@ -322,7 +322,7 @@ public class DLRulesCLIParallel {
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                        Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure, System.out);
                         r.start();
                         r.join();
 

@@ -13,6 +13,7 @@ import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.util.answerpool.AnswerPool;
 import edu.uff.dl.rules.util.answerpool.RuleSizeComparator;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,8 +53,8 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param timeout a timeout to infer each rule.
      * @param ruleMeasure a measurer of rules.
      */
-    public TopDownBoundedRefinement(String[] args, String dlpContent, EvaluatedRule genericRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure) {
-        super(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure);
+    public TopDownBoundedRefinement(String[] args, String dlpContent, EvaluatedRule genericRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure, PrintStream outStream) {
+        super(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure, outStream);
     }
 
     @Override
@@ -88,8 +89,8 @@ public class TopDownBoundedRefinement extends Refinement {
             body.removeAll(previousRule.getRule().getBody());
             //candidates = getCandidates(head, body);
 
-            System.out.println("Refinning rule: " + previousRule.getRule());
-            System.out.println("Rule: " + count + " of: " + limit);
+            outStream.println("Refinning rule: " + previousRule.getRule());
+            outStream.println("Rule: " + count + " of: " + limit);
             count++;
             currentRule = refineRule(previousRule.getRule(), getCandidates(previousRule.getRule(), body), count, com);
 
@@ -100,8 +101,8 @@ public class TopDownBoundedRefinement extends Refinement {
                 return;
             }
 
-            System.out.println("Measure Increase: " + measureIncrease);
-            System.out.println("");
+            outStream.println("Measure Increase: " + measureIncrease);
+            outStream.println("");
             //} while (count < limit);
         } while (measureIncrease >= threshold && count < limit);
         if (measureIncrease <= 0) {
@@ -130,7 +131,7 @@ public class TopDownBoundedRefinement extends Refinement {
             er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
             if (er == null) {
 //                error++;
-                System.out.println(rule);
+                outStream.println(rule);
             } else {
                 er.setRuleMeasureFunction(ruleMeasure);
                 rules.add(er);
@@ -255,7 +256,7 @@ public class TopDownBoundedRefinement extends Refinement {
                 er.setRuleMeasureFunction(ruleMeasure);
                 evaluatedRules.add(er);
             } catch (TimeoutException ex) {
-                System.out.println("Timeout: " + r.toString());
+                outStream.println("Timeout: " + r.toString());
             }
         }
 

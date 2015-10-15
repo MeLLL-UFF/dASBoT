@@ -138,14 +138,13 @@ public class LiteralModelHandler implements ModelHandler {
      * @param paramDLVInvocation the DLV invocation.
      * @param modelResult the result model.
      */
-    @SuppressWarnings("CallToThreadDumpStack")
-    public void handleResultRL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
+    
+    public synchronized void handleResultRL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
         if (dlvHandlerStartTime == 0)
             dlvHandlerStartTime = System.currentTimeMillis();
 
         nModels++;
 
-        // System.out.println(nModels);
         Model model = (Model) modelResult;
         // ATTENTION !!! this is necessary and stupid, should we
         // report a bug to DLVWrapper?

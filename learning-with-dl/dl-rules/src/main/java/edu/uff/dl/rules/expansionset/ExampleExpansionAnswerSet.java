@@ -5,6 +5,7 @@ package edu.uff.dl.rules.expansionset;
 
 import edu.uff.dl.rules.template.TypeTemplate;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,8 +50,8 @@ public class ExampleExpansionAnswerSet extends ExpansionAnswerSet {
      * individual. This class is needed, if you do not have a template, create a
      * instance of this class by passing a empty file.
      */
-    public ExampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses) {
-        super(answerSet, examples, individualsClasses);
+    public ExampleExpansionAnswerSet(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses, PrintStream outStream) {
+        super(answerSet, examples, individualsClasses, outStream);
     }
 
     /**
@@ -121,7 +122,6 @@ public class ExampleExpansionAnswerSet extends ExpansionAnswerSet {
             //noRelevants.addAll(resp);
             //resp = noRelevants;
 
-            //System.out.println(noRelevants);
         }
 
         //resp.addAll(noRelevants);

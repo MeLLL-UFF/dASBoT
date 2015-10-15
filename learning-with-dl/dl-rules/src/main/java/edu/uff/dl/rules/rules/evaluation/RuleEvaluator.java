@@ -76,16 +76,11 @@ public class RuleEvaluator extends Thread {
         try {
             compareRule();
         } catch (IOException | ParseException ex) {
-            //System.out.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
 
         end = getTime(e);
-        //System.out.println("");
-        //System.out.println("Begin: " + begin);
-        //System.out.println("End:   " + end);
         double dif = e.getContent() - b.getContent();
         dif /= 1000;
-        //System.out.println("Total time: " + dif + "s");
         this.duration = dif;
     }
 
@@ -142,7 +137,6 @@ public class RuleEvaluator extends Thread {
         int covered = 0;
         for (Literal s : listExamples) {
             if (literals.contains(s)) {
-                //System.out.println(s);
                 covered++;
             }
         }
@@ -184,7 +178,6 @@ public class RuleEvaluator extends Thread {
         try {
             drew.killDLV();
         } catch (DLVInvocationException ex) {
-            //System.out.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
 
         super.interrupt();
@@ -214,7 +207,6 @@ public class RuleEvaluator extends Thread {
                 throw new TimeoutException();
             }
         } catch (InterruptedException ex) {
-            //System.out.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
         return null;
     }

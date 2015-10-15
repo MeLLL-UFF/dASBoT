@@ -33,7 +33,7 @@ public class AnswerRuleConstant extends AnswerRule {
      * @param answerSet the expansion answer set.
      */
     public AnswerRuleConstant(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet) {
-        super(examples, answerSet);
+        super(examples, answerSet, System.out);
     }
 
     /**
@@ -49,7 +49,7 @@ public class AnswerRuleConstant extends AnswerRule {
      * @param transitivityDepth the transitivity depth.
      */
     public AnswerRuleConstant(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth) {
-        super(examples, answerSet, transitivityDepth);
+        super(examples, answerSet, transitivityDepth, System.out);
     }
 
     @Override

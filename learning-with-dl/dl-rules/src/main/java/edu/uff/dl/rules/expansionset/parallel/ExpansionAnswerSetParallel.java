@@ -48,7 +48,7 @@ public class ExpansionAnswerSetParallel extends ExpansionAnswerSet {
      * @param nThreads the number of threads that should be created.
      */
     public ExpansionAnswerSetParallel(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, IndividualTemplate individualsClasses, int nThreads) throws ComponentInitException {
-        super(answerSet, examples, individualsClasses);
+        super(answerSet, examples, individualsClasses, System.out);
         this.nThreads = nThreads;
     }
 

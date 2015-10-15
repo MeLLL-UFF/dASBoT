@@ -116,7 +116,6 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     }
 
     @Override
-    @SuppressWarnings({"CallToThreadDumpStack", "null"})
     public void runDLV(DLVInputProgram inputProgram) {
         invocation = DLVWrapper.getInstance().createInvocation(
                 dlvPath);
@@ -136,7 +135,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
                 Collections.addAll(filters, ss);
             }
 
-            if (filters != null && filters.size() > 0)
+            if (filters.size() > 0)
                 invocation.setFilter(filters, true);
 
             if (maxInt != -1) {

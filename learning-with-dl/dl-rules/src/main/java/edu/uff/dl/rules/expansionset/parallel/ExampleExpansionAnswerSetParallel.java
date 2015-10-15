@@ -5,6 +5,7 @@ package edu.uff.dl.rules.expansionset.parallel;
 
 import edu.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
 import edu.uff.dl.rules.template.TypeTemplate;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,8 +53,8 @@ public class ExampleExpansionAnswerSetParallel extends ExampleExpansionAnswerSet
      * instance of this class by passing a empty file.
      * @param nThreads the number of threads that should be created.
      */
-    public ExampleExpansionAnswerSetParallel(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses, int nThreads) {
-        super(answerSet, examples, individualsClasses);
+    public ExampleExpansionAnswerSetParallel(Collection<? extends Literal> answerSet, Collection<? extends Literal> examples, TypeTemplate individualsClasses, int nThreads, PrintStream outStream) {
+        super(answerSet, examples, individualsClasses, outStream);
         this.nThreads = nThreads;
     }
 

@@ -75,7 +75,7 @@ public class App {
     public static void redirectOutputStream(String filepath) throws FileNotFoundException {
         redirectOutputStream(filepath, false);
     }
-    
+
     public static void redirectOutputStream(String filepath, boolean append) throws FileNotFoundException {
         boolean writeNewLine = false;
         File file = new File(filepath);
@@ -83,13 +83,13 @@ public class App {
             try {
                 writeNewLine = !FileUtils.readFileToString(file).isEmpty();
             } catch (IOException ex) {
-                
+
             }
         }
-        
+
         PrintStream out = new PrintStream(new FileOutputStream(filepath, append));
         System.setOut(out);
-        
+
         if (writeNewLine) {
             System.out.println("\n");
         }
@@ -190,8 +190,9 @@ public class App {
         DecimalFormat df = new DecimalFormat("#0.0000000000000000");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < measures.size(); i++) {
-            if (i < measures.size() - 1 && Objects.equals(measures.get(i), measures.get(i + 1)))
+            if (i < measures.size() - 1 && Objects.equals(measures.get(i), measures.get(i + 1))) {
                 continue;
+            }
             measure = measures.get(i);
             for (String file : measuresMap.keySet()) {
                 if (Objects.equals(measuresMap.get(file), measure)) {
@@ -238,8 +239,9 @@ public class App {
         int kbSize = 1;
         int i = 0;
         for (; i < split.length; i++) {
-            if (split[i].startsWith("-"))
+            if (split[i].startsWith("-")) {
                 continue;
+            }
             kbSize = Integer.parseInt(split[i]) + 1;
             break;
         }
@@ -254,8 +256,9 @@ public class App {
         positives = split[i++];
         negatives = split[i++];
 
-        if (split[i].startsWith("-"))
+        if (split[i].startsWith("-")) {
             i += 2;
+        }
 
         origin = split[i];
         int index = origin.indexOf("/out") + 1;
@@ -455,8 +458,9 @@ public class App {
 
             re = new RuleEvaluator(rule.getRule(), args, dlpContent, positiveExamples, negativeExamples);
             er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
-            if (er == null)
+            if (er == null) {
                 continue;
+            }
             crossEvaluated = new EvaluatedRuleExample(er, rule.getExample());
             out = new File(outFilePrefix + i + ".txt");
             crossEvaluated.serialize(out);
@@ -497,7 +501,7 @@ public class App {
                 System.out.println(Time.getTime(b));
                 System.out.println("File: " + file.getName());
                 EvaluatedRule genericRule = new EvaluatedRule(file);
-                Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure);
+                Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure, System.out);
                 r.start();
                 r.join();
 
@@ -553,8 +557,9 @@ public class App {
         int count, sum = 0;
         boolean sb2Write;
         for (File file : listFiles) {
-            if (file.isHidden())
+            if (file.isHidden()) {
                 continue;
+            }
 
             name = file.getName();
             name = name.substring(0, name.lastIndexOf('.'));
@@ -589,8 +594,9 @@ public class App {
                 }
 
             }
-            if (sb2Write)
+            if (sb2Write) {
                 sb2.append("\n");
+            }
 
             sb1.append(name);
             sb1.append(":\tRefined rules:\t");
@@ -686,7 +692,7 @@ public class App {
         String samplesContent = FileContent.getStringFromFile(dlpSamplesFilepath.get(0));
         String templateContent = FileContent.getStringFromFile(templateFilepath);
 
-        DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent);
+        DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent, System.out);
         reasoner.init();
 
         int count = 0;
@@ -699,8 +705,9 @@ public class App {
         String outPath;
         for (int i = 0; i < 78; i++) {
             outPath = defaultFilepath + "rule" + i + ".txt";
-            redirectOutputStream(outPath);
-            run = new DLExamplesRules(FileContent.getStringFromFile(dlpFilepaths), reasoner, FileContent.getStringFromFile(dlpSamplesFilepath.get(0)), FileContent.getStringFromFile(dlpSamplesFilepath.get(1)));
+//            redirectOutputStream(outPath);
+            PrintStream outStream = new PrintStream(outPath);
+            run = new DLExamplesRules(FileContent.getStringFromFile(dlpFilepaths), reasoner, FileContent.getStringFromFile(dlpSamplesFilepath.get(0)), FileContent.getStringFromFile(dlpSamplesFilepath.get(1)), outStream);
             run.setOffset(i);
             run.start();
             try {
@@ -735,12 +742,14 @@ public class App {
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
+            outStream.close();
         }
 
         redirectOutputStream("statistics.txt");
         System.out.println("Max time: " + max + "\tfor rule " + maxR);
         System.out.println("Max time: " + min + "\tfor rule " + minR);
         System.out.println("Avg time: " + (sun / (double) count));
+
     }
 
     public static void testRunOutputFile() throws FileNotFoundException {
@@ -820,8 +829,9 @@ public class App {
         String pathPrefix = "/Users/Victor/Desktop/out3/";
 
         for (int i = 0; i < maxLoop; i++) {
-            if (badExamples.contains(i))
+            if (badExamples.contains(i)) {
                 continue;
+            }
             String filepath = pathPrefix + "rule" + i + ".txt";
             redirectOutputStream(filepath);
             avg += simpleExampleTest(i);
@@ -860,15 +870,16 @@ public class App {
         String dlpContent = FileContent.getStringFromFile(dlpFilepath);
         String templateContent = FileContent.getStringFromFile("/Users/Victor/Desktop/results/poker_kb/template.dlp");
 
-        dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent);
+        dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent, System.out);
         dr.setOffset(offset);
 
         //dr.loadIndividualsAndPredicates(individuals, predicates);
         dr.init();
         dr.run();
 
-        if (dr.getAnswerSetRules() == null || dr.getAnswerSetRules().size() < 1)
+        if (dr.getAnswerSetRules() == null || dr.getAnswerSetRules().size() < 1) {
             return;
+        }
 
         AnswerSetRule asr = dr.getAnswerSetRules().get(0);
 
@@ -882,8 +893,9 @@ public class App {
         System.out.println("");
         boolean compare = false;
         compare = true;
-        if (!compare)
+        if (!compare) {
             return;
+        }
         DReWRLCLILiteral drew = DReWRLCLILiteral.run(in, dr.getArg());
         Set<Literal> lits = drew.getLiteralModelHandler().getAnswerSets().get(0);
 
@@ -1041,8 +1053,6 @@ public class App {
                     //ar.init();
                     //System.out.println(ar.getRules().iterator().next().toString());
                 }
-
-                
 
                 System.out.println("Train:\n");
                 measureCovering(d, examplePath, examplePath.replace(".f", ".n"));

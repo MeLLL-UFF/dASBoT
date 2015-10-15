@@ -5,6 +5,7 @@ package edu.uff.dl.rules.rules.refinement;
 
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ public abstract class Refinement extends Thread {
     protected Set<Literal> negativeSamples;
     protected int timeout;
     protected RuleMeasurer ruleMeasure;
+    protected PrintStream outStream;
 
     //Out parametres
     Map<Integer, EvaluatedRule> refinedRules;
@@ -47,7 +49,7 @@ public abstract class Refinement extends Thread {
      * @param timeout a timeout to infer each rule.
      * @param ruleMeasure a measurer of rules.
      */
-    public Refinement(String[] args, String dlpContent, EvaluatedRule boundRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure) {
+    public Refinement(String[] args, String dlpContent, EvaluatedRule boundRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure, PrintStream outStream) {
         super();
         this.args = args;
         this.dlpContent = dlpContent;
@@ -58,6 +60,8 @@ public abstract class Refinement extends Thread {
         this.timeout = timeout;
         this.ruleMeasure = ruleMeasure;
 
+        this.outStream = outStream;
+        
         this.refinedRules = new HashMap<>();
     }
 

@@ -12,6 +12,7 @@ import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.template.TermType;
 import edu.uff.dl.rules.template.TypeTemplate;
 import edu.uff.dl.rules.util.SimpleGenerator;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +63,8 @@ public class AnswerRule implements Component {
     private boolean recursive = true;
 
     private TypeTemplate template;
+    
+    private PrintStream outStream;
 
     /**
      * Constructor without parameters. Needed to load the class from a file
@@ -78,8 +81,9 @@ public class AnswerRule implements Component {
      * @param examples the list of examples.
      * @param answerSet the expansion answer set.
      */
-    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet) {
+    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, PrintStream outStream) {
         this();
+        this.outStream = outStream;
         this.examples = examples;
         this.answerSet = answerSet;
         this.uncoveredExamples.addAll(examples);
@@ -97,8 +101,8 @@ public class AnswerRule implements Component {
      * @param answerSet the expansion answer set.
      * @param transitivityDepth the transitivity depth.
      */
-    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth) {
-        this(examples, answerSet);
+    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, PrintStream outStream) {
+        this(examples, answerSet, outStream);
         this.transitivityDepth = transitivityDepth;
     }
 
@@ -117,8 +121,8 @@ public class AnswerRule implements Component {
      * @param transitivityDepth the transitivity depth.
      * @param template the type template.
      */
-    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, TypeTemplate template) {
-        this(examples, answerSet);
+    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, TypeTemplate template, PrintStream outStream) {
+        this(examples, answerSet, outStream);
         this.transitivityDepth = transitivityDepth;
         this.template = template;
     }
@@ -144,8 +148,8 @@ public class AnswerRule implements Component {
 
         Set<? extends ConcreteLiteral> relevants = getRelevants(example);
 
-        System.out.println("Rule based on example: " + example);
-        System.out.println("");
+        outStream.println("Rule based on example: " + example);
+        outStream.println("");
 
         VariableGenerator v = new SimpleGenerator();
 
@@ -212,7 +216,6 @@ public class AnswerRule implements Component {
 
         Rule r;// = new SafeRule(example, relevants);
 
-        //System.out.println(r.toString());
         r = new SafeRule(s, body);
 
         return r;

@@ -428,7 +428,6 @@ public class DReWRLCLI extends CommandLine {
 
                     nModels++;
 
-                    // System.out.println(nModels);
                     System.out.print("{ ");
                     Model model = (Model) modelResult;
                     // ATTENTION !!! this is necessary and stupid, should we

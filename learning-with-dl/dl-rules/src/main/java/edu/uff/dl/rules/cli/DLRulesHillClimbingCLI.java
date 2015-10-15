@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,13 +118,13 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     @Override
     protected void refinement() {
         StringBuilder t = new StringBuilder();
-        
+
         double measure = 0, aux;
         Box<Long> b = new Box<>(null), e = new Box(null);
-        try {
-            redirectOutputStream(outRefinement + "statistics.txt");
+        try (PrintStream outStream = new PrintStream(outRefinement + "statistics.txt")) {
+//            redirectOutputStream(outRefinement + "statistics.txt");
 
-            System.out.println("Begin time:\t" + Time.getTime(b));
+            outStream.println("Begin time:\t" + Time.getTime(b));
             RuleMeasurer ruleMeasure = new LaplaceMeasure();
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
@@ -133,13 +134,13 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             EvaluatedRuleExample serializeRule = null;
             //double threshold = 0.01;
             int sideMoves = 0;
-            List <EvaluatedRuleExample> listRules = getERESorted();
+            List<EvaluatedRuleExample> listRules = getERESorted();
             for (EvaluatedRuleExample genericRuleExample : listRules) {
                 try {
-                    System.out.println(Time.getTime(b));
-                    System.out.println("File: " + genericRuleExample.getSerializedFile().getName());
+                    outStream.println(Time.getTime(b));
+                    outStream.println("File: " + genericRuleExample.getSerializedFile().getName());
 
-                    Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure);
+                    Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure, outStream);
                     r.start();
                     r.join();
 
@@ -154,7 +155,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     }
 
                     Collections.sort(keys);
-                    
+
                     Time.getTime(e);
 
                     File outputFile;
@@ -190,11 +191,11 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
 
                     serializeRule.serialize(outputFile);
 
-                    System.out.println(Time.getTime(e));
+                    outStream.println(Time.getTime(e));
                     double dif = e.getContent() - b.getContent();
                     dif /= 1000;
-                    System.out.println("Total time for file(" + genericRuleExample.getSerializedFile().getName() + "): " + dif + "s");
-                    System.out.println("\n");
+                    outStream.println("Total time for file(" + genericRuleExample.getSerializedFile().getName() + "): " + dif + "s");
+                    outStream.println("\n");
                 } catch (FileNotFoundException | InterruptedException ex) {
                     Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -218,15 +219,15 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                 }
 
             }
+            theory = t.toString().trim();
+            outStream.println("End time:\t" + Time.getTime(e));
+            outStream.println("Total time:\t" + Time.getDiference(b, e));
         } catch (IOException | ParseException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException ex) {
             Logger.getLogger(DLRulesHillClimbingCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        theory = t.toString().trim();
-        System.out.println("End time:\t" + Time.getTime(e));
-        System.out.println("Total time:\t" + Time.getDiference(b, e));
+
     }
 
     /**

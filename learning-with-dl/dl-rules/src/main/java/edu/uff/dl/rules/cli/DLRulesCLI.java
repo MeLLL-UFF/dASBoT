@@ -105,7 +105,7 @@ public class DLRulesCLI {
      * the folds,<br>the fold's prefix name.
      * @throws FileNotFoundException in case of a file path does not exist.
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public synchronized static void main(String[] args) throws FileNotFoundException {
         String template = null;
         int numberOfDLPFiles = 0;
         Queue<String> queue = new LinkedList<>();
@@ -300,7 +300,7 @@ public class DLRulesCLI {
         if (dlvPath != null && !dlvPath.isEmpty()) {
             drewArgs[drewArgs.length - 1] = dlvPath;
         }
-        
+
         if (generateRuleMeasure == null) {
             setGenerateRuleMeasure(null);
         }
@@ -390,7 +390,7 @@ public class DLRulesCLI {
             List<ConcreteLiteral> examples;
             ConcreteLiteral example;
             Time.getTime(begin);
-            DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, positiveTrainExample, templateContent);
+            DReWReasoner reasoner = new DReWReasoner(dlvPath, owlFilepath, dlpContent, positiveTrainExample, templateContent, null);
             reasoner.setDepth(depth);
             reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
             reasoner.init();
@@ -398,12 +398,14 @@ public class DLRulesCLI {
             size = reasoner.getExamples().size();
 
             List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
-
+            PrintStream outStream = null;
             for (int i = 0; i < size; i++) {
                 ruleName = "rule" + i + ".txt";
                 try {
-                    redirectOutputStream(outputDirectory + ruleName);
-                    run = new DLExamplesRules(dlpContent, reasoner, positiveTrainExample, negativeTrainExample);
+//                    redirectOutputStream(outputDirectory + ruleName);
+                    outStream = new PrintStream(outputDirectory + ruleName);
+                    reasoner.setOutStream(outStream);
+                    run = new DLExamplesRules(dlpContent, reasoner, positiveTrainExample, negativeTrainExample, outStream);
                     run.setOffset(i);
                     run.start();
                     run.join(timeout * 1000);
@@ -422,12 +424,12 @@ public class DLRulesCLI {
                         }
 
                         count++;
-                        System.out.println("It takes " + aux + "s to finish!");
+                        outStream.println("It takes " + aux + "s to finish!");
                         er = run.getEvaluatedRule();
 
                     } else {
                         run.interrupt();
-                        System.out.println("Stoped on " + timeout + "s!");
+                        outStream.println("Stoped on " + timeout + "s!");
                     }
 
                     if (er != null) {
@@ -449,25 +451,34 @@ public class DLRulesCLI {
 
                     evaluatedRuleExamples.add(evaluatedRuleExample);
                 } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
-                    System.out.println(ex.getClass() + ": " + ex.getMessage());
+                    if (outStream != null) {
+                        outStream.println(ex.getClass() + ": " + ex.getMessage());
+                    }
+                } finally {
+                    if (outStream != null) {
+                        outStream.close();
+                    }
                 }
             }
             Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
-
+            outStream = new PrintStream(outputDirectory + "statistics.txt");
             try {
                 Time.getTime(end);
-                redirectOutputStream(outputDirectory + "statistics.txt");
-                System.out.println("Total of " + count + " infered rule(s)");
-                System.out.println("Max time:\t" + max + "\tfor rule " + maxR);
-                System.out.println("Min time:\t" + min + "\tfor rule " + minR);
-                System.out.println("Avg time:\t" + (sun / (double) count));
-                System.out.println("Total time:\t" + Time.getDiference(begin.getContent(), end.getContent()));
-                System.out.println("\n");
-                printMeasure(evaluatedRuleExamples);
+//                redirectOutputStream(outputDirectory + "statistics.txt");
+
+                outStream.println("Total of " + count + " infered rule(s)");
+                outStream.println("Max time:\t" + max + "\tfor rule " + maxR);
+                outStream.println("Min time:\t" + min + "\tfor rule " + minR);
+                outStream.println("Avg time:\t" + (sun / (double) count));
+                outStream.println("Total time:\t" + Time.getDiference(begin.getContent(), end.getContent()));
+                outStream.println("\n");
+                printMeasure(evaluatedRuleExamples, outStream);
             } catch (IOException ex) {
                 Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                outStream.close();
             }
-        } catch (ComponentInitException ex) {
+        } catch (ComponentInitException | FileNotFoundException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -480,11 +491,12 @@ public class DLRulesCLI {
     @SuppressWarnings("UseSpecificCatch")
     protected void refinement() {
         Box<Long> b = new Box<>(null), e = new Box(null);
-        try {
-            redirectOutputStream(outRefinement + "statistics.txt", true);
+        try (PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true))) {
+//            PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true));
+//            redirectOutputStream(outRefinement + "statistics.txt", true);
 
-            System.out.println("Begin time:\t" + Time.getTime(b));
-            System.out.println("Refinement Threshold: " + threshold);
+            outStream.println("Begin time:\t" + Time.getTime(b));
+            outStream.println("Refinement Threshold: " + threshold);
 
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
@@ -499,13 +511,13 @@ public class DLRulesCLI {
 //                }
                 if (file.isFile() && file.getName().startsWith("rule") && file.getName().endsWith(".txt")) {
                     try {
-                        System.out.println(Time.getTime(b));
-                        System.out.println("File: " + file.getName());
+                        outStream.println(Time.getTime(b));
+                        outStream.println("File: " + file.getName());
                         EvaluatedRuleExample genericRuleExample;
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure);
+                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure, outStream);
                         r.start();
                         r.join();
                         String fileName = file.getName();
@@ -550,23 +562,28 @@ public class DLRulesCLI {
 
                         serializeRule.serialize(outputFile);
 
-                        System.out.println(Time.getTime(e));
+                        outStream.println(Time.getTime(e));
                         double dif = e.getContent() - b.getContent();
                         dif /= 1000;
-                        System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
-                        System.out.println("\n");
+                        outStream.println("Total time for file(" + file.getName() + "): " + dif + "s");
+                        outStream.println("\n");
                     } catch (IOException | InterruptedException | NullPointerException ex) {
+                        System.out.println("DLV Error! 1");
                         Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (Exception ex) {
+                        System.out.println("DLV Error! 2");
                         Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
+
+            outStream.println("End time:\t" + Time.getTime(e));
+            outStream.println("Total time:\t" + Time.getDiference(b, e));
         } catch (FileNotFoundException | ParseException ex) {
+            System.out.println("DLV Error! 3");
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("End time:\t" + Time.getTime(e));
-        System.out.println("Total time:\t" + Time.getDiference(b, e));
+
     }
 
     /**
@@ -577,11 +594,12 @@ public class DLRulesCLI {
      */
     protected void crossValidation() {
         Box<Long> b = new Box<>(null), e = new Box(null);
-        try {
+        try (PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true))) {
             redirectOutputStream(outCV + "statistics.txt", true);
-            System.out.println("Begin Time:\t" + Time.getTime(b));
-            System.out.println("");
-            System.out.println("");
+
+            outStream.println("Begin Time:\t" + Time.getTime(b));
+            outStream.println("");
+            outStream.println("");
             File[] listFiles = (new File(outRefinement)).listFiles();
             List<Set<Literal>> positiveFolds = new ArrayList<>(cvNumberOfFolds);
             List<Set<Literal>> negativeFolds = new ArrayList<>(cvNumberOfFolds);
@@ -593,15 +611,16 @@ public class DLRulesCLI {
 
             for (File file : listFiles) {
                 if (file.isFile() && file.getName().startsWith("rule") && file.getName().endsWith(".txt")) {
-                    crossValidate(file, positiveFolds, negativeFolds);
+                    crossValidate(file, positiveFolds, negativeFolds, outStream);
                 }
             }
+            outStream.println("");
+            outStream.println("End Time:\t" + Time.getTime(e));
+            outStream.println("Total Time:\t" + Time.getDiference(b, e));
         } catch (IOException | ParseException | TimeoutException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("");
-        System.out.println("End Time:\t" + Time.getTime(e));
-        System.out.println("Total Time:\t" + Time.getDiference(b, e));
+
     }
 
     /**
@@ -616,7 +635,7 @@ public class DLRulesCLI {
      * @throws ParseException In case of a file does not accord with the input
      * language.
      */
-    protected void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds) throws IOException, TimeoutException, ParseException {
+    protected void crossValidate(File ruleFile, List<Set<Literal>> positiveFolds, List<Set<Literal>> negativeFolds, PrintStream outStream) throws IOException, TimeoutException, ParseException {
         Box<Long> b = new Box<>(null), e = new Box(null);
         EvaluatedRuleExample cvRule = new EvaluatedRuleExample(ruleFile);
         EvaluatedRuleExample crossEvaluated;
@@ -647,8 +666,8 @@ public class DLRulesCLI {
             crossEvaluated.serialize(out);
         }
         Time.getTime(e);
-        System.out.println("Total Time for rules " + fileName + ":\t" + Time.getDiference(b, e));
-        System.out.println("");
+        outStream.println("Total Time for rules " + fileName + ":\t" + Time.getDiference(b, e));
+        outStream.println("");
     }
 
     /**
@@ -659,7 +678,7 @@ public class DLRulesCLI {
      * @throws FileNotFoundException in case of the ER output directory does not
      * exist.
      */
-    protected void printMeasure(List<EvaluatedRuleExample> ers) throws IOException {
+    protected void printMeasure(List<EvaluatedRuleExample> ers, PrintStream outStream) throws IOException {
         int count = 1;
         String line, name;
         for (EvaluatedRuleExample evaluatedRule : ers) {
@@ -669,7 +688,7 @@ public class DLRulesCLI {
                 line += "\t";
             }
             line += "\tMeasure: " + evaluatedRule.getMeasure() + "\tExamaple: " + evaluatedRule.getExample().toString();
-            System.out.println(line);
+            outStream.println(line);
             count++;
         }
     }

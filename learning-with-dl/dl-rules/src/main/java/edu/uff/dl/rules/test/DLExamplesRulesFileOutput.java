@@ -116,7 +116,7 @@ public class DLExamplesRulesFileOutput extends Thread {
             templateContent = FileContent.getStringFromFile(templateFilepath);
         }
 
-        reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent);
+        reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent, System.out);
         reasoner.setOffset(offset);
         //Set<Constant> individuals = new HashSet<>();
         //Set<DataLogPredicate> predicates = new HashSet<>();

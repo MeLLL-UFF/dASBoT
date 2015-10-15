@@ -14,7 +14,9 @@ import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Set;
 import org.dllearner.core.ComponentInitException;
@@ -47,6 +49,7 @@ public class DLExamplesRules extends Thread {
 
     //Others
     protected DReWRLCLILiteral drew;
+    protected PrintStream outStream;
 
     //Private
     private int positives;
@@ -64,7 +67,7 @@ public class DLExamplesRules extends Thread {
      * @param dlpNegativesExamples the negative examples.
      * @throws FileNotFoundException in case a file does not exists.
      */
-    public DLExamplesRules(String dlpContent, DReWReasoner reasoner, String dlpPositivesExamples, String dlpNegativesExamples) throws FileNotFoundException {
+    public DLExamplesRules(String dlpContent, DReWReasoner reasoner, String dlpPositivesExamples, String dlpNegativesExamples, PrintStream outStream) throws FileNotFoundException {
         this.dlpContent = dlpContent;
         this.reasoner = reasoner;
 
@@ -73,6 +76,8 @@ public class DLExamplesRules extends Thread {
 
         this.compareRule = true;
         this.offset = 0;
+        
+        this.outStream = outStream;
     }
 
     @Override
@@ -89,12 +94,12 @@ public class DLExamplesRules extends Thread {
         }
 
         end = getTime(e);
-        System.out.println("");
-        System.out.println("Begin: " + begin);
-        System.out.println("End:   " + end);
+        outStream.println("");
+        outStream.println("Begin: " + begin);
+        outStream.println("End:   " + end);
         double dif = e.getContent() - b.getContent();
         dif /= 1000;
-        System.out.println("Total time: " + dif + "s");
+        outStream.println("Total time: " + dif + "s");
         this.duration = dif;
     }
 
@@ -120,12 +125,12 @@ public class DLExamplesRules extends Thread {
 
         answerSetRule = reasoner.getAnswerSetRules().get(reasoner.getAnswerSetRules().size() - 1);
 
-        System.out.println(answerSetRule.getRulesAsString());
-        System.out.println("");
-        System.out.println("Rule's body: " + answerSetRule.getAnswerRule().getRules().iterator().next().getBody().size() + " literals.");
-        System.out.println("");
-        System.out.println("Comparar a Regra: " + getTime());
-        System.out.println("");
+        outStream.println(answerSetRule.getRulesAsString());
+        outStream.println("");
+        outStream.println("Rule's body: " + answerSetRule.getAnswerRule().getRules().iterator().next().getBody().size() + " literals.");
+        outStream.println("");
+        outStream.println("Comparar a Regra: " + getTime());
+        outStream.println("");
 
         if (compareRule) {
             String in = dlpContent + "\n" + answerSetRule.getRulesAsString();
@@ -179,17 +184,17 @@ public class DLExamplesRules extends Thread {
      * wrong.
      */
     protected int compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples, String head, String bottom) throws ParseException, FileNotFoundException {
-        System.out.println(head + ": " + getTime());
+        outStream.println(head + ": " + getTime());
         int positive = 0;
         for (Literal s : listExamples) {
             if (literals.contains(s)) {
-                System.out.println(s);
+                outStream.println(s);
                 positive++;
             }
         }
 
-        System.out.println(bottom + ": " + positive + " / " + listExamples.size());
-        System.out.println("");
+        outStream.println(bottom + ": " + positive + " / " + listExamples.size());
+        outStream.println("");
 
         return positive;
     }
@@ -200,7 +205,7 @@ public class DLExamplesRules extends Thread {
             drew.killDLV();
             reasoner.killDLV();
         } catch (DLVInvocationException ex) {
-            System.out.println(ex.getClass().getName() + ": " + ex.getMessage());
+            outStream.println(ex.getClass().getName() + ": " + ex.getMessage());
         }
 
         super.interrupt();
