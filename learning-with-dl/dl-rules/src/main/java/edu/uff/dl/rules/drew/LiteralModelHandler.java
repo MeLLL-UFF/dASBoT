@@ -121,7 +121,7 @@ public class LiteralModelHandler implements ModelHandler {
      * @param mr the result model.
      */
     @Override
-    public void handleResult(DLVInvocation dlvi, ModelResult mr) {
+    public synchronized void handleResult(DLVInvocation dlvi, ModelResult mr) {
         switch (type) {
             case "rl":
                 handleResultRL(dlvi, mr);
@@ -138,10 +138,10 @@ public class LiteralModelHandler implements ModelHandler {
      * @param paramDLVInvocation the DLV invocation.
      * @param modelResult the result model.
      */
-    
     public synchronized void handleResultRL(DLVInvocation paramDLVInvocation, ModelResult modelResult) {
-        if (dlvHandlerStartTime == 0)
+        if (dlvHandlerStartTime == 0) {
             dlvHandlerStartTime = System.currentTimeMillis();
+        }
 
         nModels++;
 
@@ -168,15 +168,14 @@ public class LiteralModelHandler implements ModelHandler {
                         new StringReader(literal.toString()));
 
                 LDLPProgramQueryResultDecompiler decompiler = new LDLPProgramQueryResultDecompiler();
-
                 try {
                     org.semanticweb.drew.dlprogram.model.Literal decompileLiteral = decompiler
                             .decompileLiteral(parser.literal());
                     literals.add(decompileLiteral);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+//                } catch (ParseException e) {
+                } catch (ParseException | IllegalArgumentException e) {
+//                    e.printStackTrace();
                 }
-
             }
         }
 

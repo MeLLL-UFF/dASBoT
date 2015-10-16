@@ -38,7 +38,7 @@ public class Time {
      * @param time the {@link Box<Long>} with the time in it.
      * @return the current time as {@link String}.
      */
-    public static String getTime(Box<Long> time) {
+    public synchronized static String getTime(Box<Long> time) {
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH); // Note: zero based!

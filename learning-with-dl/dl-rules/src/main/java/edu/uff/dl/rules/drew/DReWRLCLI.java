@@ -92,7 +92,7 @@ public class DReWRLCLI extends CommandLine {
      *
      * @param args the command line arguments to pass thru the constructor.
      */
-    public static void main(String... args) {
+    public synchronized static void main(String... args) {
         new DReWRLCLI(args).go();
     }
 
@@ -192,7 +192,7 @@ public class DReWRLCLI extends CommandLine {
      * Run the DReW itself.
      */
     @Override
-    public void go() {
+    public synchronized void go() {
         System.setProperty("entityExpansionLimit", "512000");
 
         if (!parseArgs(args)) {
@@ -245,7 +245,7 @@ public class DReWRLCLI extends CommandLine {
      *
      * @param ontology the ontology.
      */
-    private void handleOntology(OWLOntology ontology) {
+    private synchronized void handleOntology(OWLOntology ontology) {
         LDLPOntologyCompiler rewriter = new LDLPOntologyCompiler();
         List<ProgramStatement> datalog = rewriter.compile(ontology);
         // DLProgramStorer storer = new DLProgramStorerImpl();
@@ -326,7 +326,7 @@ public class DReWRLCLI extends CommandLine {
      * @param inputProgram the DLV input program.
      */
     @Override
-    public void handleDLProgram(OWLOntology ontology,
+    public synchronized void handleDLProgram(OWLOntology ontology,
             DLVInputProgram inputProgram) {
         try {
             DLProgramKB kb = new DLProgramKB();

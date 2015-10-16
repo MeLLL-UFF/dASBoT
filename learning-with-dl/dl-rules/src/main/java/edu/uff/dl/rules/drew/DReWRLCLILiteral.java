@@ -37,7 +37,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class DReWRLCLILiteral extends DReWRLCLI {
 
     private static final Logger LOG = Logger.getLogger(DReWRLCLILiteral.class.getName());
-
+    
     protected LiteralModelHandler literalModelHandler;
     protected String dlpContent;
     protected DLVInvocation invocation;
@@ -90,7 +90,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
      * @param args the arguments.
      * @return an instance of this class.
      */
-    public static DReWRLCLILiteral get(String... args) {
+    public synchronized static DReWRLCLILiteral get(String... args) {
         DReWRLCLILiteral result = new DReWRLCLILiteral(args);
         return result;
     }
@@ -116,10 +116,9 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     }
 
     @Override
-    public void runDLV(DLVInputProgram inputProgram) {
-        invocation = DLVWrapper.getInstance().createInvocation(
-                dlvPath);
-
+    public synchronized void runDLV(DLVInputProgram inputProgram) {
+        invocation = DLVWrapper.getInstance().createInvocation(dlvPath);
+        
         try {
             long t0 = System.currentTimeMillis();
             invocation.setInputProgram(inputProgram);
@@ -173,12 +172,13 @@ public class DReWRLCLILiteral extends DReWRLCLI {
             }
 
         } catch (DLVInvocationException | IOException ex) {
+//            System.out.println("Error Here!");
             LOG.log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void handleDLProgram(OWLOntology ontology, DLVInputProgram inputProgram) {
+    public synchronized void handleDLProgram(OWLOntology ontology, DLVInputProgram inputProgram) {
         try {
             DLProgramKB kb = new DLProgramKB();
             kb.setOntology(ontology);
@@ -237,6 +237,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
             inputProgram.addFile(datalogFile);
 
         } catch (IOException | ParseException ex) {
+//            System.out.println("Error Here 4");
             LOG.log(Level.SEVERE, null, ex);
         }
     }

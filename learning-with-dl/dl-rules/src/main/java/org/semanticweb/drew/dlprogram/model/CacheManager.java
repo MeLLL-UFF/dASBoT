@@ -30,7 +30,7 @@ public class CacheManager {
         reset();
     }
 
-    public static final CacheManager getInstance() {
+    public synchronized static final CacheManager getInstance() {
         return instance;
     }
 

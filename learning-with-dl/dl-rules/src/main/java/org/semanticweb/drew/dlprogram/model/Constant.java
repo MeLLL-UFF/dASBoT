@@ -2,7 +2,6 @@
  * Copyright (C) 2010, 2011 Guohui Xiao
  * Copyright (C) 2006-2009 Samuel 
  */
-
 package org.semanticweb.drew.dlprogram.model;
 
 import java.sql.Types;
@@ -10,123 +9,125 @@ import java.util.Objects;
 
 /**
  * Constant implementation.
- * 
+ *
  */
 public class Constant implements Term {
-	private int type = Types.VARCHAR;
 
-	private String name;
+    private int type = Types.VARCHAR;
 
-	private String string;
+    private String name;
 
-	private int hash;
+    private String string;
 
-	/**
-	 * Constructor that is visible inside the package. Customer should use
-	 * {@link CacheManager} to create process unique constants.
-	 * 
-	 * @param name
-	 * @param type
-	 */
-	Constant(String name, int type) {
-		if (name == null) {
-			throw new IllegalArgumentException();
-		}
+    private int hash;
 
-		this.name = name;
-		this.type = type;
+    /**
+     * Constructor that is visible inside the package. Customer should use
+     * {@link CacheManager} to create process unique constants.
+     *
+     * @param name
+     * @param type
+     */
+    Constant(String name, int type) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		update();
-	}
+        this.name = name;
+        this.type = type;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            name type is default: String
-	 */
-	public Constant(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException();
-		}
+        update();
+    }
 
-		this.name = name;
+    /**
+     * Constructor
+     *
+     * @param name name type is default: String
+     */
+    public Constant(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		update();
+        this.name = name;
 
-	}
+        update();
 
-	/**
-	 * Get the name of the term.
-	 * 
-	 * @return name of the term
-	 */
-	@Override
-	public String getName() {
-		return name;
-	}
+    }
 
-	/**
-	 * Get constant type.
-	 * 
-	 * @return constant type
-	 */
-	public int getType() {
-		return type;
-	}
+    /**
+     * Get the name of the term.
+     *
+     * @return name of the term
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Update string form and its hash code for caching.
-	 */
-	private void update() {
-		switch (type) {
-		case Types.VARCHAR:
-			if (OptionManager.getInstance().getCompatibleMode()) {
-				string = name;
-			} else {
-				StringBuilder result = new StringBuilder();
-				result.append("\"").append(name).append("\"");
-				string = result.toString();
-			}
-			break;
-                case Types.DOUBLE:
-                case Types.INTEGER:
-			string = name;
-			break;
-		default:
-			throw new IllegalStateException();
-		}
+    /**
+     * Get constant type.
+     *
+     * @return constant type
+     */
+    public int getType() {
+        return type;
+    }
 
-		if (string != null) {
-			hash = string.hashCode();
-		}
-	}
+    /**
+     * Update string form and its hash code for caching.
+     */
+    private void update() {
+        switch (type) {
+            case Types.VARCHAR:
+                if (OptionManager.getInstance().getCompatibleMode()) {
+                    string = name;
+                } else {
+                    StringBuilder result = new StringBuilder();
+                    result.append("\"").append(name).append("\"");
+                    string = result.toString();
+                }
+                break;
+            case Types.DOUBLE:
+            case Types.INTEGER:
+                string = name;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
 
-	@Override
-	public String toString() {
-		return string;
-	}
+        if (string != null) {
+            hash = string.hashCode();
+        }
+    }
 
-	@Override
-	public Constant clone() {
-		return this;
-	}
+    @Override
+    public String toString() {
+        return string;
+    }
+
+    @Override
+    public Constant clone() {
+        return this;
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final Constant other = (Constant) obj;
-        if (!Objects.equals(this.string, other.string))
+        if (!Objects.equals(this.string, other.string)) {
             return false;
+        }
         return true;
     }
 
-
-	@Override
-	public int hashCode() {
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        return hash;
+    }
 }

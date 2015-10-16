@@ -484,7 +484,7 @@ public class DLProgramParser implements DLProgramParserConstants {
         throw new Error("Missing return statement in function");
     }
 
-    final public Literal literal() throws ParseException {
+    final synchronized public Literal literal() throws ParseException {
         Literal literal = new Literal();
         Predicate predicate = null;
         String name = null;
