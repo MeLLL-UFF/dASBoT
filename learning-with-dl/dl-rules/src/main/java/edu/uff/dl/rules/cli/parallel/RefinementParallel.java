@@ -3,21 +3,24 @@
  */
 package edu.uff.dl.rules.cli.parallel;
 
+import edu.uff.dl.rules.cli.DLRulesCLI;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;
-import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.Time;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.drew.dlprogram.model.Literal;
@@ -29,14 +32,53 @@ import org.semanticweb.drew.dlprogram.model.Literal;
  */
 public class RefinementParallel extends Thread {
 
-    private String owlFilepath;
-    private Set<Literal> positiveExamples, negativeExamples;
-    private String dlpContent;
-    private String outRefinement;
-    private String outRefinementAll;
-    private int timeout;
+    public String[] drewArgs;
+    public String dlpContent;
+    public String owlFilepath;
+    public Set<Literal> positiveExamples, negativeExamples;
 
-    private Queue<File> listFiles;
+    public String outRefinement;
+    public String outRefinementAll;
+
+    public int timeout;
+    public double threshold;
+    public RuleMeasurer refinementRuleMeasure;
+    public boolean generic;
+
+    public ConcurrentLinkedQueue<File> ruleFiles;
+    
+    protected String description;
+
+    public RefinementParallel(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
+        this.drewArgs = drewArgs;
+        this.dlpContent = dlpContent;
+        this.owlFilepath = owlFilepath;
+        this.positiveExamples = positiveExamples;
+        this.negativeExamples = negativeExamples;
+        this.outRefinement = outRefinement;
+        this.outRefinementAll = outRefinementAll;
+        this.timeout = timeout;
+        this.threshold = threshold;
+        this.refinementRuleMeasure = refinementRuleMeasure;
+        this.generic = generic;
+        this.ruleFiles = ruleFiles;
+    }
+
+    public RefinementParallel(String name, String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
+        super(name);
+        this.drewArgs = drewArgs;
+        this.dlpContent = dlpContent;
+        this.owlFilepath = owlFilepath;
+        this.positiveExamples = positiveExamples;
+        this.negativeExamples = negativeExamples;
+        this.outRefinement = outRefinement;
+        this.outRefinementAll = outRefinementAll;
+        this.timeout = timeout;
+        this.threshold = threshold;
+        this.refinementRuleMeasure = refinementRuleMeasure;
+        this.generic = generic;
+        this.ruleFiles = ruleFiles;
+    }
 
     /**
      * The constructor of the class with the needed parameters.
@@ -52,77 +94,105 @@ public class RefinementParallel extends Thread {
      * @param listFiles a concurrent queue with the files of the rules which
      * must be refined.
      */
-    public RefinementParallel(String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String dlpContent, String outRefinement, String outRefinementAll, int timeout, Queue<File> listFiles) {
-        this.owlFilepath = owlFilepath;
-        this.positiveExamples = positiveExamples;
-        this.negativeExamples = negativeExamples;
-        this.dlpContent = dlpContent;
-        this.outRefinement = outRefinement;
-        this.outRefinementAll = outRefinementAll;
-        this.timeout = timeout;
-        this.listFiles = listFiles;
-    }
+    
 
     /**
-     * Method to do the refinement by consuming the queue of files until the queue is empty.
-     * <br>Do not call this method direct, call {@link #start} to run this on another thread. 
+     * Method to do the refinement by consuming the queue of files until the
+     * queue is empty.
+     * <br>Do not call this method direct, call {@link #start} to run this on
+     * another thread.
      */
     @Override
+    @SuppressWarnings("UseSpecificCatch")
     public void run() {
-        RuleMeasurer ruleMeasure = new LaplaceMeasure();
-        String[] args = DReWDefaultArgs.ARGS;
-        args[2] = owlFilepath;
-        double threshold = 0.01;
+        File ruleFile;
+        EvaluatedRuleExample serializeRule;
         Box<Long> b = new Box<>(null), e = new Box(null);
-        File file;
-        while (!listFiles.isEmpty()) {
-            file = listFiles.remove();
-            if (file.isFile() && file.getName().startsWith("rule") && file.getName().endsWith(".txt")) {
-                try {
-                    System.out.println(Time.getTime(b));
-                    System.out.println("File: " + file.getName());
-                    EvaluatedRuleExample genericRuleExample;
+        StringBuilder sb = new StringBuilder();
 
-                    genericRuleExample = new EvaluatedRuleExample(file);
+        while (!ruleFiles.isEmpty()) {
+            try {
+                ruleFile = ruleFiles.poll();
+                if (ruleFile == null) {
+                    break;
+                }
 
-                    Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure, System.out);
-                    r.start();
-                    r.join();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                PrintStream outStream = new PrintStream(baos);
 
-                    String fileName = file.getName();
-                    fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-                    String outPath = outRefinementAll + fileName + "_";
+                Time.getTime(b);
 
-                    Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
-                    Set<Integer> keys = rules.keySet();
-                    Time.getTime(e);
+                EvaluatedRuleExample genericRuleExample;
 
-                    File outputFile;
-                    Integer biggestKey = 0;
+                genericRuleExample = new EvaluatedRuleExample(ruleFile);
 
-                    for (Integer key : keys) {
-                        outputFile = new File(outPath + key + ".txt");
-                        rules.get(key).serialize(outputFile);
-                        if (key > biggestKey) {
-                            biggestKey = key;
+                Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure, outStream);
+                r.start();
+                r.join();
+                String fileName = ruleFile.getName();
+                fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+                String outPath = outRefinementAll + fileName + "_";
+
+                Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
+                List<Integer> keys = new ArrayList<>(rules.keySet());
+                if (keys.isEmpty()) {
+                    continue;
+                }
+
+                Collections.sort(keys);
+                Time.getTime(e);
+
+                File outputFile;
+
+                for (Integer key : keys) {
+                    outputFile = new File(outPath + key + ".txt");
+                    serializeRule = new EvaluatedRuleExample(rules.get(key), genericRuleExample.getExample());
+                    serializeRule.serialize(outputFile);
+                }
+
+                outPath = outRefinement + fileName;
+                outputFile = new File(outPath + ".txt");
+
+                int refinedRuleIndex = keys.size() - 1;
+                serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), refinementRuleMeasure);
+                double localMeasure = serializeRule.getMeasure();
+                if (generic) {
+                    EvaluatedRuleExample otherRule;
+                    double otherMeasure;
+                    for (int i = refinedRuleIndex - 1; i > -1; i--) {
+                        otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), refinementRuleMeasure);
+                        otherMeasure = otherRule.getMeasure();
+                        if (otherMeasure == localMeasure) {
+                            localMeasure = otherMeasure;
+                            serializeRule = otherRule;
                         }
                     }
-
-                    outPath = outRefinement + fileName;
-                    outputFile = new File(outPath + ".txt");
-                    rules.get(biggestKey).serialize(outputFile);
-
-                    System.out.println(Time.getTime(e));
-                    double dif = e.getContent() - b.getContent();
-                    dif /= 1000;
-                    System.out.println("Total time for file(" + file.getName() + "): " + dif + "s");
-                    System.out.println("\n");
-                } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(RefinementParallel.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
+                serializeRule.serialize(outputFile);
+
+                sb.append(Time.getTime(e)).append("\n");
+                double dif = e.getContent() - b.getContent();
+                dif /= 1000;
+                
+                sb.append("\n").append(baos.toString("UTF8")).append("\n\n");
+                
+                sb.append("Total time for file(").append(ruleFile.getName()).append("): ").append(dif).append("s\n");
+                sb.append("\n\n");
+            } catch (IOException | InterruptedException | NullPointerException ex) {
+                Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
 
+        description = sb.toString().trim();
+        
     }
 
+    public String getDescription() {
+        return description;
+    }
+    
 }

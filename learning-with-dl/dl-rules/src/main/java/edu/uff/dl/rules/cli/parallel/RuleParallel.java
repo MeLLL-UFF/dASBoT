@@ -21,6 +21,7 @@ import org.dllearner.core.ComponentInitException;
  * Class used by {@link DLRulesCLIParallel} to handle the rule's generation.
  *
  * @author Victor Guimarães
+ * @deprecated 
  */
 public class RuleParallel extends Thread {
 

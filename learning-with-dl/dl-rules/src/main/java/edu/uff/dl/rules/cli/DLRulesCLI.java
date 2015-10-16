@@ -475,6 +475,7 @@ public class DLRulesCLI {
                     }
                 }
             }
+            
             Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
             outStream = new PrintStream(outputDirectory + "statistics.txt");
             try {

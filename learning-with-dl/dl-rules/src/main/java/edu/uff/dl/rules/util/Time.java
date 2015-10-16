@@ -73,6 +73,10 @@ public class Time {
         return getDiference(begin.getContent(), end.getContent());
     }
 
+    public static String getDiference(Long diff) {
+        return getDiference(0L, diff);
+    }
+    
     /**
      * Calculate the difference between to times.
      *
