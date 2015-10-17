@@ -46,8 +46,9 @@ public class RefinementParallel extends Thread {
     public boolean generic;
 
     public ConcurrentLinkedQueue<File> ruleFiles;
-    
+
     protected String description;
+    protected long totalDiffTime;
 
     public RefinementParallel(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
         this.drewArgs = drewArgs;
@@ -94,8 +95,6 @@ public class RefinementParallel extends Thread {
      * @param listFiles a concurrent queue with the files of the rules which
      * must be refined.
      */
-    
-
     /**
      * Method to do the refinement by consuming the queue of files until the
      * queue is empty.
@@ -108,8 +107,11 @@ public class RefinementParallel extends Thread {
         File ruleFile;
         EvaluatedRuleExample serializeRule;
         Box<Long> b = new Box<>(null), e = new Box(null);
+        Box<Long> begin = new Box<>(null), end = new Box(null);
         StringBuilder sb = new StringBuilder();
-
+        long diff;
+        
+        Time.getTime(begin);
         while (!ruleFiles.isEmpty()) {
             try {
                 ruleFile = ruleFiles.poll();
@@ -140,7 +142,6 @@ public class RefinementParallel extends Thread {
                 }
 
                 Collections.sort(keys);
-                Time.getTime(e);
 
                 File outputFile;
 
@@ -171,13 +172,15 @@ public class RefinementParallel extends Thread {
 
                 serializeRule.serialize(outputFile);
 
+                Time.getTime(e);
+
                 sb.append(Time.getTime(e)).append("\n");
-                double dif = e.getContent() - b.getContent();
-                dif /= 1000;
+                diff = e.getContent() - b.getContent();
+                
                 
                 sb.append("\n").append(baos.toString("UTF8")).append("\n\n");
-                
-                sb.append("Total time for file(").append(ruleFile.getName()).append("): ").append(dif).append("s\n");
+
+                sb.append("Total time for file(").append(ruleFile.getName()).append("): ").append((double) diff / 1000).append("s\n");
                 sb.append("\n\n");
             } catch (IOException | InterruptedException | NullPointerException ex) {
                 Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -186,13 +189,19 @@ public class RefinementParallel extends Thread {
             }
 
         }
-
-        description = sb.toString().trim();
+        Time.getTime(end);
+        totalDiffTime = end.getContent() - begin.getContent();
         
+        description = sb.toString().trim();
+
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public long getTotalDiffTime() {
+        return totalDiffTime;
     }
     
 }

@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
@@ -47,7 +48,6 @@ public class DLRulesCLIParallel extends DLRulesCLI {
 
     public int numberOfThreads = 4;
 
-    protected long totalDiffTime;
     protected double sumDuration;
 
     protected double minDuration = Double.MAX_VALUE;
@@ -59,7 +59,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
     protected int totalInferedRules;
 
     @Override
-    protected Queue<String> parseArguments(String[] args) throws FileNotFoundException {
+    public Queue<String> parseArguments(String[] args) throws FileNotFoundException {
         Queue<String> queue = super.parseArguments(args);
 
         int lNumberOfThreads = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
@@ -93,7 +93,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
 
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
-            Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -107,10 +107,13 @@ public class DLRulesCLIParallel extends DLRulesCLI {
      */
     @Override
     protected void generateRuleForEachExample() {
+        Box<Long> begin = new Box<>(null), end = new Box(null);
+
         GenerateRuleParallel[] threads = new GenerateRuleParallel[numberOfThreads];
 
         ConcurrentLinkedQueue<Integer> rulesQueue = new ConcurrentLinkedQueue<>();
         try {
+            Time.getTime(begin);
             int size = FileContent.getExamplesLiterals(positiveTrainExample).size();
             for (int i = 0; i < size; i++) {
                 rulesQueue.add(i);
@@ -120,38 +123,46 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                 threads[i] = new GenerateRuleParallel(dlvPath, owlFilepath, dlpContent, positiveTrainExample, negativeTrainExample, templateContent, outputDirectory, timeout, generateRuleMeasure, depth, recursiveRuleAllowed, rulesQueue);
                 threads[i].start();
             }
-
+            long totalDiffTime = 0;
             List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
             for (int i = 0; i < threads.length; i++) {
-                threads[i].join();
-                evaluatedRuleExamples.addAll(threads[i].getEvaluatedRuleExamples());
-                sumDuration += threads[i].getSumDuration();
-                if (minDuration < threads[i].getMinDuration()) {
-                    minDuration = threads[i].getMinDuration();
-                    minRule = threads[i].getMinRule();
-                }
+                try {
+                    threads[i].join();
+                    evaluatedRuleExamples.addAll(threads[i].getEvaluatedRuleExamples());
+                    sumDuration += threads[i].getSumDuration();
+                    if (minDuration < threads[i].getMinDuration()) {
+                        minDuration = threads[i].getMinDuration();
+                        minRule = threads[i].getMinRule();
+                    }
 
-                if (maxDuration > threads[i].getMaxDuration()) {
-                    maxDuration = threads[i].getMaxDuration();
-                    maxRule = threads[i].getMaxRule();
-                }
+                    if (maxDuration > threads[i].getMaxDuration()) {
+                        maxDuration = threads[i].getMaxDuration();
+                        maxRule = threads[i].getMaxRule();
+                    }
 
-                totalInferedRules += threads[i].getTotalInferedRules();
-                totalDiffTime += threads[i].getTotalDiffTime();
+                    totalInferedRules += threads[i].getTotalInferedRules();
+                    totalDiffTime += threads[i].getTotalDiffTime();
+                } catch (NullPointerException ex) {
+                    Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
+            Time.getTime(end);
+            double speedup = (double) totalDiffTime / (numberOfThreads * (end.getContent() - begin.getContent()));
 
             try (PrintStream outStream = new PrintStream(outputDirectory + "statistics.txt")) {
-                outStream.println("Total of " + totalInferedRules + " infered rule(s)");
-                outStream.println("Max time:\t" + maxDuration + "\tfor rule " + maxRule);
-                outStream.println("Min time:\t" + minDuration + "\tfor rule " + minRule);
-                outStream.println("Avg time:\t" + (sumDuration / (double) totalInferedRules));
-                outStream.println("Total time:\t" + Time.getDiference(totalDiffTime));
+                outStream.println("Total of " + totalInferedRules + " infered rule(s).\n");
+                outStream.println("Max time:\t\t" + maxDuration + "\tfor rule " + maxRule);
+                outStream.println("Min time:\t\t" + minDuration + "\tfor rule " + minRule);
+                outStream.println("Avg time:\t\t" + (sumDuration / (double) totalInferedRules));
+                outStream.println("Total processor time:\t" + Time.getDiference(totalDiffTime));
+                outStream.println("Total spent time:\t" + Time.getDiference(begin, end));
+                outStream.println("Speedup:\t\t" + speedup);
                 outStream.println("\n");
                 printMeasure(evaluatedRuleExamples, outStream);
             } catch (IOException ex) {
-                Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } catch (ParseException | InterruptedException ex) {
@@ -161,15 +172,17 @@ public class DLRulesCLIParallel extends DLRulesCLI {
 
     @Override
     protected void refinement() {
-        try (PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true))) {
-            Box<Long> b = new Box<>(null), e = new Box(null);
-            Time.getTime(b);
-            String beginTime = "Begin time:\t" + Time.getTime(b);
+        //(PrintStream outStream = new PrintStream(new FileOutputStream(outRefinement + "statistics.txt", true)))
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            Box<Long> begin = new Box<>(null), end = new Box(null);
+            Time.getTime(begin);
+            sb.append("Begin time:\t").append(Time.getTime(begin)).append("\n\n");
 
             Set<Literal> positiveExamples, negativeExamples;
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
-            EvaluatedRuleExample serializeRule;
 
             RefinementParallel[] threads = new RefinementParallel[numberOfThreads];
 
@@ -181,24 +194,32 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                 threads[i] = new RefinementParallel("Refinement-Thread-" + i, drewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
                 threads[i].start();
             }
-            
-            StringBuilder sb = new StringBuilder();
-            
+
+            long totalDiffTime = 0;
             for (int i = 0; i < threads.length; i++) {
-                threads[i].join();
-                sb.append(threads[i].getName()).append("\n\n");
-                sb.append(threads[i].getDescription()).append("\n\n\n");
+                try {
+                    threads[i].join();
+                    totalDiffTime += threads[i].getTotalDiffTime();
+                    sb.append("---------- ").append(threads[i].getName()).append(" ----------\n\n");
+                    sb.append(threads[i].getDescription()).append("\n\n\n\n");
+                } catch (NullPointerException ex) {
+                    Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
-            outStream.println(beginTime);
-            outStream.println("Refinement Threshold: " + threshold);
-            
-            outStream.println(sb.toString().trim() + "\n");
-            
-            outStream.println("End time:\t" + Time.getTime(e));
-            outStream.println("Total time:\t" + Time.getDiference(b, e));
-        } catch (FileNotFoundException | ParseException | InterruptedException ex) {
-            Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            sb.append("Refinement Threshold: ").append(threshold).append("\n\n");
+            sb.append("End time:\t").append(Time.getTime(end)).append("\n");
+
+            double speedup = (double) totalDiffTime / (numberOfThreads * (end.getContent() - begin.getContent()));
+
+            sb.append("Total processor time:\t").append(Time.getDiference(totalDiffTime)).append("\n");
+            sb.append("Total spent time:\t").append(Time.getDiference(begin, end)).append("\n");
+            sb.append("Speedup:\t\t").append(speedup).append("\n");
+            sb.append("Total time:\t").append(Time.getDiference(begin, end)).append("\n");
+
+            FileUtils.writeStringToFile(new File(outRefinement + "statistics.txt"), sb.toString().trim(), true);
+        } catch (IOException | ParseException | InterruptedException ex) {
+            Logger.getLogger(DLRulesCLIParallel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -227,7 +248,7 @@ class RuleERFilter implements FileFilter {
         if (!pathname.getName().endsWith(".txt")) {
             return false;
         }
-        
+
         return true;
     }
 

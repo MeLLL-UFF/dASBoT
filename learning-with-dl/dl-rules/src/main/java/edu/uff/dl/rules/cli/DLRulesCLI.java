@@ -87,7 +87,7 @@ public class DLRulesCLI {
     protected RuleMeasurer generateRuleMeasure;
     protected RuleMeasurer refinementRuleMeasure;
 
-    protected synchronized Queue<String> parseArguments(String[] args) throws FileNotFoundException {
+    public synchronized Queue<String> parseArguments(String[] args) throws FileNotFoundException {
         String template = null;
         int numberOfDLPFiles = 0;
         Queue<String> queue = new LinkedList<>();
@@ -201,7 +201,7 @@ public class DLRulesCLI {
         this.setInitArgs(args);
         this.setGenerateRuleMeasure(generateMeasure);
         this.setRefinementRuleMeasure(refinementMeasure);
-        
+
         return queue;
     }
 
@@ -225,7 +225,7 @@ public class DLRulesCLI {
         try {
             DLRulesCLI dlrcli = new DLRulesCLI();
             dlrcli.parseArguments(args);
-            
+
             dlrcli.init();
         } catch (NoSuchElementException | NumberFormatException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -475,7 +475,7 @@ public class DLRulesCLI {
                     }
                 }
             }
-            
+
             Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
             outStream = new PrintStream(outputDirectory + "statistics.txt");
             try {
@@ -876,7 +876,7 @@ public class DLRulesCLI {
             this.refinementRuleMeasure = new LaplaceMeasure();
         }
     }
-    
+
     public void setDLPFilepaths(Set<String> dlpFilepaths) throws FileNotFoundException {
         this.dlpContent = FileContent.getStringFromFile(dlpFilepaths);
     }
@@ -924,5 +924,41 @@ public class DLRulesCLI {
     public void setCvNumberOfFolds(int cvNumberOfFolds) {
         this.cvNumberOfFolds = cvNumberOfFolds;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("DLRulesCLI:\n");
+        sb.append("\tOWL Filepath:\t").append(owlFilepath).append("\n");
+        sb.append("\tOutput Directory:\t").append(outputDirectory).append("\n");
+        sb.append("\tTimeout:\t\t").append(timeout).append("\n");
+        sb.append("\tRefinement:\t\t").append(refinement).append("\n");
+        sb.append("\tGeneric:\t\t").append(generic).append("\n");
+        sb.append("\tCross Validation:\t").append(crossValidation).append("\n");
+        sb.append("\tRecursive Rule Allowed:\t").append(recursiveRuleAllowed).append("\n");
+        sb.append("\tDLV Path:\t\t").append(dlvPath).append("\n");
+        sb.append("\tDepth:\t\t").append(depth).append("\n");
+        sb.append("\tThreshold:\t\t").append(threshold).append("\n");
+
+        if (drewArgs != null) {
+            sb.append("\tDrew Arguments:\n");
+            for (int i = 0; i < drewArgs.length; i++) {
+                sb.append("\t\t").append(drewArgs[i]).append("\n");
+            }
+        }
+        
+        if (drewArgs != null) {
+            sb.append("\tInit Arguments:\n");
+            for (int i = 0; i < initArgs.length; i++) {
+                sb.append("\t\t").append(initArgs[i]).append("\n");
+            }
+        }
+
+        sb.append("\tGenerate Rule Measure:\t").append(generateRuleMeasure).append("\n");
+        sb.append("\tRefinement Rule Measure:\t").append(refinementRuleMeasure);
+        
+        return sb.toString().trim();
+    }
+
 }
