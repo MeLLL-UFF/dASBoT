@@ -44,7 +44,6 @@ public class DLRulesCLIParallel extends DLRulesCLI {
 
     public static final String RULE_THREAD_NAME_PREFIX = "Rule-Thread-";
     public static final String REFINEMENT_THREAD_NAME_PREFIX = "Refinement-Thread-";
-    public static final String DLV_FILE_SUFIX = "--rl.dlv";
 
     public int numberOfThreads = 4;
 

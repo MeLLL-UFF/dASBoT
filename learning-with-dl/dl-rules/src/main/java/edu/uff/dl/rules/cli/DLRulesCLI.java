@@ -54,6 +54,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
 public class DLRulesCLI {
 
     public static final String RULE_MEASURE_PACKAGE_NAME = "edu.uff.dl.rules.evaluation";
+    public static final String DLV_FILE_SUFIX = "--rl.dlv";
 
     protected String owlFilepath;
     protected String outputDirectory;
