@@ -139,7 +139,7 @@ public class App {
         String outputDirectory;
 
         RuleMeasurer measurer = new F1ScoreMeasure();
-        String[] args = DReWDefaultArgs.ARGS;
+        String[] args = DReWDefaultArgs.getDefaultArgs();
         String[] indidualArgs;
         PrintStream stream = System.out;
         String out = null;
@@ -393,7 +393,7 @@ public class App {
             DLRulesCLI.main(arguments);
 //            DLRulesHillClimbingCLI.main(arguments);
         }
-        args = DReWDefaultArgs.ARGS;
+        args = DReWDefaultArgs.getDefaultArgs();
         //args[2]
 
         //String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/cv.txt").split(" ");
@@ -447,7 +447,7 @@ public class App {
         EvaluatedRule er;
         File out;
 
-        String[] args = DReWDefaultArgs.ARGS;
+        String[] args = DReWDefaultArgs.getDefaultArgs();
         args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         for (int i = 1; i <= tests; i++) {
             dlpPositiveFilePath = testFilePrefix + i + ".f";
@@ -489,7 +489,7 @@ public class App {
 
         RuleMeasurer ruleMeasure = new LaplaceMeasure();
 
-        String[] args = DReWDefaultArgs.ARGS;
+        String[] args = DReWDefaultArgs.getDefaultArgs();
         args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
         double threshold = 0.01;
         Box<Long> b = new Box<>(null), e = new Box(null);

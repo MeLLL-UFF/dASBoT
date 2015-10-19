@@ -49,16 +49,16 @@ public class GenerateRuleParallel extends Thread {
     public ConcurrentLinkedQueue<Integer> rulesQueue;
 
     protected List<EvaluatedRuleExample> evaluatedRuleExamples;
-    
+
     protected long totalDiffTime;
     protected double sumDuration;
-    
+
     protected double minDuration = Double.MAX_VALUE;
     protected int minRule;
-    
+
     protected double maxDuration;
     protected int maxRule;
-    
+
     protected int totalInferedRules;
 
     public GenerateRuleParallel() {
@@ -144,7 +144,7 @@ public class GenerateRuleParallel extends Thread {
                         }
 
                         totalInferedRules++;
-                        
+
                         outStream.println("It takes " + duration + "s to finish!");
                         er = run.getEvaluatedRule();
                     } else {
@@ -170,7 +170,8 @@ public class GenerateRuleParallel extends Thread {
                     evaluatedRuleExample.serialize(fOut);
 
                     evaluatedRuleExamples.add(evaluatedRuleExample);
-                } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
+//                } catch (InterruptedException | FileNotFoundException | NullPointerException | ParseException ex) {
+                } catch (Exception ex) {
                     if (outStream != null) {
                         outStream.println(ex.getClass() + ": " + ex.getMessage());
                     }
@@ -326,5 +327,5 @@ public class GenerateRuleParallel extends Thread {
     public double getSumDuration() {
         return sumDuration;
     }
-    
+
 }

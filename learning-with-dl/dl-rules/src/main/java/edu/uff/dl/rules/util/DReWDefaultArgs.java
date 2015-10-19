@@ -3,6 +3,9 @@
  */
 package edu.uff.dl.rules.util;
 
+import java.io.File;
+import java.util.Arrays;
+
 /**
  * Class to get the deafult arguments to run the DReW.
  *
@@ -13,7 +16,7 @@ public class DReWDefaultArgs {
     /**
      * The default argument.
      */
-    public static final String[] ARGS = {
+    public static final String[] DEFAULT_ARGS = {
         "-rl",
         "-ontology",
         "",
@@ -35,4 +38,20 @@ public class DReWDefaultArgs {
         "-dlv",
         "/usr/lib/dlv.i386-apple-darwin-iodbc.bin"
     };
+    
+    public static String[] getDefaultArgs() {
+        return Arrays.copyOf(DEFAULT_ARGS, DEFAULT_ARGS.length);
+    }
+    
+    public static int getOWLFilepath(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-ontology")) {
+                if ((new File(args[i + 1])).exists()) {
+                    return i + 1;
+                }
+            }
+        }
+        
+        return -1;
+    }
 }

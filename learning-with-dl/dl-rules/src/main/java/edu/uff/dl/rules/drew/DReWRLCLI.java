@@ -24,6 +24,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.semanticweb.drew.cli.CommandLine;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorer;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorerImpl;
@@ -56,6 +58,8 @@ import org.semanticweb.owlapi.profiles.OWLProfileReport;
  * @author Victor Guimarães
  */
 public class DReWRLCLI extends CommandLine {
+
+    private static final Logger LOG = Logger.getLogger(DReWRLCLI.class.getName());
 
     protected String ontologyFile;
     private String sparqlFile;
@@ -255,8 +259,8 @@ public class DReWRLCLI extends CommandLine {
         datalogFile = ontologyFile + ".dlv";
         try (FileWriter writer = new FileWriter(datalogFile)) {
             storer.store(datalog, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
 
     }
@@ -303,8 +307,8 @@ public class DReWRLCLI extends CommandLine {
 
             filter = "ans";
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -376,11 +380,9 @@ public class DReWRLCLI extends CommandLine {
 
             inputProgram.addFile(datalogFile);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ParseException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        } 
 
     }
 
@@ -457,8 +459,8 @@ public class DReWRLCLI extends CommandLine {
                                         .decompileLiteral(parser.literal());
                                 System.out.print(decompileLiteral);
                                 System.out.print(" ");
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            } catch (ParseException ex) {
+                                LOG.log(Level.SEVERE, null, ex);
                             }
 
                         }
@@ -490,8 +492,8 @@ public class DReWRLCLI extends CommandLine {
                         + "ms");
             }
 
-        } catch (DLVInvocationException | IOException e) {
-            e.printStackTrace();
+        } catch (DLVInvocationException | IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 

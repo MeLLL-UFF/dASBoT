@@ -8,6 +8,8 @@ import it.unical.mat.wrapper.DLVInputProgram;
 import it.unical.mat.wrapper.DLVInvocation;
 import it.unical.mat.wrapper.DLVInvocationException;
 import it.unical.mat.wrapper.DLVWrapper;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorer;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorerImpl;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
@@ -37,7 +40,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class DReWRLCLILiteral extends DReWRLCLI {
 
     private static final Logger LOG = Logger.getLogger(DReWRLCLILiteral.class.getName());
-    
+
     protected LiteralModelHandler literalModelHandler;
     protected String dlpContent;
     protected DLVInvocation invocation;
@@ -118,7 +121,7 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     @Override
     public synchronized void runDLV(DLVInputProgram inputProgram) {
         invocation = DLVWrapper.getInstance().createInvocation(dlvPath);
-        
+
         try {
             long t0 = System.currentTimeMillis();
             invocation.setInputProgram(inputProgram);
@@ -134,15 +137,17 @@ public class DReWRLCLILiteral extends DReWRLCLI {
                 Collections.addAll(filters, ss);
             }
 
-            if (filters.size() > 0)
+            if (filters.size() > 0) {
                 invocation.setFilter(filters, true);
+            }
 
             if (maxInt != -1) {
                 invocation.setMaxint(maxInt);
             }
 
-            if (semantics.equals("wf"))
+            if (semantics.equals("wf")) {
                 invocation.addOption("-wf");
+            }
 
             literalModelHandler.setDLVHandlerStartTime(dlvHandlerStartTime);
 
@@ -156,8 +161,9 @@ public class DReWRLCLILiteral extends DReWRLCLI {
             dlvHandlerEndTime = literalModelHandler.getDlvHandlerEndTime();
 
             List<DLVError> dlvErrors = invocation.getErrors();
-            if (dlvErrors.size() > 0)
+            if (dlvErrors.size() > 0) {
                 System.err.println(dlvErrors);
+            }
 
             long t1 = System.currentTimeMillis();
 
@@ -222,9 +228,11 @@ public class DReWRLCLILiteral extends DReWRLCLI {
                 System.err.println("#current memory = " + currentMemory + "M");
             }
 
-            FileWriter w = new FileWriter(datalogFile);
+            FileWriter writer = new FileWriter(datalogFile);
+            BufferedWriter w = new BufferedWriter(writer);
             DLProgramStorer storer = new DLProgramStorerImpl();
             storer.store(datalog, w);
+            w.flush();
             w.close();
 
             long t1 = System.currentTimeMillis();
@@ -269,8 +277,9 @@ public class DReWRLCLILiteral extends DReWRLCLI {
      * invocation.
      */
     public void killDLV() throws DLVInvocationException {
-        if (invocation != null)
+        if (invocation != null) {
             invocation.killDlv();
+        }
     }
 
 }

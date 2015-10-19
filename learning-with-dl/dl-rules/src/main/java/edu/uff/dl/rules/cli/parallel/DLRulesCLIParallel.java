@@ -4,25 +4,21 @@
 package edu.uff.dl.rules.cli.parallel;
 
 import edu.uff.dl.rules.cli.DLRulesCLI;
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.rules.refinement.Refinement;
-import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;
+import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
@@ -45,6 +41,10 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  * @author Victor Guimarães
  */
 public class DLRulesCLIParallel extends DLRulesCLI {
+
+    public static final String RULE_THREAD_NAME_PREFIX = "Rule-Thread-";
+    public static final String REFINEMENT_THREAD_NAME_PREFIX = "Refinement-Thread-";
+    public static final String DLV_FILE_SUFIX = "--rl.dlv";
 
     public int numberOfThreads = 4;
 
@@ -119,15 +119,37 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                 rulesQueue.add(i);
             }
 
+            File newOWLFile;
+            int owlPathIndex = DReWDefaultArgs.getOWLFilepath(drewArgs);
+            String threadName;
+
             for (int i = 0; i < threads.length; i++) {
-                threads[i] = new GenerateRuleParallel(dlvPath, owlFilepath, dlpContent, positiveTrainExample, negativeTrainExample, templateContent, outputDirectory, timeout, generateRuleMeasure, depth, recursiveRuleAllowed, rulesQueue);
-                threads[i].start();
+                try {
+                    threadName = RULE_THREAD_NAME_PREFIX + i;
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threadName);
+                    FileUtils.copyFile(new File(drewArgs[owlPathIndex]), newOWLFile);
+
+                    threads[i] = new GenerateRuleParallel(threadName, dlvPath, newOWLFile.getAbsolutePath(), dlpContent, positiveTrainExample, negativeTrainExample, templateContent, outputDirectory, timeout, generateRuleMeasure, depth, recursiveRuleAllowed, rulesQueue);
+                    threads[i].start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             long totalDiffTime = 0;
             List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
             for (int i = 0; i < threads.length; i++) {
                 try {
                     threads[i].join();
+
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threads[i].getName());
+                    if (newOWLFile.exists()) {
+                        newOWLFile.delete();
+                    }
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threads[i].getName() + DLV_FILE_SUFIX);
+                    if (newOWLFile.exists()) {
+                        newOWLFile.delete();
+                    }
+
                     evaluatedRuleExamples.addAll(threads[i].getEvaluatedRuleExamples());
                     sumDuration += threads[i].getSumDuration();
                     if (minDuration < threads[i].getMinDuration()) {
@@ -158,6 +180,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                 outStream.println("Avg time:\t\t" + (sumDuration / (double) totalInferedRules));
                 outStream.println("Total processor time:\t" + Time.getDiference(totalDiffTime));
                 outStream.println("Total spent time:\t" + Time.getDiference(begin, end));
+                outStream.println("Number of threads:\t" + numberOfThreads);
                 outStream.println("Speedup:\t\t" + speedup);
                 outStream.println("\n");
                 printMeasure(evaluatedRuleExamples, outStream);
@@ -190,15 +213,39 @@ public class DLRulesCLIParallel extends DLRulesCLI {
             File[] listFiles = (new File(outER)).listFiles(new RuleERFilter());
             ruleFiles.addAll(Arrays.asList(listFiles));
 
+            File newOWLFile;
+            int owlPathIndex = DReWDefaultArgs.getOWLFilepath(drewArgs);
+            String threadName;
+            String[] newDrewArgs;
+
             for (int i = 0; i < threads.length; i++) {
-                threads[i] = new RefinementParallel("Refinement-Thread-" + i, drewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
-                threads[i].start();
+                try {
+                    threadName = REFINEMENT_THREAD_NAME_PREFIX + i;
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threadName);
+                    FileUtils.copyFile(new File(drewArgs[owlPathIndex]), newOWLFile);
+                    newDrewArgs = Arrays.copyOf(drewArgs, drewArgs.length);
+                    newDrewArgs[owlPathIndex] = newOWLFile.getAbsolutePath();
+
+                    threads[i] = new RefinementParallel(threadName, newDrewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
+                    threads[i].start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             long totalDiffTime = 0;
             for (int i = 0; i < threads.length; i++) {
                 try {
                     threads[i].join();
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threads[i].getName());
+                    if (newOWLFile.exists()) {
+                        newOWLFile.delete();
+                    }
+                    newOWLFile = new File(drewArgs[owlPathIndex] + "." + threads[i].getName() + DLV_FILE_SUFIX);
+                    if (newOWLFile.exists()) {
+                        newOWLFile.delete();
+                    }
+
                     totalDiffTime += threads[i].getTotalDiffTime();
                     sb.append("---------- ").append(threads[i].getName()).append(" ----------\n\n");
                     sb.append(threads[i].getDescription()).append("\n\n\n\n");
@@ -208,14 +255,15 @@ public class DLRulesCLIParallel extends DLRulesCLI {
             }
 
             sb.append("Refinement Threshold: ").append(threshold).append("\n\n");
-            sb.append("End time:\t").append(Time.getTime(end)).append("\n");
+            sb.append("End time:\t\t").append(Time.getTime(end)).append("\n");
 
             double speedup = (double) totalDiffTime / (numberOfThreads * (end.getContent() - begin.getContent()));
 
             sb.append("Total processor time:\t").append(Time.getDiference(totalDiffTime)).append("\n");
             sb.append("Total spent time:\t").append(Time.getDiference(begin, end)).append("\n");
+            sb.append("Number of threads:\t").append(numberOfThreads).append("\n");
             sb.append("Speedup:\t\t").append(speedup).append("\n");
-            sb.append("Total time:\t").append(Time.getDiference(begin, end)).append("\n");
+            sb.append("Total time:\t\t").append(Time.getDiference(begin, end)).append("\n");
 
             FileUtils.writeStringToFile(new File(outRefinement + "statistics.txt"), sb.toString().trim(), true);
         } catch (IOException | ParseException | InterruptedException ex) {

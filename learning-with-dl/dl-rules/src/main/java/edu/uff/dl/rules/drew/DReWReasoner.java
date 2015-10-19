@@ -92,7 +92,7 @@ public class DReWReasoner implements Component {
      * (Spring).
      */
     public DReWReasoner() {
-        args = DReWDefaultArgs.ARGS;
+        args = DReWDefaultArgs.getDefaultArgs();
         this.individuals = new HashSet<>();
         this.predicates = new HashSet<>();
         this.examples = new HashSet<>();

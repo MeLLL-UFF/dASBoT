@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -65,7 +66,9 @@ public class DLRulesCLI {
     protected String outCV;
     protected String dlpContent;
     protected String positiveTrainExample;
+    protected String positiveTrainFilePath;
     protected String negativeTrainExample;
+    protected String negativeTrainFilePath;
     protected String templateContent;
     protected String cvDirectory;
     protected String cvPrefix;
@@ -81,7 +84,7 @@ public class DLRulesCLI {
     protected int depth;
     protected double threshold;
 
-    protected String[] drewArgs = DReWDefaultArgs.ARGS;
+    protected String[] drewArgs = DReWDefaultArgs.getDefaultArgs();
     protected String[] initArgs;
 
     protected RuleMeasurer generateRuleMeasure;
@@ -311,10 +314,6 @@ public class DLRulesCLI {
      */
     public void init() {
         createOutputDirectories();
-
-        if (dlvPath != null && !dlvPath.isEmpty()) {
-            drewArgs[drewArgs.length - 1] = dlvPath;
-        }
 
         if (generateRuleMeasure == null) {
             setGenerateRuleMeasure(null);
@@ -593,8 +592,8 @@ public class DLRulesCLI {
                 }
             }
 
-            outStream.println("End time:\t" + Time.getTime(e));
-            outStream.println("Total time:\t" + Time.getDiference(b, e));
+            outStream.println("End time:\t\t" + Time.getTime(e));
+            outStream.println("Total time:\t\t" + Time.getDiference(b, e));
         } catch (FileNotFoundException | ParseException ex) {
             System.out.println("DLV Error! 3");
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
@@ -807,6 +806,9 @@ public class DLRulesCLI {
 
     public void setDLVPath(String dlvPath) {
         this.dlvPath = dlvPath;
+        if (dlvPath != null && !dlvPath.isEmpty()) {
+            drewArgs[drewArgs.length - 1] = dlvPath;
+        }
     }
 
     /**
@@ -887,11 +889,21 @@ public class DLRulesCLI {
     }
 
     public void setPositiveTrainFilepath(String positiveTrainFilepath) throws FileNotFoundException {
+        this.positiveTrainFilePath = positiveTrainFilepath;
         this.positiveTrainExample = FileContent.getStringFromFile(positiveTrainFilepath);
     }
 
+    public String getPositiveTrainFilePath() {
+        return positiveTrainFilePath;
+    }
+
     public void setNegativeTrainFilepath(String negativeTrainFilepath) throws FileNotFoundException {
+        this.negativeTrainFilePath = negativeTrainFilepath;
         this.negativeTrainExample = FileContent.getStringFromFile(negativeTrainFilepath);
+    }
+
+    public String getNegativeTrainFilePath() {
+        return negativeTrainFilePath;
     }
 
     public void setOutputDirectory(String outputDirectory) {
@@ -925,6 +937,96 @@ public class DLRulesCLI {
         this.cvNumberOfFolds = cvNumberOfFolds;
     }
 
+    public String getOwlFilepath() {
+        return owlFilepath;
+    }
+
+    public String getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public String getOutER() {
+        return outER;
+    }
+
+    public String getOutRefinement() {
+        return outRefinement;
+    }
+
+    public String getOutRefinementAll() {
+        return outRefinementAll;
+    }
+
+    public String getOutCV() {
+        return outCV;
+    }
+
+    public String getDlpContent() {
+        return dlpContent;
+    }
+
+    public String getPositiveTrainExample() {
+        return positiveTrainExample;
+    }
+
+    public String getNegativeTrainExample() {
+        return negativeTrainExample;
+    }
+
+    public String getTemplateContent() {
+        return templateContent;
+    }
+
+    public String getCvDirectory() {
+        return cvDirectory;
+    }
+
+    public String getCvPrefix() {
+        return cvPrefix;
+    }
+
+    public int getCvNumberOfFolds() {
+        return cvNumberOfFolds;
+    }
+
+    public String getDlvPath() {
+        return dlvPath;
+    }
+
+    public String[] getDrewArgs() {
+        return drewArgs;
+    }
+
+    public String[] getInitArgs() {
+        return initArgs;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Arrays.deepHashCode(this.initArgs);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DLRulesCLI other = (DLRulesCLI) obj;
+        if (!Arrays.deepEquals(this.initArgs, other.initArgs)) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -947,7 +1049,7 @@ public class DLRulesCLI {
                 sb.append("\t\t").append(drewArgs[i]).append("\n");
             }
         }
-        
+
         if (drewArgs != null) {
             sb.append("\tInit Arguments:\n");
             for (int i = 0; i < initArgs.length; i++) {
@@ -957,7 +1059,7 @@ public class DLRulesCLI {
 
         sb.append("\tGenerate Rule Measure:\t").append(generateRuleMeasure).append("\n");
         sb.append("\tRefinement Rule Measure:\t").append(refinementRuleMeasure);
-        
+
         return sb.toString().trim();
     }
 

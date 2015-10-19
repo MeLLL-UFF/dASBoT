@@ -10,6 +10,7 @@ import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;
+import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.Time;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.model.Literal;
 
 /**
@@ -189,13 +191,14 @@ public class RefinementParallel extends Thread {
             }
 
         }
+        
         Time.getTime(end);
         totalDiffTime = end.getContent() - begin.getContent();
         
         description = sb.toString().trim();
 
     }
-
+    
     public String getDescription() {
         return description;
     }

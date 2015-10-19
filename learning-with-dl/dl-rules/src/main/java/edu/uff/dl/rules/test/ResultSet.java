@@ -214,8 +214,8 @@ public class ResultSet {
         DReWRLCLILiteral drew = DReWRLCLILiteral.get(args);
         drew.setDLPContent(in);
         drew.go();
-        if (drew.getLiteralModelHandler().getAnswerSets().isEmpty())
-            throw new ParseException();
+//        if (drew.getLiteralModelHandler().getAnswerSets().isEmpty())
+//            throw new ParseException();
         //lits = drew.getLiteralModelHandler().getAnswerSets().get(0);
         Set<Literal> lits = new HashSet<>();
         for (Set<Literal> set : drew.getLiteralModelHandler().getAnswerSets()) {
