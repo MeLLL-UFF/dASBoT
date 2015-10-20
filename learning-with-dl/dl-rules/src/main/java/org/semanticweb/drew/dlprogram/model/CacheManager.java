@@ -7,7 +7,6 @@ package org.semanticweb.drew.dlprogram.model;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.semanticweb.owlapi.model.IRI;
 
 public class CacheManager {

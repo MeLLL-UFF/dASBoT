@@ -3,13 +3,13 @@
  */
 package edu.uff.dl.rules.cli;
 
-import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;
@@ -22,7 +22,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

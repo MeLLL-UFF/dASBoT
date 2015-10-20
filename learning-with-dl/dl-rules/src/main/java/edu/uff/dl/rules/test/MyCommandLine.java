@@ -5,13 +5,10 @@ package edu.uff.dl.rules.test;
 
 import edu.uff.dl.rules.drew.DReWRLCLI;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
-import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import org.semanticweb.drew.cli.CommandLine;
 import org.semanticweb.drew.dlprogram.model.CacheManager;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;

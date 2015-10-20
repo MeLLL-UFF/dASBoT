@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractLearningProblem;
 import org.dllearner.core.AbstractReasonerComponent;

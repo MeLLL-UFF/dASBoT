@@ -1,7 +1,6 @@
 package org.semanticweb.drew.ldlpprogram.reasoner;
 
 import org.semanticweb.drew.dlprogram.model.DLInputSignature;
-//import org.semanticweb.drew.utils.SymbolEncoder;
 import org.semanticweb.drew.el.SymbolEncoder;
 
 

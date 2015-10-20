@@ -14,7 +14,6 @@ import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 import org.semanticweb.drew.dlprogram.model.Term;
-import org.semanticweb.drew.dlprogram.model.Variable;
 
 /**
  * A DataLog instantiated literal.

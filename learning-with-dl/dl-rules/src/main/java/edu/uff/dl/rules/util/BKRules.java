@@ -9,7 +9,9 @@ import java.io.FileReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
+import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
@@ -21,8 +23,6 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.dllearner.core.Component;
-import org.dllearner.core.ComponentInitException;
 
 /**
  * Class to get rules and/or facts from a file.

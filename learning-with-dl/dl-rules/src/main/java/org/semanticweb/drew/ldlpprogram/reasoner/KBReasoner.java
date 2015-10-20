@@ -8,13 +8,11 @@
 package org.semanticweb.drew.ldlpprogram.reasoner;
 
 import java.util.List;
-
 import org.semanticweb.drew.datalog.DLVReasoner;
 import org.semanticweb.drew.datalog.DatalogReasoner;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
 import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.ldlp.reasoner.LDLPQueryResultDecompiler;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 
 

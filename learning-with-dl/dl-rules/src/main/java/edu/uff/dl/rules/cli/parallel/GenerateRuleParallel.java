@@ -9,23 +9,18 @@ import edu.uff.dl.rules.drew.DReWReasoner;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.DLExamplesRules;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.dllearner.core.ComponentInitException;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
  *
@@ -61,38 +56,31 @@ public class GenerateRuleParallel extends Thread {
 
     protected int totalInferedRules;
 
+    public void setProperties(String dlvPath, String owlFilepath, String dlpContent, String positiveTrainExample, String negativeTrainExample, String templateContent, String outputDirectory, int timeout, RuleMeasurer generateRuleMeasure, int depth, boolean recursiveRuleAllowed, ConcurrentLinkedQueue<Integer> rulesQueue) {
+        this.dlvPath = dlvPath;
+        this.owlFilepath = owlFilepath;
+        this.dlpContent = dlpContent;
+        this.positiveTrainExample = positiveTrainExample;
+        this.negativeTrainExample = negativeTrainExample;
+        this.templateContent = templateContent;
+        this.outputDirectory = outputDirectory;
+        this.timeout = timeout;
+        this.generateRuleMeasure = generateRuleMeasure;
+        this.depth = depth;
+        this.recursiveRuleAllowed = recursiveRuleAllowed;
+        this.rulesQueue = rulesQueue;
+    }
+    
     public GenerateRuleParallel() {
     }
 
     public GenerateRuleParallel(String dlvPath, String owlFilepath, String dlpContent, String positiveTrainExample, String negativeTrainExample, String templateContent, String outputDirectory, int timeout, RuleMeasurer generateRuleMeasure, int depth, boolean recursiveRuleAllowed, ConcurrentLinkedQueue<Integer> rulesQueue) {
-        this.dlvPath = dlvPath;
-        this.owlFilepath = owlFilepath;
-        this.dlpContent = dlpContent;
-        this.positiveTrainExample = positiveTrainExample;
-        this.negativeTrainExample = negativeTrainExample;
-        this.templateContent = templateContent;
-        this.outputDirectory = outputDirectory;
-        this.timeout = timeout;
-        this.generateRuleMeasure = generateRuleMeasure;
-        this.depth = depth;
-        this.recursiveRuleAllowed = recursiveRuleAllowed;
-        this.rulesQueue = rulesQueue;
+        setProperties(dlvPath, owlFilepath, dlpContent, positiveTrainExample, negativeTrainExample, templateContent, outputDirectory, timeout, generateRuleMeasure, depth, recursiveRuleAllowed, rulesQueue);
     }
 
     public GenerateRuleParallel(String name, String dlvPath, String owlFilepath, String dlpContent, String positiveTrainExample, String negativeTrainExample, String templateContent, String outputDirectory, int timeout, RuleMeasurer generateRuleMeasure, int depth, boolean recursiveRuleAllowed, ConcurrentLinkedQueue<Integer> rulesQueue) {
         super(name);
-        this.dlvPath = dlvPath;
-        this.owlFilepath = owlFilepath;
-        this.dlpContent = dlpContent;
-        this.positiveTrainExample = positiveTrainExample;
-        this.negativeTrainExample = negativeTrainExample;
-        this.templateContent = templateContent;
-        this.outputDirectory = outputDirectory;
-        this.timeout = timeout;
-        this.generateRuleMeasure = generateRuleMeasure;
-        this.depth = depth;
-        this.recursiveRuleAllowed = recursiveRuleAllowed;
-        this.rulesQueue = rulesQueue;
+        setProperties(dlvPath, owlFilepath, dlpContent, positiveTrainExample, negativeTrainExample, templateContent, outputDirectory, timeout, generateRuleMeasure, depth, recursiveRuleAllowed, rulesQueue);
     }
 
     @Override

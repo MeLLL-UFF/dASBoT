@@ -30,14 +30,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
 import org.dllearner.cli.CrossValidation;
 import org.dllearner.core.AbstractCELA;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.owl.Description;
 import org.dllearner.core.owl.Individual;
-//import org.dllearner.learningproblems.Heuristics;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.utilities.statistics.Stat;
 /**

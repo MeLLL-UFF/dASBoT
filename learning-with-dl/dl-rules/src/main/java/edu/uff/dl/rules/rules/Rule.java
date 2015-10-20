@@ -4,7 +4,6 @@
 package edu.uff.dl.rules.rules;
 
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
-import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.datalog.DataLogRule;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.util.AlphabetCounter;

@@ -4,10 +4,9 @@
 package edu.uff.dl.rules.test;
 
 import edu.stanford.nlp.io.PrintFile;
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;

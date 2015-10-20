@@ -3,10 +3,8 @@
  */
 package edu.uff.dl.rules.rules;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
-import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.DataLogRule;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.template.TermType;
@@ -19,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -29,7 +26,6 @@ import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
 import org.semanticweb.drew.dlprogram.model.Variable;
 

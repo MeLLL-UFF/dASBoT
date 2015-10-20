@@ -4,13 +4,12 @@
 package edu.uff.dl.rules.cli.parallel;
 
 import edu.uff.dl.rules.cli.DLRulesCLI;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.Box;
-import edu.uff.dl.rules.util.DReWDefaultArgs;
 import edu.uff.dl.rules.util.Time;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.model.Literal;
 
 /**
@@ -52,7 +50,7 @@ public class RefinementParallel extends Thread {
     protected String description;
     protected long totalDiffTime;
 
-    public RefinementParallel(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
+    public void setProperties(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
         this.drewArgs = drewArgs;
         this.dlpContent = dlpContent;
         this.owlFilepath = owlFilepath;
@@ -67,20 +65,16 @@ public class RefinementParallel extends Thread {
         this.ruleFiles = ruleFiles;
     }
 
+    public RefinementParallel() {
+    }
+    
+    public RefinementParallel(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
+        setProperties(drewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
+    }
+
     public RefinementParallel(String name, String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
         super(name);
-        this.drewArgs = drewArgs;
-        this.dlpContent = dlpContent;
-        this.owlFilepath = owlFilepath;
-        this.positiveExamples = positiveExamples;
-        this.negativeExamples = negativeExamples;
-        this.outRefinement = outRefinement;
-        this.outRefinementAll = outRefinementAll;
-        this.timeout = timeout;
-        this.threshold = threshold;
-        this.refinementRuleMeasure = refinementRuleMeasure;
-        this.generic = generic;
-        this.ruleFiles = ruleFiles;
+        setProperties(drewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
     }
 
     /**

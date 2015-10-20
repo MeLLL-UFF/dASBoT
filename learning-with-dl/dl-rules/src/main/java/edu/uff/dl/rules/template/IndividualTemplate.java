@@ -5,7 +5,6 @@ package edu.uff.dl.rules.template;
 
 import edu.uff.dl.rules.datalog.DataLogPredicate;
 import edu.uff.dl.rules.datalog.SimplePredicate;
-import static edu.uff.dl.rules.drew.DReWReasoner.PREFIX_SEPARATOR;
 import java.io.FileNotFoundException;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
@@ -38,6 +37,8 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import static edu.uff.dl.rules.drew.DReWReasoner.PREFIX_SEPARATOR;
 
 /**
  * Class that typifies the individuals from a specific problem.

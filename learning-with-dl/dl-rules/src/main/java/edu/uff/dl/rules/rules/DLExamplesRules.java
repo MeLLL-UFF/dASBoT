@@ -3,18 +3,14 @@
  */
 package edu.uff.dl.rules.rules;
 
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
-
-import static edu.uff.dl.rules.util.Time.getTime;
-
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.util.Box;
 import edu.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
@@ -22,6 +18,8 @@ import java.util.Set;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import static edu.uff.dl.rules.util.Time.getTime;
 
 /**
  * Class used to run the logic program and generate the rules.

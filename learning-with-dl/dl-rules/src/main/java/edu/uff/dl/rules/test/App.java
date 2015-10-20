@@ -4,28 +4,20 @@
 package edu.uff.dl.rules.test;
 
 import edu.uff.dl.rules.cli.DLRulesCLI;
-import edu.uff.dl.rules.cli.DLRulesHillClimbingCLI;
-import edu.uff.dl.rules.cli.parallel.DLRulesCLIParallel;
-import edu.uff.dl.rules.cli.parallel.RefinementParallel;
-import edu.uff.dl.rules.datalog.DataLogLiteral;
-import edu.uff.dl.rules.datalog.DataLogPredicate;
-import edu.uff.dl.rules.datalog.DataLogRule;
-import edu.uff.dl.rules.datalog.SimplePredicate;
 import edu.uff.dl.rules.drew.DReWRLCLI;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
 import edu.uff.dl.rules.drew.DReWReasoner;
+import edu.uff.dl.rules.evaluation.F1ScoreMeasure;
+import edu.uff.dl.rules.evaluation.LaplaceMeasure;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.exception.VariableGenerator;
 import edu.uff.dl.rules.rules.AnswerSetRule;
 import edu.uff.dl.rules.rules.DLExamplesRules;
-import edu.uff.dl.rules.evaluation.CompressionMeasure;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.evaluation.F1ScoreMeasure;
-import edu.uff.dl.rules.evaluation.LaplaceMeasure;
 import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.refinement.Refinement;
 import edu.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import edu.uff.dl.rules.util.AlphabetCounter;
@@ -57,8 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.dllearner.confparser3.ParseException;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
@@ -68,7 +59,6 @@ import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
-import org.apache.commons.io.FileUtils;
 
 public class App {
 

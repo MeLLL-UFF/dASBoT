@@ -3,13 +3,12 @@
  */
 package edu.uff.dl.rules.expansionset;
 
-import edu.uff.dl.rules.template.TypeTemplate;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
+import edu.uff.dl.rules.template.TypeTemplate;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;

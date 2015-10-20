@@ -3,8 +3,8 @@
  */
 package edu.uff.dl.rules.rules.evaluation;
 
-import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.util.FileContent;
 import java.io.BufferedWriter;

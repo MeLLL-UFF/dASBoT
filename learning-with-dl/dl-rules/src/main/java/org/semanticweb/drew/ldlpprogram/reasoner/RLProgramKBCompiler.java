@@ -11,7 +11,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.semanticweb.drew.dlprogram.DLProgramKB2DatalogRewriter;
 import org.semanticweb.drew.dlprogram.model.CacheManager;
 import org.semanticweb.drew.dlprogram.model.Clause;
@@ -26,7 +25,6 @@ import org.semanticweb.drew.dlprogram.model.NormalPredicate;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
 import org.semanticweb.drew.dlprogram.model.Term;
 import org.semanticweb.drew.dlprogram.model.Variable;
-
 import org.semanticweb.drew.ldlp.reasoner.LDLPCompilerManager;
 import org.semanticweb.drew.ldlp.reasoner.LDLPOntologyCompiler;
 import org.semanticweb.owlapi.model.OWLClass;

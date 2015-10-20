@@ -16,6 +16,7 @@ import java.util.Set;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
 import static edu.uff.dl.rules.util.Time.getTime;
 
 /**

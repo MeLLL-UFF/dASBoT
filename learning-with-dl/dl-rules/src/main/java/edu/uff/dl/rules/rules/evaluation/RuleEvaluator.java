@@ -4,18 +4,18 @@
 package edu.uff.dl.rules.rules.evaluation;
 
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
+import edu.uff.dl.rules.exception.TimeoutException;
 import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.util.Box;
-import static edu.uff.dl.rules.util.Time.getTime;
-import edu.uff.dl.rules.exception.TimeoutException;
 import it.unical.mat.wrapper.DLVInvocationException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import static edu.uff.dl.rules.util.Time.getTime;
 
 /**
  * Class used to evaluate a rule. This class runs the DReW's to get the covered

@@ -4,13 +4,13 @@
 package edu.uff.dl.rules.rules.refinement;
 
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
-import edu.uff.dl.rules.rules.Rule;
-import edu.uff.dl.rules.rules.SafeRule;
-import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.exception.TimeoutException;
+import edu.uff.dl.rules.rules.Rule;
+import edu.uff.dl.rules.rules.SafeRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
+import edu.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import edu.uff.dl.rules.util.answerpool.AnswerPool;
 import edu.uff.dl.rules.util.answerpool.RuleSizeComparator;
 import java.io.PrintStream;

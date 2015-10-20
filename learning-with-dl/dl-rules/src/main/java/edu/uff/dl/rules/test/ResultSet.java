@@ -6,12 +6,12 @@ package edu.uff.dl.rules.test;
 import edu.uff.dl.rules.datalog.ConcreteLiteral;
 import edu.uff.dl.rules.datalog.DataLogLiteral;
 import edu.uff.dl.rules.drew.DReWRLCLILiteral;
-import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.evaluation.CompressionMeasure;
+import edu.uff.dl.rules.evaluation.RuleMeasurer;
+import edu.uff.dl.rules.rules.Rule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import edu.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import edu.uff.dl.rules.evaluation.RuleMeasurer;
 import edu.uff.dl.rules.util.FileContent;
 import edu.uff.dl.rules.util.Time;
 import java.io.File;
@@ -24,9 +24,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
-import org.apache.commons.io.FileUtils;
 
 /**
  *
