@@ -335,7 +335,7 @@ public class AnswerRule implements Component {
 
         //getTransitivity(relevants);
         int count = transitivityDepth;
-        boolean allTransitivity = transitivityDepth == 0;
+        boolean allTransitivity = transitivityDepth < 0;
         SafeRule sf;
 
         Set<ConcreteLiteral> relevants = new LinkedHashSet<>(bodyLiterals);
