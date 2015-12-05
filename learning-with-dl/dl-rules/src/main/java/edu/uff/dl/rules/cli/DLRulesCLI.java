@@ -534,7 +534,17 @@ public class DLRulesCLI {
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure, outStream);
+                        Refinement r = new TopDownBoundedRefinement();
+                        r.setArgs(drewArgs);
+                        r.setDlpContent(dlpContent);
+                        r.setBoundRule(genericRuleExample);
+                        r.setThreshold(threshold);
+                        r.setPositiveExamples(positiveExamples);
+                        r.setNegativeExamples(negativeExamples);
+                        r.setTimeout(timeout);
+                        r.setRuleMeasure(refinementRuleMeasure);
+                        r.setOutStream(outStream);
+
                         r.start();
                         r.join();
                         String fileName = file.getName();

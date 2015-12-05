@@ -67,7 +67,7 @@ public class RefinementParallel extends Thread {
 
     public RefinementParallel() {
     }
-    
+
     public RefinementParallel(String[] drewArgs, String dlpContent, String owlFilepath, Set<Literal> positiveExamples, Set<Literal> negativeExamples, String outRefinement, String outRefinementAll, int timeout, double threshold, RuleMeasurer refinementRuleMeasure, boolean generic, ConcurrentLinkedQueue<File> ruleFiles) {
         setProperties(drewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
     }
@@ -106,7 +106,7 @@ public class RefinementParallel extends Thread {
         Box<Long> begin = new Box<>(null), end = new Box(null);
         StringBuilder sb = new StringBuilder();
         long diff;
-        
+
         Time.getTime(begin);
         while (!ruleFiles.isEmpty()) {
             try {
@@ -124,7 +124,17 @@ public class RefinementParallel extends Thread {
 
                 genericRuleExample = new EvaluatedRuleExample(ruleFile);
 
-                Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, refinementRuleMeasure, outStream);
+                Refinement r = new TopDownBoundedRefinement();
+                r.setArgs(drewArgs);
+                r.setDlpContent(dlpContent);
+                r.setBoundRule(genericRuleExample);
+                r.setThreshold(threshold);
+                r.setPositiveExamples(positiveExamples);
+                r.setNegativeExamples(negativeExamples);
+                r.setTimeout(timeout);
+                r.setRuleMeasure(refinementRuleMeasure);
+                r.setOutStream(outStream);
+
                 r.start();
                 r.join();
                 String fileName = ruleFile.getName();
@@ -172,8 +182,7 @@ public class RefinementParallel extends Thread {
 
                 sb.append(Time.getTime(e)).append("\n");
                 diff = e.getContent() - b.getContent();
-                
-                
+
                 sb.append("\n").append(baos.toString("UTF8")).append("\n\n");
 
                 sb.append("Total time for file(").append(ruleFile.getName()).append("): ").append((double) diff / 1000).append("s\n");
@@ -185,14 +194,14 @@ public class RefinementParallel extends Thread {
             }
 
         }
-        
+
         Time.getTime(end);
         totalDiffTime = end.getContent() - begin.getContent();
-        
+
         description = sb.toString().trim();
 
     }
-    
+
     public String getDescription() {
         return description;
     }
@@ -200,5 +209,5 @@ public class RefinementParallel extends Thread {
     public long getTotalDiffTime() {
         return totalDiffTime;
     }
-    
+
 }

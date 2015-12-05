@@ -28,14 +28,18 @@ public abstract class Refinement extends Thread {
     protected String dlpContent;
     protected EvaluatedRule boundRule;
     protected double threshold;
-    protected Set<Literal> positiveSamples;
-    protected Set<Literal> negativeSamples;
+    protected Set<Literal> positiveExamples;
+    protected Set<Literal> negativeExamples;
     protected int timeout;
     protected RuleMeasurer ruleMeasure;
     protected PrintStream outStream;
 
     //Out parametres
     Map<Integer, EvaluatedRule> refinedRules;
+
+    public Refinement() {
+        super();
+    }
 
     /**
      * Constructor with all needed parameters.
@@ -44,29 +48,28 @@ public abstract class Refinement extends Thread {
      * @param dlpContent the DLP's content.
      * @param boundRule a bound rule to refine.
      * @param threshold a threshold improviment.
-     * @param positiveSamples a set of positive examples.
-     * @param negativeSamples a set of negative examples.
+     * @param positiveExamples a set of positive examples.
+     * @param negativeExamples a set of negative examples.
      * @param timeout a timeout to infer each rule.
      * @param ruleMeasure a measurer of rules.
      */
-    public Refinement(String[] args, String dlpContent, EvaluatedRule boundRule, double threshold, Set<Literal> positiveSamples, Set<Literal> negativeSamples, int timeout, RuleMeasurer ruleMeasure, PrintStream outStream) {
+    public Refinement(String[] args, String dlpContent, EvaluatedRule boundRule, double threshold, Set<Literal> positiveExamples, Set<Literal> negativeExamples, int timeout, RuleMeasurer ruleMeasure, PrintStream outStream) {
         super();
         this.args = args;
         this.dlpContent = dlpContent;
         this.boundRule = boundRule;
         this.threshold = threshold;
-        this.positiveSamples = positiveSamples;
-        this.negativeSamples = negativeSamples;
+        this.positiveExamples = positiveExamples;
+        this.negativeExamples = negativeExamples;
         this.timeout = timeout;
         this.ruleMeasure = ruleMeasure;
 
         this.outStream = outStream;
-        
-        this.refinedRules = new HashMap<>();
     }
 
     @Override
     public void run() {
+        this.refinedRules = new HashMap<>();
         refine();
     }
 
@@ -109,7 +112,7 @@ public abstract class Refinement extends Thread {
      * @return the set of positive examples.
      */
     public Set<Literal> getPositiveSamples() {
-        return positiveSamples;
+        return positiveExamples;
     }
 
     /**
@@ -118,7 +121,7 @@ public abstract class Refinement extends Thread {
      * @return the set of negative examples.
      */
     public Set<Literal> getNegativeSamples() {
-        return negativeSamples;
+        return negativeExamples;
     }
 
     /**
@@ -150,4 +153,52 @@ public abstract class Refinement extends Thread {
         return refinedRules;
     }
 
+    public String[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    public String getDlpContent() {
+        return dlpContent;
+    }
+
+    public void setDlpContent(String dlpContent) {
+        this.dlpContent = dlpContent;
+    }
+
+    public PrintStream getOutStream() {
+        return outStream;
+    }
+
+    public void setOutStream(PrintStream outStream) {
+        this.outStream = outStream;
+    }
+
+    public void setBoundRule(EvaluatedRule boundRule) {
+        this.boundRule = boundRule;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
+    }
+
+    public void setPositiveExamples(Set<Literal> positiveExamples) {
+        this.positiveExamples = positiveExamples;
+    }
+
+    public void setNegativeExamples(Set<Literal> negativeExamples) {
+        this.negativeExamples = negativeExamples;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public void setRuleMeasure(RuleMeasurer ruleMeasure) {
+        this.ruleMeasure = ruleMeasure;
+    }
+    
 }

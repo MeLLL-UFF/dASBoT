@@ -491,7 +491,17 @@ public class App {
                 System.out.println(Time.getTime(b));
                 System.out.println("File: " + file.getName());
                 EvaluatedRule genericRule = new EvaluatedRule(file);
-                Refinement r = new TopDownBoundedRefinement(args, dlpContent, genericRule, threshold, positiveSamples, negativeSamples, timeout, ruleMeasure, System.out);
+                Refinement r = new TopDownBoundedRefinement();
+                r.setArgs(args);
+                r.setDlpContent(dlpContent);
+                r.setBoundRule(genericRule);
+                r.setThreshold(threshold);
+                r.setPositiveExamples(positiveSamples);
+                r.setNegativeExamples(negativeSamples);
+                r.setTimeout(timeout);
+                r.setRuleMeasure(ruleMeasure);
+                r.setOutStream(System.out);
+                
                 r.start();
                 r.join();
 

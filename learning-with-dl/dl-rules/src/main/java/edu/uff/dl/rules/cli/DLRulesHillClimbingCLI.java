@@ -136,7 +136,17 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     outStream.println(Time.getTime(b));
                     outStream.println("File: " + genericRuleExample.getSerializedFile().getName());
 
-                    Refinement r = new TopDownBoundedRefinement(drewArgs, dlpContent, genericRuleExample, threshold, positiveExamples, negativeExamples, timeout, ruleMeasure, outStream);
+                    Refinement r = new TopDownBoundedRefinement();
+                    r.setArgs(drewArgs);
+                    r.setDlpContent(dlpContent);
+                    r.setBoundRule(genericRuleExample);
+                    r.setThreshold(threshold);
+                    r.setPositiveExamples(positiveExamples);
+                    r.setNegativeExamples(negativeExamples);
+                    r.setTimeout(timeout);
+                    r.setRuleMeasure(ruleMeasure);
+                    r.setOutStream(outStream);
+                    
                     r.start();
                     r.join();
 

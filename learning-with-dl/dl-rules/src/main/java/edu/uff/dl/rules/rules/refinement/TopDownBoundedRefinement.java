@@ -41,6 +41,9 @@ import org.semanticweb.drew.dlprogram.model.Term;
  */
 public class TopDownBoundedRefinement extends Refinement {
 
+    public TopDownBoundedRefinement() {
+    }
+
     /**
      * Constructor with all needed literals.
      *
@@ -127,7 +130,7 @@ public class TopDownBoundedRefinement extends Refinement {
         List<EvaluatedRule> rules = new ArrayList<>();
 //        int count = 0, error = 0;
         for (Rule rule : pool.getAnswerPool()) {
-            RuleEvaluator re = new RuleEvaluator(rule, args, dlpContent, positiveSamples, negativeSamples);
+            RuleEvaluator re = new RuleEvaluator(rule, args, dlpContent, positiveExamples, negativeExamples);
             er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
             if (er == null) {
 //                error++;
@@ -248,7 +251,7 @@ public class TopDownBoundedRefinement extends Refinement {
             }
             body.add(candidate);
             r = new SafeRule(rule.getHead(), body);
-            RuleEvaluator re = new RuleEvaluator(r, args, dlpContent, positiveSamples, negativeSamples);
+            RuleEvaluator re = new RuleEvaluator(r, args, dlpContent, positiveExamples, negativeExamples);
             try {
                 er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
                 if (er == null)
