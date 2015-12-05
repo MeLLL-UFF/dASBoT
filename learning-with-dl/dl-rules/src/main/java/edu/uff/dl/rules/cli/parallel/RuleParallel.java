@@ -135,8 +135,10 @@ public class RuleParallel extends Thread {
             }
         } catch (ComponentInitException ex) {
             Logger.getLogger(RuleParallel.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Print Error:\t4");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RuleParallel.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Print Error:\t5");
         } //To change body of generated methods, choose Tools | Templates.
 
         Time.getTime(end);

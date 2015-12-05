@@ -490,11 +490,13 @@ public class DLRulesCLI {
                 printMeasure(evaluatedRuleExamples, outStream);
             } catch (IOException ex) {
                 Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Print Error:\t1");
             } finally {
                 outStream.close();
             }
         } catch (ComponentInitException | FileNotFoundException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Print Error:\t2");
         }
     }
 

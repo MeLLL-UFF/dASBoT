@@ -173,6 +173,7 @@ public class GenerateRuleParallel extends Thread {
             totalDiffTime = end.getContent() - begin.getContent();
         } catch (ComponentInitException ex) {
             Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Print Error:\t3");
         }
     }
 

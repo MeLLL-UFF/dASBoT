@@ -184,6 +184,7 @@ public class DReWReasoner implements Component {
             }
         } catch (ComponentInitException ex) {
             Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Print Error:\t9");
         }
     }
 
