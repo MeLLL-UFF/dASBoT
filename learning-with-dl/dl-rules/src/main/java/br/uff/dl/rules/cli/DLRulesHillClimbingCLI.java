@@ -11,6 +11,7 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
+import br.uff.dl.rules.rules.refinement.RefinementFactory;
 import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.CLIArgumentsParser;
@@ -136,7 +137,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     outStream.println(Time.getTime(b));
                     outStream.println("File: " + genericRuleExample.getSerializedFile().getName());
 
-                    Refinement r = new TopDownBoundedRefinement();
+                    Refinement r = RefinementFactory.getRefinement(refinementClass);
                     r.setArgs(drewArgs);
                     r.setDlpContent(dlpContent);
                     r.setBoundRule(genericRuleExample);

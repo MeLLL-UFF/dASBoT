@@ -15,6 +15,7 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
+import br.uff.dl.rules.rules.refinement.RefinementFactory;
 import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.DReWDefaultArgs;
@@ -52,7 +53,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  */
 public class DLRulesCLI {
 
-    public static final String RULE_MEASURE_PACKAGE_NAME = "edu.uff.dl.rules.evaluation";
+    public static final String RULE_MEASURE_PACKAGE_NAME = "br.uff.dl.rules.evaluation";
     public static final String DLV_FILE_SUFIX = "--rl.dlv";
 
     protected String owlFilepath;
@@ -76,6 +77,7 @@ public class DLRulesCLI {
 
     protected boolean rule;
     protected boolean refinement;
+    protected String refinementClass;
     protected boolean generic;
     protected boolean crossValidation;
     protected boolean recursiveRuleAllowed = true;
@@ -104,6 +106,7 @@ public class DLRulesCLI {
         boolean cv = false;
         boolean noRec = false;
         boolean lGeneric = false;
+        String refClass = null;
 
         String lDLVPath = null;
 
@@ -113,6 +116,10 @@ public class DLRulesCLI {
             switch (peek) {
                 case "-rule":
                     lRule = true;
+                    break;
+                case "-refclass":
+                    refClass = queue.remove();
+                    ref = true;
                     break;
                 case "-ref":
                     ref = true;
@@ -195,6 +202,7 @@ public class DLRulesCLI {
 
         this.setRule(lRule);
         this.setRefinement(ref);
+        this.setRefinementClass(refClass);
         this.setGeneric(lGeneric);
         this.setCrossValidation(cv);
         this.setDLVPath(lDLVPath);
@@ -534,7 +542,7 @@ public class DLRulesCLI {
 
                         genericRuleExample = new EvaluatedRuleExample(file);
 
-                        Refinement r = new TopDownBoundedRefinement();
+                        Refinement r = RefinementFactory.getRefinement(refinementClass);
                         r.setArgs(drewArgs);
                         r.setDlpContent(dlpContent);
                         r.setBoundRule(genericRuleExample);
@@ -752,6 +760,14 @@ public class DLRulesCLI {
      */
     public void setRefinement(boolean refinement) {
         this.refinement = refinement;
+    }
+
+    public String getRefinementClass() {
+        return refinementClass;
+    }
+
+    public void setRefinementClass(String refinementClass) {
+        this.refinementClass = refinementClass;
     }
 
     /**

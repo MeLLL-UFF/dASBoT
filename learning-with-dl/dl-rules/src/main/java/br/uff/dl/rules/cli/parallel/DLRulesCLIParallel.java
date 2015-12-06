@@ -226,6 +226,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                     newDrewArgs[owlPathIndex] = newOWLFile.getAbsolutePath();
 
                     threads[i] = new RefinementParallel(threadName, newDrewArgs, dlpContent, owlFilepath, positiveExamples, negativeExamples, outRefinement, outRefinementAll, timeout, threshold, refinementRuleMeasure, generic, ruleFiles);
+                    threads[i].setRefinementClass(refinementClass);
                     threads[i].start();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);

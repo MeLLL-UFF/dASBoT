@@ -8,6 +8,7 @@ import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.refinement.Refinement;
+import br.uff.dl.rules.rules.refinement.RefinementFactory;
 import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.Time;
@@ -43,6 +44,7 @@ public class RefinementParallel extends Thread {
     public int timeout;
     public double threshold;
     public RuleMeasurer refinementRuleMeasure;
+    public String refinementClass;
     public boolean generic;
 
     public ConcurrentLinkedQueue<File> ruleFiles;
@@ -124,7 +126,7 @@ public class RefinementParallel extends Thread {
 
                 genericRuleExample = new EvaluatedRuleExample(ruleFile);
 
-                Refinement r = new TopDownBoundedRefinement();
+                Refinement r = RefinementFactory.getRefinement(refinementClass);
                 r.setArgs(drewArgs);
                 r.setDlpContent(dlpContent);
                 r.setBoundRule(genericRuleExample);
@@ -208,6 +210,14 @@ public class RefinementParallel extends Thread {
 
     public long getTotalDiffTime() {
         return totalDiffTime;
+    }
+
+    public String getRefinementClass() {
+        return refinementClass;
+    }
+
+    public void setRefinementClass(String refinementClass) {
+        this.refinementClass = refinementClass;
     }
 
 }
