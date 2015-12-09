@@ -11,6 +11,7 @@ import br.uff.dl.rules.util.PredicateComparator;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -141,6 +142,16 @@ public class Rule implements DataLogRule, Component {
         return true;
     }
 
+    public boolean isEquivalentToAny(Collection<Rule> others) {
+        for (Rule other : others) {
+            if (isEquivalent(other)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public boolean isEquivalent(Rule other) {
         if (this.toString().equals(other.toString())) {
             return true;

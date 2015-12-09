@@ -239,7 +239,7 @@ public class TopDownBoundedRefinement extends Refinement {
      * @param com the comparator.
      * @return a new evaluated rule.
      */
-    private EvaluatedRule refineRule(final Rule rule, Set<? extends ConcreteLiteral> candidates, int count, Comparator com) {
+    protected EvaluatedRule refineRule(final Rule rule, Set<? extends ConcreteLiteral> candidates, int count, Comparator com) {
         EvaluatedRule er;
         Rule r;
         SortedSet<EvaluatedRule> evaluatedRules = new TreeSet<>(com);
@@ -480,27 +480,6 @@ public class TopDownBoundedRefinement extends Refinement {
         }
 
         return true;
-    }
-
-    /**
-     * Getter for all the terms from a rule. A Term is any constant or variable
-     * that appear on the rule, including its head.
-     *
-     * @param r the rule.
-     * @return a set with all the rule's terms.
-     */
-    public static Set<Term> getAllTermsFromRule(Rule r) {
-        Set<Term> answer = new HashSet<>();
-        answer.addAll(r.getHead().getTerms());
-
-        if (r.getBody() == null || r.getBody().isEmpty())
-            return answer;
-
-        for (ConcreteLiteral literal : r.getBody()) {
-            answer.addAll(literal.getTerms());
-        }
-
-        return answer;
     }
 
 }

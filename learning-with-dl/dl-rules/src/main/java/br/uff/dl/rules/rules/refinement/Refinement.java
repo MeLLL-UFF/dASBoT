@@ -3,13 +3,17 @@
  */
 package br.uff.dl.rules.rules.refinement;
 
+import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
+import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Abstract class which defines the behavior a Refinement class should have. The
@@ -199,6 +203,27 @@ public abstract class Refinement extends Thread {
 
     public void setRuleMeasure(RuleMeasurer ruleMeasure) {
         this.ruleMeasure = ruleMeasure;
+    }
+    
+    /**
+     * Getter for all the terms from a rule. A Term is any constant or variable
+     * that appear on the rule, including its head.
+     *
+     * @param r the rule.
+     * @return a set with all the rule's terms.
+     */
+    public static Set<Term> getAllTermsFromRule(Rule r) {
+        Set<Term> answer = new HashSet<>();
+        answer.addAll(r.getHead().getTerms());
+
+        if (r.getBody() == null || r.getBody().isEmpty())
+            return answer;
+
+        for (ConcreteLiteral literal : r.getBody()) {
+            answer.addAll(literal.getTerms());
+        }
+
+        return answer;
     }
     
 }

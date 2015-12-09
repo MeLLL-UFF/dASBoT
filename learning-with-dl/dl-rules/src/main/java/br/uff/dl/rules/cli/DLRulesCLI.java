@@ -589,7 +589,6 @@ public class DLRulesCLI {
                                 otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), refinementRuleMeasure);
                                 otherMeasure = otherRule.getMeasure();
                                 if (otherMeasure == localMeasure) {
-                                    localMeasure = otherMeasure;
                                     serializeRule = otherRule;
                                 }
                             }

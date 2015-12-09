@@ -85,6 +85,7 @@ public class EvaluatedRuleExample extends EvaluatedRule {
      */
     public EvaluatedRuleExample(final EvaluatedRule er, ConcreteLiteral example, RuleMeasurer ruleMeasureFunction) {
         this.example = example;
+        this.ruleMeasureFunction = ruleMeasureFunction;
         setEvaluatedRule(er);
     }
 
