@@ -79,7 +79,7 @@ public class PathFindingRefinement extends Refinement {
                 Logger.getLogger(PathFindingRefinement.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         if (boundRule.getPositives() != 0) {
             boundRule.setRuleMeasureFunction(ruleMeasure);
             evaluatedRules.add(boundRule);
@@ -94,31 +94,33 @@ public class PathFindingRefinement extends Refinement {
 
     protected List<Rule> generateRules(ConcreteLiteral head, Map<Term, Set<ConcreteLiteral>> graph, Term entry, Term exit) {
         List<Rule> rules = new ArrayList<>();
-        List<List<ConcreteLiteral>> paths = initializePaths(graph, entry);
-        List<ConcreteLiteral> path;
+        List<Path> paths = initializePaths(graph, entry);
+        Path path;
 
-        List<ConcreteLiteral> newWay;
+        Path newWay;
         ConcreteLiteral lastLiteral;
         Rule rule;
         for (int i = 0; i < paths.size(); i++) {
             path = paths.get(i);
-            lastLiteral = path.get(path.size() - 1);
+            lastLiteral = path.getLast();
 
-            for (ConcreteLiteral literal : graph.get(lastLiteral.getTerms().get(edgeEndingTerm < 0 ? lastLiteral.getTerms().size() - 1 : edgeEndingTerm))) {
-                if (path.contains(literal)) {
-                    continue;
-                }
-
-                newWay = new ArrayList<>(path);
-                newWay.add(literal);
-
-                if (literal.getTerms().get(edgeEndingTerm).equals(exit)) {
-                    rule = new SafeRule(head, newWay);
-                    if (!rule.isEquivalentToAny(rules)) {
-                        rules.add(rule);
+            for (Term term : lastLiteral.getTerms()) {
+                for (ConcreteLiteral literal : graph.get(term)) {
+                    if (path.contains(literal) || (literal.hasFailed() && !path.containsAllSafeTerms(literal.getTerms()))) {
+                        continue;
                     }
-                } else {
-                    paths.add(newWay);
+
+                    newWay = new Path(path);
+                    newWay.add(literal);
+
+                    if (literal.getTerms().contains(exit)) {
+                        rule = new SafeRule(head, newWay.getLiterals());
+                        if (!rule.isEquivalentToAny(rules)) {
+                            rules.add(rule);
+                        }
+                    } else {
+                        paths.add(newWay);
+                    }
                 }
             }
 
@@ -127,11 +129,11 @@ public class PathFindingRefinement extends Refinement {
         return rules;
     }
 
-    protected List<List<ConcreteLiteral>> initializePaths(Map<Term, Set<ConcreteLiteral>> graph, Term entry) {
-        List<List<ConcreteLiteral>> paths = new ArrayList<>();
+    protected List<Path> initializePaths(Map<Term, Set<ConcreteLiteral>> graph, Term entry) {
+        List<Path> paths = new ArrayList<>();
 
         for (ConcreteLiteral literal : graph.get(entry)) {
-            List<ConcreteLiteral> path = new ArrayList<>();
+            Path path = new Path();
             path.add(literal);
             paths.add(path);
         }
