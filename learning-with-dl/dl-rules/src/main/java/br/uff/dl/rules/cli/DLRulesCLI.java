@@ -16,7 +16,6 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
 import br.uff.dl.rules.rules.refinement.RefinementFactory;
-import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.DReWDefaultArgs;
 import br.uff.dl.rules.util.FileContent;
@@ -1086,6 +1085,7 @@ public class DLRulesCLI {
 
         sb.append("\tGenerate Rule Measure:\t").append(generateRuleMeasure).append("\n");
         sb.append("\tRefinement Rule Measure:\t").append(refinementRuleMeasure);
+        sb.append("\tRefinement Class Name:\t").append(refinementClass);
 
         return sb.toString().trim();
     }

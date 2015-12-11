@@ -19,6 +19,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  * check the parameters and instantiate a {@link DLRulesCLI}.
  *
  * @author Victor Guimarães
+ * @deprecated 
  */
 public class CLIArgumentsParser {
 

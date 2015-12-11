@@ -60,6 +60,21 @@ public class ResultSet {
     
     private StringBuilder description;
 
+    public ResultSet(String dlpContent, String positiveTrainFilePath, String negativeTrainFilePath, String outputDirectory, RuleMeasurer measurer, String[] args, double threshold, int maxSideWayMovements) throws IOException, ParseException {
+        this.dlpContent = dlpContent;
+        this.positiveTrainFilePath = positiveTrainFilePath;
+        this.negativeTrainFilePath = negativeTrainFilePath;
+        this.outputDirectory = outputDirectory;
+        this.measurer = measurer;
+        this.args = args;
+        this.threshold = threshold;
+        this.maxSideWayMovements = maxSideWayMovements;
+        this.refinementStatistics = FileContent.getStringFromFile(new File(outputDirectory, "refinement/statistics.txt"));
+        description = new StringBuilder();
+        loadRules();
+        loadResults();
+    }
+    
     public ResultSet(String dlpContent, String positiveTrainFilePath, String negativeTrainFilePath, String outputDirectory, RuleMeasurer measurer, String[] args) throws IOException, ParseException {
         this.dlpContent = dlpContent;
         this.positiveTrainFilePath = positiveTrainFilePath;
@@ -139,7 +154,7 @@ public class ResultSet {
             time += getFormatedTimeForRule(ere);
             newMeasure = compareRule(dlpContent + "\n" + sb.toString() + "\n" + ere.getRule(), literals);
 
-            if (newMeasure - measure <= threshold) {
+            if (newMeasure - measure < threshold) {
                 sideMovements++;
                 if (maxSideWayMovements > 0 && sideMovements > maxSideWayMovements) {
                     break;
@@ -254,7 +269,7 @@ public class ResultSet {
         return new DataLogLiteral(head, literal.getTerms(), literal.isNegative());
     }
 
-    protected static Set<Literal> compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples) {
+    public static Set<Literal> compareRuleWithExample(Set<Literal> literals, Set<Literal> listExamples) {
         Set<Literal> covered = new HashSet<>();
         for (Literal s : listExamples) {
             if (literals.contains(s)) {

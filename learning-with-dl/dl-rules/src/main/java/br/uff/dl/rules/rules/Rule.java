@@ -143,6 +143,10 @@ public class Rule implements DataLogRule, Component {
     }
 
     public boolean isEquivalentToAny(Collection<Rule> others) {
+        if (others.isEmpty()) {
+            return false;
+        }
+        
         for (Rule other : others) {
             if (isEquivalent(other)) {
                 return true;

@@ -61,7 +61,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
     public Queue<String> parseArguments(String[] args) throws FileNotFoundException {
         Queue<String> queue = super.parseArguments(args);
 
-        int lNumberOfThreads = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : 0);
+        int lNumberOfThreads = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : numberOfThreads);
 
         this.setNumberOfThreads(lNumberOfThreads);
 

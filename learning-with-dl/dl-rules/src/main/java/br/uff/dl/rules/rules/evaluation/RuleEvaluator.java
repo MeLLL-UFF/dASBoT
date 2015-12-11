@@ -39,6 +39,9 @@ public class RuleEvaluator extends Thread {
     private Set<Literal> positivesExamples;
     private Set<Literal> negativesExamples;
 
+    private Set<Literal> positivesCoveredExamples;
+    private Set<Literal> negativesCoveredExamples;
+    
     private DReWRLCLILiteral drew;
     private int positives;
     private int positivesCovered;
@@ -118,10 +121,10 @@ public class RuleEvaluator extends Thread {
             lits.addAll(set);
         }
         positives = positivesExamples.size();
-        positivesCovered = compareRuleWithExample(lits, positivesExamples);
+        positivesCovered = compareRuleWithExample(lits, positivesExamples, positivesCoveredExamples);
 
         negatives = negativesExamples.size();
-        negativesCovered = compareRuleWithExample(lits, negativesExamples);
+        negativesCovered = compareRuleWithExample(lits, negativesExamples, negativesCoveredExamples);
     }
 
     /**
@@ -228,6 +231,14 @@ public class RuleEvaluator extends Thread {
         int negativesCovered = compareRuleWithExample(ruleEvaluater.lits, negativeLiterals);
 
         return new EvaluatedRule(ruleEvaluater.rule, positives, negatives, positivesCovered, negativesCovered, null);
+    }
+
+    public Set<Literal> getPositivesCoveredExamples() {
+        return positivesCoveredExamples;
+    }
+
+    public Set<Literal> getNegativesCoveredExamples() {
+        return negativesCoveredExamples;
     }
 
 }
