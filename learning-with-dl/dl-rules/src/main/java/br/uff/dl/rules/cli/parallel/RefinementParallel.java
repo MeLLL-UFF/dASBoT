@@ -146,7 +146,12 @@ public class RefinementParallel extends Thread {
                 Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
                 List<Integer> keys = new ArrayList<>(rules.keySet());
                 if (keys.isEmpty()) {
-                    continue;
+                    if (genericRuleExample.getPositives() != 0) {
+                        keys.add(genericRuleExample.getRule().getBody().size());
+                        rules.put(genericRuleExample.getRule().getBody().size(), genericRuleExample);
+                    } else {
+                        continue;
+                    }
                 }
 
                 Collections.sort(keys);

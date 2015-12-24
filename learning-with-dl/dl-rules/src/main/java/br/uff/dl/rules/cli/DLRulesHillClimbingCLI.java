@@ -163,9 +163,9 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     outStream.println("Rule not refined because its base example was already covered!");
                     continue;
                 }
-
+                File file = null;
                 try {
-                    File file = genericRuleExample.getSerializedFile();
+                    file = genericRuleExample.getSerializedFile();
 
                     outStream.println(Time.getTime(b));
                     outStream.println("File: " + file.getName());
@@ -190,7 +190,12 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     Map<Integer, EvaluatedRule> rules = r.getRefinedRules();
                     List<Integer> keys = new ArrayList<>(rules.keySet());
                     if (keys.isEmpty()) {
-                        continue;
+                        if (genericRuleExample.getPositives() != 0) {
+                            keys.add(genericRuleExample.getRule().getBody().size());
+                            rules.put(genericRuleExample.getRule().getBody().size(), genericRuleExample);
+                        } else {
+                            continue;
+                        }
                     }
 
                     Collections.sort(keys);
@@ -236,9 +241,11 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     System.out.println("DLV Error! 2");
                     Logger.getLogger(DLRulesCLI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
                 if (serializeRule == null) {
                     continue;
                 }
+
                 if (serializeRule.getRule().isEquivalentToAny(theoryRules)) {
                     continue;
                 }
