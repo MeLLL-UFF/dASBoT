@@ -6,22 +6,10 @@ package br.uff.dl.rules.util;
 import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.datalog.DataLogLiteral;
 import br.uff.dl.rules.rules.Rule;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+
+import java.io.*;
+import java.util.*;
+
 import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.ClauseType;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
@@ -296,6 +284,26 @@ public class FileContent {
         Set<Literal> literals = getExamplesLiterals(fileContent);
 
         return DataLogLiteral.getSetOfLiterals(literals);
+    }
+
+    public static String[] extractArgsFromGlobalStatistics(File filePath, String encode) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), encode))) {
+            String line = "";
+            List<String> argList = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    break;
+                }
+
+                argList.add(line);
+            }
+            String[] args = new String[argList.size()];
+            argList.toArray(args);
+
+            return args;
+        } catch (IOException ex) {
+            throw ex;
+        }
     }
 
 }

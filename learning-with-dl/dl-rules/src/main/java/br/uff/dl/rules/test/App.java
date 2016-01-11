@@ -318,7 +318,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         //EvaluatedRuleExample eva = new EvaluatedRuleExample(new File("/Users/Victor/Desktop/rule0.txt"));
         //loadArguments1();
-        //loadResults();
+        loadResults();
 //        System.out.println("Test");
         //evaluateAll();
 //        testCLI();
