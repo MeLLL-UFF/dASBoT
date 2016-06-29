@@ -284,8 +284,6 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * <br> Case can not infer the rule, returns the same measure.
      *
      * @param rule the current rule.
-     * @param ruleMeasure the measure function.
-     * @param measure the previous measure.
      * @return the measure of the set of rules so far.
      * @throws TimeoutException case not infer the rule, returns the same
      * measure.

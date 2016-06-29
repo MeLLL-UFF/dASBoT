@@ -1,1 +1,6 @@
 /learning-with-dl/dl-rules/target/
+learning-with-dl/dl-rules/DL-Rules.iml
+nb*.xlm
+.idea
+META-INF
+out/

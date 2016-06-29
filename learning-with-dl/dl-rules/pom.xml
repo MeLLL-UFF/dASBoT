@@ -26,7 +26,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.uff.dl.rules.cli.DLRulesCLI</mainClass>
+                            <mainClass>br.uff.dl.rules.cli.DLRulesCLI</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

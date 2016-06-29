@@ -10,6 +10,7 @@ import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.template.TermType;
 import br.uff.dl.rules.template.TypeTemplate;
 import br.uff.dl.rules.util.SimpleGenerator;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -59,7 +61,7 @@ public class AnswerRule implements Component {
     private boolean recursive = true;
 
     private TypeTemplate template;
-    
+
     private PrintStream outStream;
 
     /**
@@ -74,7 +76,7 @@ public class AnswerRule implements Component {
     /**
      * Constructor with all needed parameters.
      *
-     * @param examples the list of examples.
+     * @param examples  the list of examples.
      * @param answerSet the expansion answer set.
      */
     public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, PrintStream outStream) {
@@ -93,8 +95,8 @@ public class AnswerRule implements Component {
      * <br> The transitivity is setted by default as 1. Increase this value
      * might increase the complexity exponentially.
      *
-     * @param examples the list of examples.
-     * @param answerSet the expansion answer set.
+     * @param examples          the list of examples.
+     * @param answerSet         the expansion answer set.
      * @param transitivityDepth the transitivity depth.
      */
     public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, PrintStream outStream) {
@@ -112,10 +114,10 @@ public class AnswerRule implements Component {
      * <br> The template is necessary for create rules with constants, if you
      * will not use this functionality, there is need for template.
      *
-     * @param examples the list of examples.
-     * @param answerSet the expansion answer set.
+     * @param examples          the list of examples.
+     * @param answerSet         the expansion answer set.
      * @param transitivityDepth the transitivity depth.
-     * @param template the type template.
+     * @param template          the type template.
      */
     public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, TypeTemplate template, PrintStream outStream) {
         this(examples, answerSet, outStream);
@@ -142,10 +144,10 @@ public class AnswerRule implements Component {
     public Rule getRule() {
         ConcreteLiteral example = pickExampleAtRandom();
 
-        Set<? extends ConcreteLiteral> relevants = getRelevants(example);
-
         outStream.println("Rule based on example: " + example);
         outStream.println("");
+
+        Set<? extends ConcreteLiteral> relevants = getRelevant(example);
 
         VariableGenerator v = new SimpleGenerator();
 
@@ -221,15 +223,16 @@ public class AnswerRule implements Component {
      * Checks if the literal can appear on the rule based on its type as
      * specified on template.
      *
-     * @param literal the literal.
+     * @param literal   the literal.
      * @param termTypes a {@link Map} with the {@link Term} that already
-     * appeared on the rule and its types.
+     *                  appeared on the rule and its types.
      * @return true if its possible, false otherwise.
      */
     private boolean checkForCorrectTypes(ConcreteLiteral literal, Map<Term, Set<Term>> termTypes) {
         Set<Clause> fact = template.getTemplateFactsForPredicate(literal);
-        if (fact.isEmpty())
+        if (fact.isEmpty()) {
             return true;
+        }
         List<Term> templateType;
         List<Term> terms = literal.getTerms();
         Map<Term, Set<Term>> types = new HashMap<>(terms.size());
@@ -266,14 +269,15 @@ public class AnswerRule implements Component {
     /**
      * Method to get the correct constant type template for the predicate.
      *
-     * @param types the possible type templates.
-     * @param lit the literal which should fit the template.
+     * @param types            the possible type templates.
+     * @param lit              the literal which should fit the template.
      * @param individualGroups the groups of individuals.
      * @return The {@link List} with the template if it fits, null otherwise.
      */
     private List<TermType> getTermsWithConstants(List<List<TermType>> types, ConcreteLiteral lit, Map<String, Set<? extends Constant>> individualGroups) {
-        if (types == null)
+        if (types == null) {
             return null;
+        }
         List<TermType> answer = null;
         for (List<TermType> list : types) {
             if (checkTypes(list, lit, individualGroups)) {
@@ -287,8 +291,8 @@ public class AnswerRule implements Component {
     /**
      * Checks if the given literal fits the given template.
      *
-     * @param type the template.
-     * @param lit the literal.
+     * @param type             the template.
+     * @param lit              the literal.
      * @param individualGroups the group of individuals.
      * @return true if it fits, false otherwise.
      */
@@ -313,9 +317,10 @@ public class AnswerRule implements Component {
      * @param example the example.
      * @return a list of relevant literals.
      */
-    protected Set<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
-        if (this.answerSet == null || this.examples == null)
+    protected Set<? extends ConcreteLiteral> getRelevant(ConcreteLiteral example) {
+        if (this.answerSet == null || this.examples == null) {
             return null;
+        }
 
         Set<ConcreteLiteral> bodyLiterals = new LinkedHashSet<>();
 
@@ -330,30 +335,33 @@ public class AnswerRule implements Component {
             }
         }
 
-        if (bodyLiterals.isEmpty())
+        if (bodyLiterals.isEmpty()) {
             return null;
+        }
 
-        //getTransitivity(relevants);
+        //getTransitivity(relevant);
         int count = transitivityDepth;
         boolean allTransitivity = transitivityDepth < 0;
         SafeRule sf;
 
-        Set<ConcreteLiteral> relevants = new LinkedHashSet<>(bodyLiterals);
+        Set<ConcreteLiteral> relevant = new LinkedHashSet<>(bodyLiterals);
 
         int increase, size;
         while (count > 0 || allTransitivity) {
-            increase = getTransitivity(relevants);
-            if (increase == 0)
+            increase = getTransitivity(relevant);
+            if (increase == 0) {
                 break;
+            }
 
             size = bodyLiterals.size();
-            bodyLiterals.addAll(relevants);
+            bodyLiterals.addAll(relevant);
 
-            if (size == bodyLiterals.size())
+            if (size == bodyLiterals.size()) {
                 break;
+            }
 
-            sf = new SafeRule(example, relevants);
-            relevants.retainAll(sf.getBody());
+            sf = new SafeRule(example, relevant);
+            relevant.retainAll(sf.getBody());
 
             count--;
         }
@@ -369,7 +377,7 @@ public class AnswerRule implements Component {
      * Method to filter the relevant literals and removes the ones which have
      * the same predicate as the head.
      *
-     * @param head the head.
+     * @param head      the head.
      * @param relevants the set of relevant literals.
      * @return the filtered set.
      */

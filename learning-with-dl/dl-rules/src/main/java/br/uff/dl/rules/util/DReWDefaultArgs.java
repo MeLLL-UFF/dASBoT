@@ -27,6 +27,17 @@ public class DReWDefaultArgs {
     };
 
     /**
+     * The default argument.
+     */
+    public static final String[] DEFAULT_ARGS_NO_ONTOLOGY = {
+            "-rl",
+            "-dlp",
+            "",
+            "-dlv",
+            System.getenv("DLV_PATH"),
+    };
+
+    /**
      * The default argument without ontology.
      *
      * @deprecated does not works very well.
@@ -41,6 +52,10 @@ public class DReWDefaultArgs {
     
     public static String[] getDefaultArgs() {
         return Arrays.copyOf(DEFAULT_ARGS, DEFAULT_ARGS.length);
+    }
+
+    public static String[] getDefaultArgsNoOntology() {
+        return Arrays.copyOf(DEFAULT_ARGS_NO_ONTOLOGY, DEFAULT_ARGS_NO_ONTOLOGY.length);
     }
     
     public static int getOWLFilepath(String[] args) {

@@ -53,8 +53,8 @@ public class AnswerRuleConstant extends AnswerRule {
     }
 
     @Override
-    protected Set<? extends ConcreteLiteral> getRelevants(ConcreteLiteral example) {
-        Set<? extends ConcreteLiteral> relevants = super.getRelevants(example);
+    protected Set<? extends ConcreteLiteral> getRelevant(ConcreteLiteral example) {
+        Set<? extends ConcreteLiteral> relevants = super.getRelevant(example);
 
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 
