@@ -1,1 +1,5 @@
 /learning-with-dl/dl-rules/target/
+.idea
+out
+DL-Rules.iml
+META-INF

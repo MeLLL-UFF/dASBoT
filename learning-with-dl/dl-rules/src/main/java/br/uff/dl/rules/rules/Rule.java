@@ -121,25 +121,27 @@ public class Rule implements DataLogRule, Component {
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!getClass().isAssignableFrom(obj.getClass()))
             return false;
         final Rule other = (Rule) obj;
-        if (!Objects.equals(this.head, other.head) || this.head.hasFailed() != other.head.hasFailed())
-            return false;
-        if (this.body.size() != other.body.size())
-            return false;
-        List<? extends ConcreteLiteral> otherTerms = new LinkedList<>(other.getBody());
-        ConcreteLiteral otherTerm;
-        int index;
-        for (ConcreteLiteral term : body) {
-            index = otherTerms.indexOf(term);
-            if (index < 0)
-                return false;
-            otherTerm = otherTerms.remove(index);
-            if (otherTerm.hasFailed() != term.hasFailed())
-                return false;
-        }
-        return true;
+
+        return isEquivalent(other);
+//        if (!Objects.equals(this.head, other.head) || this.head.hasFailed() != other.head.hasFailed())
+//            return false;
+//        if (this.body.size() != other.body.size())
+//            return false;
+//        List<? extends ConcreteLiteral> otherTerms = new LinkedList<>(other.getBody());
+//        ConcreteLiteral otherTerm;
+//        int index;
+//        for (ConcreteLiteral term : body) {
+//            index = otherTerms.indexOf(term);
+//            if (index < 0)
+//                return false;
+//            otherTerm = otherTerms.remove(index);
+//            if (otherTerm.hasFailed() != term.hasFailed())
+//                return false;
+//        }
+//        return true;
     }
 
     public boolean isEquivalentToAny(Collection<Rule> others) {

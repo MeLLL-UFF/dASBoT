@@ -196,6 +196,10 @@ public class FileContent {
     public static Rule getRuleFromString(String rule) throws ParseException {
         ProgramStatement ps = getProgramStatements(rule).get(0);
 
+        return getRuleFromProgramStatement(ps);
+    }
+
+    private static Rule getRuleFromProgramStatement(ProgramStatement ps) throws ParseException {
         if (!ps.isClause()) {
             return null;
         }
@@ -222,6 +226,17 @@ public class FileContent {
         }
 
         return new Rule(new DataLogLiteral(removeSlash(c.getHead().getPredicate().toString()), c.getHead().getTerms()), lits);
+    }
+
+    public static Set<Rule> getRulesFromString(String rule) throws ParseException {
+        Set<Rule> rules = new HashSet<>();
+        List<ProgramStatement> programStatements = getProgramStatements(rule);
+
+        for (ProgramStatement ps : programStatements) {
+            rules.add(getRuleFromProgramStatement(ps));
+        }
+
+        return (rules.isEmpty() ? null : rules);
     }
 
     /**

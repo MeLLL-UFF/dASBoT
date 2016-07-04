@@ -35,7 +35,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
  *
  * @author Victor Guimarães
  */
-public class DReWRLCLILiteral extends DReWRLCLI {
+public class DReWRLCLILiteral extends DReWRLCLI implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(DReWRLCLILiteral.class.getName());
 
@@ -267,8 +267,8 @@ public class DReWRLCLILiteral extends DReWRLCLI {
     }
 
     /**
-     * Method to kill the DLV's execution. <br>
-     * Usiful when the program takes to long to be executed and exceeds the
+     * Method to kill DLV's execution. <br>
+     * Useful when the program takes to long to be executed and exceeds the
      * problem's timeout.
      *
      * @throws DLVInvocationException a possible exception during the DLV
@@ -278,6 +278,11 @@ public class DReWRLCLILiteral extends DReWRLCLI {
         if (invocation != null) {
             invocation.killDlv();
         }
+    }
+
+    @Override
+    public void run() {
+        this.go();
     }
 
 }
