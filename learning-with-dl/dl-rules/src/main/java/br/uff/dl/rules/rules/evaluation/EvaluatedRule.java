@@ -7,17 +7,12 @@ import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.util.FileContent;
 import br.uff.dl.rules.util.Serializable;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.*;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
  * Class to keep a rule and its measure to a specific problem. This class also
@@ -25,7 +20,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  *
  * @author Victor Guimarães
  */
-public class EvaluatedRule implements Serializable<EvaluatedRule> {
+public class EvaluatedRule implements Serializable<EvaluatedRule>, MeasurableRule {
 
     protected Rule rule;
     protected int positives;

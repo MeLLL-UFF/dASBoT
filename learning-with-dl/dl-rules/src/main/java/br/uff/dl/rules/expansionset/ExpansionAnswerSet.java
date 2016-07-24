@@ -7,20 +7,13 @@ import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.datalog.DataLogLiteral;
 import br.uff.dl.rules.datalog.DataLogPredicate;
 import br.uff.dl.rules.template.TypeTemplate;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.NormalPredicate;
-import org.semanticweb.drew.dlprogram.model.Term;
+import org.semanticweb.drew.dlprogram.model.*;
+
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Class responsable for create the Expamsion Answer Set by a given Answer Set.

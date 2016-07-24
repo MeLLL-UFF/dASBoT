@@ -4,11 +4,12 @@
 package br.uff.dl.rules.template;
 
 import br.uff.dl.rules.datalog.DataLogPredicate;
+import org.semanticweb.drew.dlprogram.model.Clause;
+import org.semanticweb.drew.dlprogram.model.Constant;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.Constant;
 
 /**
  * Interface to describe classes that provides templates of individuals's

@@ -10,12 +10,13 @@ import br.uff.dl.rules.rules.AnswerSetRule;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Set;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Set;
 
 import static br.uff.dl.rules.util.Time.getTime;
 

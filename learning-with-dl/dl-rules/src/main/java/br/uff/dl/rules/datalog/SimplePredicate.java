@@ -3,13 +3,14 @@
  */
 package br.uff.dl.rules.datalog;
 
-import java.util.Objects;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.default_logic.OWLPredicate;
 import org.semanticweb.drew.dlprogram.model.NormalPredicate;
 import org.semanticweb.drew.dlprogram.model.Predicate;
+
+import java.util.Objects;
 
 /**
  * A DataLog simple pradicate.

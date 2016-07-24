@@ -4,15 +4,12 @@
 package br.uff.dl.rules.util;
 
 import br.uff.dl.rules.cli.DLRulesCLI;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+
 import java.io.FileNotFoundException;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
  * Class to do the parser thru the command line arguments. This class can also

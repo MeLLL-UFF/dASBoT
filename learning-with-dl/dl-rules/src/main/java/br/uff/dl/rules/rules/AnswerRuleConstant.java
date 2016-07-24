@@ -4,6 +4,7 @@
 package br.uff.dl.rules.rules;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;

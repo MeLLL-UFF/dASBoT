@@ -3,9 +3,10 @@
  */
 package br.uff.dl.rules.test;
 
-import edu.stanford.nlp.io.PrintFile;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
+import edu.stanford.nlp.io.PrintFile;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;

@@ -5,12 +5,8 @@ package br.uff.dl.rules.rules;
 
 import br.uff.dl.rules.datalog.DataLogRule;
 import br.uff.dl.rules.expansionset.ExpansionAnswerSet;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 
 /**
  * Class used to link a set of rules with its corresponding Expansion Answer

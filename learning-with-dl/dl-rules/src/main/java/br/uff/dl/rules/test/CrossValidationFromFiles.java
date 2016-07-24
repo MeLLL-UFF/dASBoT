@@ -20,16 +20,7 @@
 package br.uff.dl.rules.test;
 
 //import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+
 import org.dllearner.cli.CrossValidation;
 import org.dllearner.core.AbstractCELA;
 import org.dllearner.core.AbstractReasonerComponent;
@@ -38,6 +29,12 @@ import org.dllearner.core.owl.Description;
 import org.dllearner.core.owl.Individual;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.utilities.statistics.Stat;
+
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.*;
 /**
  * Performs cross validation for the given problem. 
  * 
@@ -92,7 +89,6 @@ public class CrossValidationFromFiles extends CrossValidation {
 				lp.init();
 				la.init();
 			} catch (ComponentInitException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 				
@@ -181,7 +177,6 @@ public class CrossValidationFromFiles extends CrossValidation {
 				lp.init();
 				la.init();
 			} catch (ComponentInitException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 				
@@ -291,7 +286,6 @@ public class CrossValidationFromFiles extends CrossValidation {
 					lp.init();
 					la.init();
 				} catch (ComponentInitException e) {
-				// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

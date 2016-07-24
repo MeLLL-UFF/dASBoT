@@ -21,6 +21,10 @@ public class CompressionMeasure implements RuleMeasurer {
     
     @Override
     public double getRuleMeasure(Rule rule, int positives, int negatives, int positivesCovered, int negativesCovered) {
+        if (rule == null || rule.getBody() == null) {
+            return 0.0;
+        }
+
         return positivesCovered - negativesCovered - rule.getBody().size();
     }
 

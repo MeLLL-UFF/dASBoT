@@ -3,22 +3,7 @@
  */
 package br.uff.dl.rules.drew;
 
-import it.unical.mat.wrapper.DLVError;
-import it.unical.mat.wrapper.DLVInputProgram;
-import it.unical.mat.wrapper.DLVInvocation;
-import it.unical.mat.wrapper.DLVInvocationException;
-import it.unical.mat.wrapper.DLVWrapper;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import it.unical.mat.wrapper.*;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorer;
 import org.semanticweb.drew.dlprogram.format.DLProgramStorerImpl;
 import org.semanticweb.drew.dlprogram.model.DLProgram;
@@ -27,6 +12,13 @@ import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 import org.semanticweb.drew.ldlpprogram.reasoner.RLProgramKBCompiler;
 import org.semanticweb.owlapi.model.OWLOntology;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class to call DReW by command line interface. <BR>This class can be used just

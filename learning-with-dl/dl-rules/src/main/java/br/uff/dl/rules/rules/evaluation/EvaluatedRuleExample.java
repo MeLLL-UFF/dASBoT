@@ -7,17 +7,12 @@ import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.util.FileContent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.*;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
  * Class for keep a rule, its based example and its measure to a specific
@@ -25,7 +20,7 @@ import org.semanticweb.drew.dlprogram.parser.ParseException;
  *
  * @author Victor Guimarães
  */
-public class EvaluatedRuleExample extends EvaluatedRule {
+public class EvaluatedRuleExample extends EvaluatedRule implements MeasurableRuleExample {
 
     protected ConcreteLiteral example;
 

@@ -4,13 +4,7 @@ import br.uff.dl.rules.util.AtomTerm;
 import br.uff.dl.rules.util.BKRules;
 import br.uff.dl.rules.util.KBReader;
 import br.uff.dl.rules.util.PosNegLPRules;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.dllearner.cli.CLI;
 import org.dllearner.configuration.IConfiguration;
@@ -19,12 +13,7 @@ import org.dllearner.configuration.spring.DefaultApplicationContextBuilder;
 import org.dllearner.configuration.util.SpringConfigurationXMLBeanConverter;
 import org.dllearner.confparser3.ConfParserConfiguration;
 import org.dllearner.confparser3.ParseException;
-import org.dllearner.core.AbstractCELA;
-import org.dllearner.core.AbstractReasonerComponent;
-import org.dllearner.core.AnnComponentManager;
-import org.dllearner.core.ComponentInitException;
-import org.dllearner.core.KnowledgeSource;
-import org.dllearner.core.ReasoningMethodUnsupportedException;
+import org.dllearner.core.*;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.utilities.Files;
 import org.slf4j.Logger;
@@ -32,6 +21,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 // CLI is from DL Learner
 public class CLICV extends CLI {
@@ -54,7 +51,7 @@ public class CLICV extends CLI {
     
     private AbstractReasonerComponent rs;
     private AbstractCELA la;
-    // TODO usar a classe pai, para permitir que PosOnly (e outros) tb possam ser usados
+    // usar a classe pai, para permitir que PosOnly (e outros) tb possam ser usados
     private PosNegLP lp;
 
     // some CLI options
@@ -130,7 +127,7 @@ public class CLICV extends CLI {
             
             la = context.getBean(AbstractCELA.class);
 
-            //TODO Parcel e também posonly
+            //Parcel e também posonly
             //this test is added for PDLL algorithm since it does not use the PosNegLP			
             //try {
             //	lp = (ParCELPosNegLP)context.getBean(ParCELPosNegLP.class);
@@ -238,7 +235,7 @@ public class CLICV extends CLI {
 
             //ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
             //ApplicationContext context =  builder.buildApplicationContext(configuration,springConfigResources);
-            // TODO: later we could check which command line interface is specified in the conf file
+            // later we could check which command line interface is specified in the conf file
             // for now we just use the default one
             if (algoType.equalsIgnoreCase("InternalVal")) {
                 cli = new CLICV(file, prefixFile, kfolds, xfolds, measure, output, "InternalVal");

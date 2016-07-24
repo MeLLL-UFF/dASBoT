@@ -1,14 +1,13 @@
 package br.uff.dl.rules.cli;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import br.uff.dl.rules.evaluation.RuleMeasurer;
-import br.uff.dl.rules.test.ResultSet;
+import br.uff.dl.rules.rules.theory.DLRulesTheoryBuilder;
 import br.uff.dl.rules.util.FileContent;
 import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Victor Guimarães on 1/11/16.
@@ -56,7 +55,8 @@ public class DLRulesTheoryGenerator extends Thread {
             DLRulesCLI cli = new DLRulesCLI();
             cli.parseArguments(args);
 
-            ResultSet rs = new ResultSet(cli.getDlpContent(), cli.getPositiveTrainFilePath(), cli.getNegativeTrainFilePath(), cli.getOutputDirectory(), theoryMeasure, cli.getDrewArgs(), theoryThreshold, sideWayMovements);
+            DLRulesTheoryBuilder rs = new DLRulesTheoryBuilder(cli.getDlpContent(), cli.getPositiveTrainFilePath(), cli.getNegativeTrainFilePath(), theoryMeasure, cli.getDrewArgs(), cli.getOutputDirectory(), theoryThreshold, sideWayMovements);
+            rs.run();
 
             FileUtils.writeStringToFile(theoryFile, rs.toString(), ENCODE);
         } catch (ParseException | IOException ex) {

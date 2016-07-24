@@ -5,13 +5,14 @@ package br.uff.dl.rules.expansionset;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.template.TypeTemplate;
+import org.semanticweb.drew.dlprogram.model.Constant;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Class responsable for create the Expamsion Answer Set based on a example by a

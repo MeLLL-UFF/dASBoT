@@ -3,13 +3,14 @@
  */
 package br.uff.dl.rules.expansionset.parallel;
 
+import org.semanticweb.drew.dlprogram.model.Constant;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Class that does only the permutation part of the Expansion Answer Set

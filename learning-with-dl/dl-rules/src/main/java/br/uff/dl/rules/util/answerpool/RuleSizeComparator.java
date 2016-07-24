@@ -4,6 +4,7 @@
 package br.uff.dl.rules.util.answerpool;
 
 import br.uff.dl.rules.rules.Rule;
+
 import java.util.Comparator;
 
 /**

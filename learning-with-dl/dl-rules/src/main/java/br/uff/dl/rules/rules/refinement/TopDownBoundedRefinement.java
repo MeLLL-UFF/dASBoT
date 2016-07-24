@@ -8,24 +8,16 @@ import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.SafeRule;
+import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import br.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.util.answerpool.AnswerPool;
 import br.uff.dl.rules.util.answerpool.RuleSizeComparator;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
+
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Class to do the refinement according with the top-down, it means, from the
@@ -67,7 +59,7 @@ public class TopDownBoundedRefinement extends Refinement {
         Set<? extends ConcreteLiteral> body = new LinkedHashSet<>(boundRule.getRule().getBody());
         Set<? extends ConcreteLiteral> candidates = getCandidates(head, body);
 
-        Comparator com = new EvaluatedRuleComparator();
+        Comparator com = new DescendingMeasurableComparator();
         //Trocar as duas linhas a seguir pela regra safe mínima e count = tamanho do corpo da regra
         //refineRule(new Rule(head, null), candidates, count, com);
         int count = 0;

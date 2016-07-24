@@ -4,6 +4,7 @@
 package br.uff.dl.rules.util;
 
 import br.uff.dl.rules.exception.VariableGenerator;
+
 import java.util.LinkedList;
 import java.util.List;
 

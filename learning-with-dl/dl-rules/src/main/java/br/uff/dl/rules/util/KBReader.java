@@ -3,8 +3,6 @@
  */
 package br.uff.dl.rules.util;
 
-import java.io.File;
-import java.net.URI;
 import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentAnn;
@@ -20,6 +18,9 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import java.io.File;
+import java.net.URI;
 
 /**
  * Class to generate a KB from a String as content.

@@ -5,21 +5,17 @@ package br.uff.dl.rules.test;
 
 import br.uff.dl.rules.drew.DReWRLCLI;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.List;
-import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.CacheManager;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.ClauseType;
-import org.semanticweb.drew.dlprogram.model.DLProgram;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.ProgramStatement;
+import org.semanticweb.drew.dlprogram.model.*;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.List;
+import java.util.Set;
 
 /**
  *

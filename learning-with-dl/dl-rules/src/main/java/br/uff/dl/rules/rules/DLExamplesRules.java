@@ -10,14 +10,15 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
+import org.dllearner.core.ComponentInitException;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Set;
-import org.dllearner.core.ComponentInitException;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 import static br.uff.dl.rules.util.Time.getTime;
 

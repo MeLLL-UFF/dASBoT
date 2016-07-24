@@ -3,17 +3,13 @@
  */
 package br.uff.dl.rules.datalog;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import org.dllearner.core.ComponentAnn;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Predicate;
 import org.semanticweb.drew.dlprogram.model.Term;
+
+import java.util.*;
 
 /**
  * A DataLog instantiated literal.

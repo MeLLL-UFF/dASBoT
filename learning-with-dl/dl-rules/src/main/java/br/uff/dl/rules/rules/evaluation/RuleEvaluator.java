@@ -8,12 +8,13 @@ import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.util.Box;
 import it.unical.mat.wrapper.DLVInvocationException;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 import static br.uff.dl.rules.util.Time.getTime;
 
@@ -30,7 +31,7 @@ import static br.uff.dl.rules.util.Time.getTime;
  *
  * @author Victor Guimarães
  */
-public class RuleEvaluator extends Thread {
+public class RuleEvaluator extends Thread implements RuleContainer {
 
     private Rule rule;
 
@@ -239,6 +240,11 @@ public class RuleEvaluator extends Thread {
 
     public Set<Literal> getNegativesCoveredExamples() {
         return negativesCoveredExamples;
+    }
+
+    @Override
+    public Rule getRule() {
+        return rule;
     }
 
 }

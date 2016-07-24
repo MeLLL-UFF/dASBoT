@@ -4,30 +4,21 @@
 package br.uff.dl.rules.cli.parallel;
 
 import br.uff.dl.rules.cli.DLRulesCLI;
-import br.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
+import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.DReWDefaultArgs;
 import br.uff.dl.rules.util.FileContent;
 import br.uff.dl.rules.util.Time;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class to call the program by command line interface (Parallel Version). This
@@ -168,7 +159,7 @@ public class DLRulesCLIParallel extends DLRulesCLI {
                 }
             }
 
-            Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
+            Collections.sort(evaluatedRuleExamples, new DescendingMeasurableComparator());
             Time.getTime(end);
             double speedup = (double) totalDiffTime / (numberOfThreads * (end.getContent() - begin.getContent()));
 

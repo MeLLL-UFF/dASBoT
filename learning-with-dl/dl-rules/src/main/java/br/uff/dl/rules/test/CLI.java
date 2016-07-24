@@ -18,13 +18,6 @@
  */
 package br.uff.dl.rules.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Level;
 import org.apache.xmlbeans.XmlObject;
@@ -37,12 +30,7 @@ import org.dllearner.configuration.spring.DefaultApplicationContextBuilder;
 import org.dllearner.configuration.util.SpringConfigurationXMLBeanConverter;
 import org.dllearner.confparser3.ConfParserConfiguration;
 import org.dllearner.confparser3.ParseException;
-import org.dllearner.core.AbstractCELA;
-import org.dllearner.core.AbstractReasonerComponent;
-import org.dllearner.core.ComponentInitException;
-import org.dllearner.core.KnowledgeSource;
-import org.dllearner.core.LearningAlgorithm;
-import org.dllearner.core.ReasoningMethodUnsupportedException;
+import org.dllearner.core.*;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.utilities.Files;
 import org.slf4j.Logger;
@@ -51,6 +39,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  *
@@ -169,7 +165,7 @@ public class CLI {
      */
     public static void main(String[] args) throws ParseException, IOException, ReasoningMethodUnsupportedException {
         System.out.println("My CLI");
-//		System.out.println("DL-Learner " + Info.build + " [TODO: read pom.version and put it here (make sure that the code for getting the version also works in the release build!)] command line interface");
+//		System.out.println("DL-Learner " + Info.build + " [TO DO: read pom.version and put it here (make sure that the code for getting the version also works in the release build!)] command line interface");
         System.out.println("DL-Learner command line interface");
 
         // currently, CLI has exactly one parameter - the conf file
@@ -197,7 +193,7 @@ public class CLI {
             ApplicationContextBuilder builder = new DefaultApplicationContextBuilder();
             ApplicationContext context = builder.buildApplicationContext(configuration, springConfigResources);
 
-            // TODO: later we could check which command line interface is specified in the conf file
+            // later we could check which command line interface is specified in the conf file
             // for now we just use the default one
             CLI cli;
             if (context.containsBean("cli")) {

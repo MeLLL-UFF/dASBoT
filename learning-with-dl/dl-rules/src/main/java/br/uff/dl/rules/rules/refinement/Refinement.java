@@ -7,13 +7,14 @@ import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Abstract class which defines the behavior a Refinement class should have. The

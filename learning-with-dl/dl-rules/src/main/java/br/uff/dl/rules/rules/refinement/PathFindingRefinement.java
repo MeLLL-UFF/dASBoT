@@ -7,22 +7,14 @@ import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.SafeRule;
+import br.uff.dl.rules.rules.evaluation.DescendingMeasurableAndSizeComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import br.uff.dl.rules.rules.evaluation.EvaluatedRuleAndSizeComparator;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+import org.semanticweb.drew.dlprogram.model.Term;
+
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  *
@@ -85,7 +77,7 @@ public class PathFindingRefinement extends Refinement {
             evaluatedRules.add(boundRule);
         }
 
-        Collections.sort(evaluatedRules, new EvaluatedRuleAndSizeComparator());
+        Collections.sort(evaluatedRules, new DescendingMeasurableAndSizeComparator());
 
         for (int i = 0; i < evaluatedRules.size(); i++) {
             refinedRules.put(i, evaluatedRules.get(i));

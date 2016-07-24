@@ -15,33 +15,20 @@ import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
-import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
 import br.uff.dl.rules.rules.refinement.RefinementFactory;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
 import br.uff.dl.rules.util.Time;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 
-import static br.uff.dl.rules.test.ResultSet.compareRuleWithExample;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static br.uff.dl.rules.rules.theory.DLRulesTheoryBuilder.compareAnswerSetWithExample;
 
 /**
  * Class to call the program by command line interface using Hill Climb
@@ -310,11 +297,11 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
         Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeTrainFilePath));
 
         int positives = positiveTrain.size();
-        Set<ConcreteLiteral> covered = DataLogLiteral.getSetOfLiterals(compareRuleWithExample(lits, posExamples));
+        Set<ConcreteLiteral> covered = DataLogLiteral.getSetOfLiterals(compareAnswerSetWithExample(lits, posExamples));
         int positivesCovered = covered.size();
 
         int negatives = negativeTrain.size();
-        int negativesCovered = compareRuleWithExample(lits, negExamples).size();
+        int negativesCovered = compareAnswerSetWithExample(lits, negExamples).size();
 
         positiveCoveredExamples.addAll(covered);
 

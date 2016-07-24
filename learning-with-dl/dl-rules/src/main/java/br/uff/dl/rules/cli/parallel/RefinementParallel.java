@@ -9,22 +9,18 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.refinement.Refinement;
 import br.uff.dl.rules.rules.refinement.RefinementFactory;
-import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.Time;
+import org.semanticweb.drew.dlprogram.model.Literal;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.model.Literal;
 
 /**
  * Class used by {@link DLRulesCLIParallel} to handle the refinement.

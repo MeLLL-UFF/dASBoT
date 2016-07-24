@@ -3,12 +3,13 @@
  */
 package br.uff.dl.rules.util;
 
-import java.util.Set;
-import java.util.SortedSet;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.owl.Individual;
 import org.dllearner.learningproblems.PosNegLPStandard;
+
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Class originally idealized to extends the DL-Learner language. (Not used yet)

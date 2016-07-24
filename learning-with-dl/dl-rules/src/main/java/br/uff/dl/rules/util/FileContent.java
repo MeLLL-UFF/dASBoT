@@ -6,18 +6,12 @@ package br.uff.dl.rules.util;
 import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.datalog.DataLogLiteral;
 import br.uff.dl.rules.rules.Rule;
+import org.semanticweb.drew.dlprogram.model.*;
+import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 import java.io.*;
 import java.util.*;
-
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.ClauseType;
-import org.semanticweb.drew.dlprogram.model.DLProgram;
-import org.semanticweb.drew.dlprogram.model.DLProgramKB;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.ProgramStatement;
-import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
 
 /**
  * Class to retrieve information from files. It can be used for get the file's
@@ -285,10 +279,10 @@ public class FileContent {
         bw.close();
     }
 
-    public static void saveConcreteLiteralToFile(Collection<? extends ConcreteLiteral> concreteLiterals, File outputFile, String encode) throws IOException {
+    public static void saveCollectionToFile(Collection<? extends Object> collection, File outputFile, String encode) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encode))) {
-            for (ConcreteLiteral concreteLiteral : concreteLiterals) {
-                bw.write(concreteLiteral.toString() + ".\n");
+            for (Object o : collection) {
+                bw.write(o.toString() + ".\n");
             }
         } catch (IOException ex) {
             throw ex;

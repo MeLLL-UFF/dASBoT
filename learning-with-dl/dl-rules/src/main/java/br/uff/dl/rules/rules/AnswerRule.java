@@ -10,17 +10,6 @@ import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.template.TermType;
 import br.uff.dl.rules.template.TypeTemplate;
 import br.uff.dl.rules.util.SimpleGenerator;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -28,6 +17,9 @@ import org.semanticweb.drew.dlprogram.model.Clause;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Term;
 import org.semanticweb.drew.dlprogram.model.Variable;
+
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Class that generates a rule based on a example and a given Expansion Answer

@@ -5,38 +5,18 @@ package br.uff.dl.rules.template;
 
 import br.uff.dl.rules.datalog.DataLogPredicate;
 import br.uff.dl.rules.datalog.SimplePredicate;
-import java.io.FileNotFoundException;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentInitException;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.ClauseType;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.DLProgram;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.NormalPredicate;
-import org.semanticweb.drew.dlprogram.model.Predicate;
-import org.semanticweb.drew.dlprogram.model.ProgramStatement;
-import org.semanticweb.drew.dlprogram.model.Term;
+import org.semanticweb.drew.dlprogram.model.*;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.*;
+
+import java.io.FileNotFoundException;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.util.*;
 
 import static br.uff.dl.rules.drew.DReWReasoner.PREFIX_SEPARATOR;
 

@@ -13,26 +13,29 @@ public class RelativeCompressionMeasure implements RuleMeasurer {
 
     public final String className = this.getClass().getName();
     
-    private double maxLiterais;
+    private double maxLiterals;
 
     public RelativeCompressionMeasure() {
     }
 
-    public RelativeCompressionMeasure(double maxLiterais) {
-        this.maxLiterais = maxLiterais;
+    public RelativeCompressionMeasure(double maxLiterals) {
+        this.maxLiterals = maxLiterals;
     }
 
     @Override
     public double getRuleMeasure(Rule rule, int positives, int negatives, int positivesCovered, int negativesCovered) {
-        return (positivesCovered / positives) - (negativesCovered / negatives) - (rule.getBody().size() / maxLiterais);
+        if (rule == null || rule.getBody() == null) {
+            return 0.0;
+        }
+        return (positivesCovered / positives) - (negativesCovered / negatives) - (rule.getBody().size() / maxLiterals);
     }
 
-    public double getMaxLiterais() {
-        return maxLiterais;
+    public double getMaxLiterals() {
+        return maxLiterals;
     }
 
-    public void setMaxLiterais(double maxLiterais) {
-        this.maxLiterais = maxLiterais;
+    public void setMaxLiterals(double maxLiterals) {
+        this.maxLiterals = maxLiterals;
     }
 
 }

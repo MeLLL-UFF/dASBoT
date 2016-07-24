@@ -4,15 +4,10 @@
 package br.uff.dl.rules.rules;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Term;
+
+import java.util.*;
 
 /**
  * Class to represent a logic rule.

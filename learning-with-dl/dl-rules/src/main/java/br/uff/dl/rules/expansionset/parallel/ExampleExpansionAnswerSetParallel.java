@@ -5,6 +5,10 @@ package br.uff.dl.rules.expansionset.parallel;
 
 import br.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
 import br.uff.dl.rules.template.TypeTemplate;
+import org.semanticweb.drew.dlprogram.model.Constant;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,9 +16,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Class responsable for create the Expamsion Answer Set based on a example by a

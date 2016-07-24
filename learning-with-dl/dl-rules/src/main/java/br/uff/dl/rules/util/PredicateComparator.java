@@ -5,6 +5,7 @@
 package br.uff.dl.rules.util;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
+
 import java.util.Comparator;
 
 /**

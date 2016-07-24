@@ -3,8 +3,9 @@
  */
 package br.uff.dl.rules.datalog;
 
-import java.util.Set;
 import org.semanticweb.drew.dlprogram.model.Clause;
+
+import java.util.Set;
 
 /**
  * An interface to describe a rule from DataLog.

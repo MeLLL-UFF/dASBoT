@@ -5,16 +5,17 @@ package br.uff.dl.rules.expansionset.parallel;
 
 import br.uff.dl.rules.expansionset.ExpansionAnswerSet;
 import br.uff.dl.rules.template.IndividualTemplate;
+import org.dllearner.core.ComponentInitException;
+import org.semanticweb.drew.dlprogram.model.Constant;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.dllearner.core.ComponentInitException;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * Class responsable for create the Expamsion Answer Set by a given Answer Set.

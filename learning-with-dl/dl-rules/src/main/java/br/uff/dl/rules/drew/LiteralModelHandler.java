@@ -3,20 +3,17 @@
  */
 package br.uff.dl.rules.drew;
 
-import it.unical.mat.wrapper.DLVInvocation;
-import it.unical.mat.wrapper.Model;
-import it.unical.mat.wrapper.ModelHandler;
-import it.unical.mat.wrapper.ModelResult;
-import it.unical.mat.wrapper.Predicate;
+import it.unical.mat.wrapper.*;
+import org.semanticweb.drew.dlprogram.model.Literal;
+import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
+import org.semanticweb.drew.dlprogram.parser.ParseException;
+import org.semanticweb.drew.ldlpprogram.reasoner.LDLPProgramQueryResultDecompiler;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
-import org.semanticweb.drew.dlprogram.parser.ParseException;
-import org.semanticweb.drew.ldlpprogram.reasoner.LDLPProgramQueryResultDecompiler;
 
 /**
  * This class is used to get the DReW's answer set as a collection of

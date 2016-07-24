@@ -3,9 +3,10 @@
  */
 package br.uff.dl.rules.datalog;
 
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.io.Serializable;
 import java.util.List;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  * An interface to describe a Concrete (instantiated literal) from the DataLog

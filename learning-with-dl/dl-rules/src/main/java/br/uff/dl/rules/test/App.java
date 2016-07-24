@@ -14,51 +14,24 @@ import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.rules.AnswerSetRule;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import br.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
 import br.uff.dl.rules.rules.refinement.TopDownBoundedRefinement;
-import br.uff.dl.rules.util.AlphabetCounter;
-import br.uff.dl.rules.util.Box;
-import br.uff.dl.rules.util.CLIArgumentsParser;
-import br.uff.dl.rules.util.DReWDefaultArgs;
-import br.uff.dl.rules.util.FileContent;
-import br.uff.dl.rules.util.FoldFactory;
-import br.uff.dl.rules.util.RuleFileNameComparator;
-import br.uff.dl.rules.util.Time;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.Set;
+import br.uff.dl.rules.rules.theory.DLRulesTheoryBuilder;
+import br.uff.dl.rules.util.*;
 import org.apache.commons.io.FileUtils;
 import org.dllearner.confparser3.ParseException;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.ReasoningMethodUnsupportedException;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.DLProgram;
-import org.semanticweb.drew.dlprogram.model.DLProgramKB;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.ProgramStatement;
+import org.semanticweb.drew.dlprogram.model.*;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class App {
 
@@ -150,7 +123,8 @@ public class App {
 
                 out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4).replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
-                ResultSet rs = new ResultSet(dlpContent, positiveExamples, negativeExamples, outputDirectory, measurer, args);
+                DLRulesTheoryBuilder rs = new DLRulesTheoryBuilder(dlpContent, positiveExamples, negativeExamples, measurer, args, outputDirectory);
+                rs.run();
                 System.out.println(rs.toString());
                 System.setOut(stream);
                 System.out.println("Done: " + outputDirectory + "results.txt");
@@ -351,27 +325,27 @@ public class App {
 
     private static void testCLI() throws FileNotFoundException {
         String[] args = {
-            "-rule",
-            "-ref",
-            "-cv",
-            "-norec",
-            "6",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/language.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/misc.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/systems.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/theory.yap",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/sample.owl",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.f",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.n",
-            "-tp",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/template.dlp",
-            "/Users/Victor/Desktop/out/",
-            "300",
-            "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/",
-            "test",
-            "5"
+                "-rule",
+                "-ref",
+                "-cv",
+                "-norec",
+                "6",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/language.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/misc.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/systems.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/theory.yap",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/sample.owl",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.f",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.n",
+                "-tp",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/template.dlp",
+                "/Users/Victor/Desktop/out/",
+                "300",
+                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/",
+                "test",
+                "5"
         };
 
         String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
@@ -501,7 +475,7 @@ public class App {
                 r.setTimeout(timeout);
                 r.setRuleMeasure(ruleMeasure);
                 r.setOutStream(System.out);
-                
+
                 r.start();
                 r.join();
 
@@ -521,7 +495,7 @@ public class App {
                 }
 
                 /*
-                 Comparator com = new EvaluatedRuleComparator();
+                 Comparator com = new DescendingMeasurableComparator();
                  //SortedSet<EvaluatedRule> rules = new TreeSet<>(com);
                  //rules.addAll(r.getRefinedRules().values());
                  int count = 0;
@@ -632,7 +606,7 @@ public class App {
             }
         }
 
-        Collections.sort(ers, new EvaluatedRuleComparator());
+        Collections.sort(ers, new DescendingMeasurableComparator());
 
         int count = 1;
         String fileName = "baseFile.txt";
@@ -783,7 +757,7 @@ public class App {
         for (int i = 0; i < 78; i++) {
             redirectOutputStream(defaultFilepath + "rule" + i + ".txt");
             run = new DLExamplesRulesFileOutput(dlpFilepaths, owlFilepath, templateFilepath, dlpSamplesFilepath.get(0),
-                    dlpSamplesFilepath.get(1), compareFilepaths);
+                                                dlpSamplesFilepath.get(1), compareFilepaths);
             run.setOffset(i);
             run.start();
             try {
@@ -1006,11 +980,11 @@ public class App {
 //        };
         String examplePath = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.f";
         String[] input = {
-            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb1.pl",
-            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb2.pl",
-            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb3.pl",
-            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb4.pl",
-            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.n"
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb1.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb2.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb3.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb4.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.n"
         };
 
         boolean printMySets = true;

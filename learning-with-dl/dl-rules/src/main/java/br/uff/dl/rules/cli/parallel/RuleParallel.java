@@ -9,13 +9,14 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.Time;
+import org.dllearner.core.ComponentInitException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.dllearner.core.ComponentInitException;
 
 /**
  * Class used by {@link DLRulesCLIParallel} to handle the rule's generation.

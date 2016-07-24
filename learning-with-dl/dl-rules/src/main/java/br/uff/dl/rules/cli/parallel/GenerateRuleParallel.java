@@ -13,6 +13,8 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
 import br.uff.dl.rules.util.Time;
+import org.dllearner.core.ComponentInitException;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.dllearner.core.ComponentInitException;
 
 /**
  *

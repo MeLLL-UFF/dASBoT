@@ -8,20 +8,6 @@ import br.uff.dl.rules.datalog.DataLogRule;
 import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.util.AlphabetCounter;
 import br.uff.dl.rules.util.PredicateComparator;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Clause;
@@ -30,6 +16,12 @@ import org.semanticweb.drew.dlprogram.model.DLProgramKB;
 import org.semanticweb.drew.dlprogram.model.ProgramStatement;
 import org.semanticweb.drew.dlprogram.parser.DLProgramParser;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class to represent a logic rule.

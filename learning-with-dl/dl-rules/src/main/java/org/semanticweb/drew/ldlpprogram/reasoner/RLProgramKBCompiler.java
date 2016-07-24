@@ -7,34 +7,18 @@
  */
 package org.semanticweb.drew.ldlpprogram.reasoner;
 
+import org.semanticweb.drew.dlprogram.DLProgramKB2DatalogRewriter;
+import org.semanticweb.drew.dlprogram.model.*;
+import org.semanticweb.drew.ldlp.reasoner.LDLPCompilerManager;
+import org.semanticweb.drew.ldlp.reasoner.LDLPOntologyCompiler;
+import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.DLProgramKB2DatalogRewriter;
-import org.semanticweb.drew.dlprogram.model.CacheManager;
-import org.semanticweb.drew.dlprogram.model.Clause;
-import org.semanticweb.drew.dlprogram.model.Constant;
-import org.semanticweb.drew.dlprogram.model.DLAtomPredicate;
-import org.semanticweb.drew.dlprogram.model.DLInputOperation;
-import org.semanticweb.drew.dlprogram.model.DLInputSignature;
-import org.semanticweb.drew.dlprogram.model.DLProgram;
-import org.semanticweb.drew.dlprogram.model.DLProgramKB;
-import org.semanticweb.drew.dlprogram.model.Literal;
-import org.semanticweb.drew.dlprogram.model.NormalPredicate;
-import org.semanticweb.drew.dlprogram.model.ProgramStatement;
-import org.semanticweb.drew.dlprogram.model.Term;
-import org.semanticweb.drew.dlprogram.model.Variable;
-import org.semanticweb.drew.ldlp.reasoner.LDLPCompilerManager;
-import org.semanticweb.drew.ldlp.reasoner.LDLPOntologyCompiler;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLLogicalEntity;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * KBCompiler: compile the dl-program KB to a datalog^n program.

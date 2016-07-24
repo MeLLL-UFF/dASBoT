@@ -10,8 +10,8 @@ import br.uff.dl.rules.evaluation.LaplaceMeasure;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
-import br.uff.dl.rules.rules.evaluation.EvaluatedRuleComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.rules.refinement.Refinement;
@@ -20,28 +20,15 @@ import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.DReWDefaultArgs;
 import br.uff.dl.rules.util.FileContent;
 import br.uff.dl.rules.util.Time;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.parser.ParseException;
+
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class to call the program by command line interface. This class can be used
@@ -482,7 +469,7 @@ public class DLRulesCLI {
                 }
             }
 
-            Collections.sort(evaluatedRuleExamples, new EvaluatedRuleComparator());
+            Collections.sort(evaluatedRuleExamples, new DescendingMeasurableComparator());
             outStream = new PrintStream(outputDirectory + "statistics.txt");
             try {
                 Time.getTime(end);

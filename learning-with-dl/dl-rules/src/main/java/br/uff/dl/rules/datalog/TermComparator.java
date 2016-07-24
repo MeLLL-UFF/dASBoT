@@ -4,8 +4,9 @@
 
 package br.uff.dl.rules.datalog;
 
-import java.util.Comparator;
 import org.semanticweb.drew.dlprogram.model.Term;
+
+import java.util.Comparator;
 
 /**
  *  A comparator to order a collection of {@link Term}.

@@ -17,13 +17,13 @@ public class DReWDefaultArgs {
      * The default argument.
      */
     public static final String[] DEFAULT_ARGS = {
-        "-rl",
-        "-ontology",
-        "",
-        "-dlp",
-        "",
-        "-dlv",
-        System.getenv("DLV_PATH"),
+            "-rl",
+            "-ontology",
+            "",
+            "-dlp",
+            "",
+            "-dlv",
+            System.getenv("DLV_PATH"),
     };
 
     /**
@@ -32,17 +32,17 @@ public class DReWDefaultArgs {
      * @deprecated does not works very well.
      */
     public static final String[] ARGS_NON_ONTOLOGY = {
-        "-rl",
-        "-dlp",
-        "",
-        "-dlv",
-        "/usr/lib/dlv.i386-apple-darwin-iodbc.bin"
+            "-rl",
+            "-dlp",
+            "",
+            "-dlv",
+            "/usr/lib/dlv.i386-apple-darwin-iodbc.bin"
     };
-    
+
     public static String[] getDefaultArgs() {
         return Arrays.copyOf(DEFAULT_ARGS, DEFAULT_ARGS.length);
     }
-    
+
     public static int getOWLFilepath(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-ontology")) {
@@ -51,7 +51,15 @@ public class DReWDefaultArgs {
                 }
             }
         }
-        
+
         return -1;
+    }
+
+    public static int getOntologyPathIndex() {
+        return 2;
+    }
+
+    public static int getDLVPathIndex() {
+        return DEFAULT_ARGS.length - 1;
     }
 }

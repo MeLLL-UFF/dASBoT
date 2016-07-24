@@ -4,10 +4,11 @@
 package br.uff.dl.rules.rules.refinement;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
+import org.semanticweb.drew.dlprogram.model.Term;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.semanticweb.drew.dlprogram.model.Term;
 
 /**
  *
