@@ -13,6 +13,21 @@ import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.RuleEvaluator;
 import br.uff.dl.rules.util.answerpool.AnswerPool;
 import br.uff.dl.rules.util.answerpool.RuleSizeComparator;
+<<<<<<< HEAD
+=======
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+>>>>>>> master
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
 
@@ -201,7 +216,6 @@ public class TopDownBoundedRefinement extends Refinement {
             }
         }
     }
-
     /**
      * Checks if the rule is safe.
      *
@@ -282,7 +296,7 @@ public class TopDownBoundedRefinement extends Refinement {
     /**
      * Method to get the true candidates for the rule's body.
      *
-     * @param head the rule's head.
+     * @param r the rule's head.
      * @param candidates the general candidates.
      * @return a set of candidates.
      */

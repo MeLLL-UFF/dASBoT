@@ -1,5 +1,13 @@
 /learning-with-dl/dl-rules/target/
+<<<<<<< HEAD
 .idea
 out
 DL-Rules.iml
 META-INF
+=======
+learning-with-dl/dl-rules/DL-Rules.iml
+nb*.xlm
+.idea
+META-INF
+out/
+>>>>>>> master

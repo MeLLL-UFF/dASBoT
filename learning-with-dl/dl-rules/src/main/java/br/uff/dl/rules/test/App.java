@@ -4,6 +4,7 @@
 package br.uff.dl.rules.test;
 
 import br.uff.dl.rules.cli.DLRulesCLI;
+import br.uff.dl.rules.cli.DLRulesHillClimbingCLI;
 import br.uff.dl.rules.drew.DReWRLCLI;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
 import br.uff.dl.rules.drew.DReWReasoner;
@@ -292,11 +293,12 @@ public class App {
     public static void main(String[] args) throws Exception {
         //EvaluatedRuleExample eva = new EvaluatedRuleExample(new File("/Users/Victor/Desktop/rule0.txt"));
         //loadArguments1();
-        loadResults();
+//        loadResults();
 //        System.out.println("Test");
         //evaluateAll();
-//        testCLI();
+//        testCLI(args);
         //createFolds();
+        System.out.println("Wrong!");
         //testRun();
         //measureAll();
         //testMeasure("/Users/Victor/Desktop/kb/out_mixxed/pair/refinement/");
@@ -318,11 +320,12 @@ public class App {
         //checkParameters();
         //System.out.println("oi");
         //testDReW();
-        loadResults();
+//        loadResults();
         //testDReWReasoner(0);
         //System.out.println("Main");
     }
 
+<<<<<<< HEAD
     private static void testCLI() throws FileNotFoundException {
         String[] args = {
                 "-rule",
@@ -349,20 +352,22 @@ public class App {
         };
 
         String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
+=======
+    private static void testCLI(String[] args) throws FileNotFoundException {
+        String[] parameters = FileContent.getStringFromFile(args[0]).split("\n\n");
+>>>>>>> master
         for (int i = 0; i < parameters.length; i++) {
-            String[] arguments = parameters[i].split(" ");
+            String[] arguments = parameters[i].split("\n");
             for (String argument : arguments) {
                 System.out.println(argument);
             }
-            DLRulesCLI.main(arguments);
-//            DLRulesHillClimbingCLI.main(arguments);
+//            DLRulesCLI.main(arguments);
+            String[] param = new String[arguments.length + 1];
+            System.arraycopy(arguments, 0, param, 0, arguments.length);
+            param[arguments.length] = "1";
+            DLRulesHillClimbingCLI.main(param);
+            break;
         }
-        args = DReWDefaultArgs.getDefaultArgs();
-        //args[2]
-
-        //String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/cv.txt").split(" ");
-        //DLRulesCLI.main(arguments);
-        //DLRulesHillClimbCLI.main(args);
     }
 
     public static void callCroosValidation() {

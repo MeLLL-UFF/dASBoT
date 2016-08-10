@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Class responsable for create the Expamsion Answer Set by a given Answer Set.
  * <br> This class's performance can be dramatically improved by giving a
- * {@link IndividualTemplate} to typify the individuals from the problem.
+ * {@link TypeTemplate} to typify the individuals from the problem.
  *
  * @author Victor Guimarães
  */
@@ -51,7 +51,7 @@ public class ExpansionAnswerSet implements Component {
      *
      * @param answerSet the answer set from a DReW's result.
      * @param examples a collection of examples of the problem.
-     * @param individualsClasses a {@link IndividualTemplate} to typify the
+     * @param individualsClasses a {@link TypeTemplate} to typify the
      * individual. This class is needed, if you do not have a template, create a
      * instance of this class by passing a empty file.
      */
