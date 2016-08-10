@@ -54,13 +54,10 @@ public class DReWDefaultArgs {
         return Arrays.copyOf(DEFAULT_ARGS, DEFAULT_ARGS.length);
     }
 
-<<<<<<< HEAD
-=======
     public static String[] getDefaultArgsNoOntology() {
         return Arrays.copyOf(DEFAULT_ARGS_NO_ONTOLOGY, DEFAULT_ARGS_NO_ONTOLOGY.length);
     }
-    
->>>>>>> master
+
     public static int getOWLFilepath(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-ontology")) {

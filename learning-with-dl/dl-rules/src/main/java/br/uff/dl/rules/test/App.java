@@ -325,7 +325,6 @@ public class App {
         //System.out.println("Main");
     }
 
-<<<<<<< HEAD
     private static void testCLI() throws FileNotFoundException {
         String[] args = {
                 "-rule",
@@ -352,10 +351,7 @@ public class App {
         };
 
         String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
-=======
-    private static void testCLI(String[] args) throws FileNotFoundException {
-        String[] parameters = FileContent.getStringFromFile(args[0]).split("\n\n");
->>>>>>> master
+
         for (int i = 0; i < parameters.length; i++) {
             String[] arguments = parameters[i].split("\n");
             for (String argument : arguments) {

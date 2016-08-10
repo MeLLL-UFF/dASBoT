@@ -10,9 +10,6 @@ import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.template.TermType;
 import br.uff.dl.rules.template.TypeTemplate;
 import br.uff.dl.rules.util.SimpleGenerator;
-<<<<<<< HEAD
-=======
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
->>>>>>> master
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
