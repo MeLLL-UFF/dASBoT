@@ -24,7 +24,10 @@ import org.semanticweb.drew.dlprogram.model.Literal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static br.uff.dl.rules.util.FileContent.getExamplesLiterals;
 
