@@ -3,7 +3,6 @@
  */
 package br.uff.dl.rules.test;
 
-import br.uff.dl.rules.cli.DLRulesCLI;
 import br.uff.dl.rules.cli.DLRulesHillClimbingCLI;
 import br.uff.dl.rules.drew.DReWRLCLI;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
@@ -104,23 +103,23 @@ public class App {
 
         RuleMeasurer measurer = new F1ScoreMeasure();
         String[] args = DReWDefaultArgs.getDefaultArgs();
-        String[] indidualArgs;
+        String[] individualArgs;
         PrintStream stream = System.out;
         String out = null;
         for (String string : arguments) {
             try {
-                indidualArgs = string.split(" ");
-                if (indidualArgs[indidualArgs.length - 1].endsWith(".owl")) {
-                    args[2] = indidualArgs[indidualArgs.length - 1];
-                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length - 1));
+                individualArgs = string.split(" ");
+                if (individualArgs[individualArgs.length - 1].endsWith(".owl")) {
+                    args[2] = individualArgs[individualArgs.length - 1];
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs.length - 1));
                 } else {
                     args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
-                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(indidualArgs, 3, indidualArgs.length));
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs.length));
                 }
 
-                outputDirectory = indidualArgs[0];
-                positiveExamples = indidualArgs[1];
-                negativeExamples = indidualArgs[2];
+                outputDirectory = individualArgs[0];
+                positiveExamples = individualArgs[1];
+                negativeExamples = individualArgs[2];
 
                 out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4).replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
@@ -188,16 +187,16 @@ public class App {
         File[] subsub;
         for (int i = 0; i < paths.length; i++) {
             String[] arguments = FileContent.getStringFromFile(paths[i] + "args.txt").trim().split("\n\n");
-            for (String argumment : arguments) {
-                sb.append(loadStringFromArgumment(argumment, paths[i]));
+            for (String argument : arguments) {
+                sb.append(loadStringFromArgument(argument, paths[i]));
                 sb.append("\n");
             }
         }
         FileContent.saveToFile("/Users/Victor/Desktop/args2.txt", sb.toString().trim());
     }
 
-    public static String loadStringFromArgumment(String argumment, String rootPath) {
-        String[] split = argumment.split(" ");
+    public static String loadStringFromArgument(String argument, String rootPath) {
+        String[] split = argument.split(" ");
         String[] kbs;
         String positives, negatives;
         String origin;
@@ -260,11 +259,11 @@ public class App {
             subfiles = root.listFiles((File pathname) -> (pathname.isDirectory() && pathname.getName().startsWith("out")));
             String[] arguments = FileContent.getStringFromFile(paths[i] + "args.txt").trim().split("\n\n");
             for (File file : subfiles) {
-                for (String argumment : arguments) {
+                for (String argument : arguments) {
                     sb.append(file.getAbsolutePath()).append("/");
                     sb.append(" ");
                     int kbs = 1;
-                    Scanner s = new Scanner(argumment);
+                    Scanner s = new Scanner(argument);
                     while (s.hasNext()) {
                         try {
                             kbs = Integer.parseInt(s.next());
@@ -366,7 +365,7 @@ public class App {
         }
     }
 
-    public static void callCroosValidation() {
+    public static void callCrossValidation() {
         String ruleDirectory = "/Users/Victor/Desktop/ER/";
         String ruleName = "rule";
         String outDirectory = "/Users/Victor/Desktop/CV/";
@@ -377,7 +376,7 @@ public class App {
                 rule = ruleDirectory + ruleFile.getName();
                 try {
                     System.out.println("Testing rule:\t" + rule);
-                    crossValidationAvaliation(rule, "/Users/Victor/Desktop/kbs/cora/sameauthor/", 5, outDirectory + rule.substring(0, rule.lastIndexOf(".")) + "_test", 300);
+                    crossValidationEvaluation(rule, "/Users/Victor/Desktop/kbs/cora/sameauthor/", 5, outDirectory + rule.substring(0, rule.lastIndexOf(".")) + "_test", 300);
 
                 } catch (Exception e) {
 
@@ -386,7 +385,7 @@ public class App {
         }
     }
 
-    public static void crossValidationAvaliation(String ruleFile, String testFilePrefix, int tests, String outFilePrefix, int timeout) throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, TimeoutException {
+    public static void crossValidationEvaluation(String ruleFile, String testFilePrefix, int tests, String outFilePrefix, int timeout) throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, TimeoutException {
         EvaluatedRuleExample rule = new EvaluatedRuleExample(new File(ruleFile));
 
         Set<String> dlpFilepaths = new LinkedHashSet<>();
@@ -705,7 +704,7 @@ public class App {
                     System.out.println("It takes " + aux + "s to finish!");
                 } else {
                     run.interrupt();
-                    System.out.println("Stoped on " + delay + "s!");
+                    System.out.println("Stopped on " + delay + "s!");
                 }
 
                 er = run.getEvaluatedRule();
@@ -781,7 +780,7 @@ public class App {
                     System.out.println("It takes " + aux + "s to finish!");
                 } else {
                     run.interrupt();
-                    System.out.println("Stoped on " + delay + "s!");
+                    System.out.println("Stopped on " + delay + "s!");
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());

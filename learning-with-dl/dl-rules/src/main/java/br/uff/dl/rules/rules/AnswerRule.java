@@ -460,7 +460,7 @@ public class AnswerRule implements Component {
     /**
      * Setter for the Expansion Answer Set.
      *
-     * @param answerSet the Exapansion Answer Set.
+     * @param answerSet the Expansion Answer Set.
      */
     public void setAnswerSet(List<ConcreteLiteral> answerSet) {
         this.answerSet = answerSet;

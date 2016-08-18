@@ -73,9 +73,9 @@ public class AnswerSetRule {
     }
 
     /**
-     * Getter for the Expansion Aswer Set.
+     * Getter for the Expansion Answer Set.
      *
-     * @return the Expansion Aswer Set.
+     * @return the Expansion Answer Set.
      */
     public ExpansionAnswerSet getExpansionAnswerSet() {
         return expansionAnswerSet;

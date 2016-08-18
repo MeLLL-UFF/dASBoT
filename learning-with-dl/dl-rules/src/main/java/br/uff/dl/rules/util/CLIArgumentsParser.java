@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class to do the parser thru the command line arguments. This class can also
+ * Class to do the parser through the command line arguments. This class can also
  * check the parameters and instantiate a {@link DLRulesCLI}.
  *
  * @author Victor Guimarães
