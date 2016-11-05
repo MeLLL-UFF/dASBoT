@@ -77,7 +77,7 @@ public class ExpansionAnswerSet implements Component {
         expansionSet = new ArrayList<>();
 
         Collection<Clause> facts;
-        for (DataLogPredicate pred : individualsClasses.getProgramPredicates()) {
+        for (DataLogPredicate pred : getProgramPredicates()) {
             facts = individualsClasses.getTemplateFactsForPredicate(pred);
             if (facts != null && !facts.isEmpty()) {
                 loadLiteralsFromFacts(expansionSet, facts);
@@ -88,6 +88,10 @@ public class ExpansionAnswerSet implements Component {
         }
 
         //loadLiteralsFromFacts(expansionSet, individualsClasses.getTemplateFacts());
+    }
+
+    protected Collection<? extends DataLogPredicate> getProgramPredicates() {
+        return individualsClasses.getProgramPredicates();
     }
 
     /**
@@ -120,18 +124,22 @@ public class ExpansionAnswerSet implements Component {
         for (List<Term> terms : list) {
 
             lit = new DataLogLiteral(pred, terms);
-            if (!answerSet.contains(lit)) {
-                lit.setFailed(true);
-                expansionSet.add(lit);
-            }
+            addLiteralToExpansionSet(expansionSet, lit);
+        }
+    }
 
-            lit = lit.clone();
-            //lit.setFailed(false);
-            lit.setNegative(true);
-            if (!answerSet.contains(lit)) {
-                lit.setFailed(true);
-                expansionSet.add(lit);
-            }
+    protected void addLiteralToExpansionSet(Collection<DataLogLiteral> expansionSet, DataLogLiteral lit) {
+        if (!answerSet.contains(lit)) {
+            lit.setFailed(true);
+            expansionSet.add(lit);
+        }
+
+        lit = lit.clone();
+        lit.setFailed(false);
+        lit.setNegative(true);
+        if (!answerSet.contains(lit)) {
+            lit.setFailed(true);
+            expansionSet.add(lit);
         }
     }
 
@@ -148,17 +156,17 @@ public class ExpansionAnswerSet implements Component {
     protected List<List<Term>> getPermuteMap(List<Term> key) {
 
         if (!permuteMap.containsKey(key)) {
-            List<List<Term>> resp = permuteIndividuals(individualsClasses.getIndividualsGroups().get(key.get(0).getName()), 1);
+            List<List<Term>> resp = permuteIndividuals(getIndividualsFromGroup(key.get(0).getName()), 1);
             try {
-                resp.addAll(permuteIndividuals(individualsClasses.getIndividualsGroups().get(TypeTemplate.OTHER_INDIVIDUALS), 1));
+                resp.addAll(permuteIndividuals(getIndividualsFromGroup(TypeTemplate.OTHER_INDIVIDUALS), 1));
             } catch (NullPointerException ex) {
 
             }
             List<List<Term>> aux;
             for (int i = 1; i < key.size(); i++) {
-                aux = permuteIndividuals(resp, individualsClasses.getIndividualsGroups().get(key.get(i).getName()), i + 1);
+                aux = permuteIndividuals(resp, getIndividualsFromGroup(key.get(i).getName()), i + 1);
                 try {
-                    aux.addAll(permuteIndividuals(resp, individualsClasses.getIndividualsGroups().get(TypeTemplate.OTHER_INDIVIDUALS), i + 1));
+                    aux.addAll(permuteIndividuals(resp, getIndividualsFromGroup(TypeTemplate.OTHER_INDIVIDUALS), i + 1));
                 } catch (NullPointerException ex) {
 
                 }
@@ -169,6 +177,10 @@ public class ExpansionAnswerSet implements Component {
         }
 
         return permuteMap.get(key);
+    }
+
+    protected Collection<? extends Constant> getIndividualsFromGroup(String key) {
+        return individualsClasses.getIndividualsGroups().get(key);
     }
 
     /**
@@ -254,15 +266,33 @@ public class ExpansionAnswerSet implements Component {
     }
 
     /**
-     * Getter for the ExapansioAnswerSet.
+     * Getter for the full Expansion Answer Set.
      *
-     * @return the the ExapansioAnswerSet.
+     * @return the the full Expansion Answer Set.
      */
-    public List<ConcreteLiteral> getExpansionSet() {
+    public List<ConcreteLiteral> getFullExpansionAnswerSet() {
         List<ConcreteLiteral> resp = new ArrayList<>();
         resp.addAll(answerSet);
         resp.addAll(expansionSet);
         return resp;
+    }
+
+    /**
+     * Getter for the original Answer Set only.
+     *
+     * @return the the original Answer Set only.
+     */
+    public List<ConcreteLiteral> getAnswerSet() {
+        return answerSet;
+    }
+
+    /**
+     * Getter for the expanded Answer Set only.
+     *
+     * @return the the expanded Answer Set only.
+     */
+    public List<DataLogLiteral> getExpansionSet() {
+        return expansionSet;
     }
 
     /**

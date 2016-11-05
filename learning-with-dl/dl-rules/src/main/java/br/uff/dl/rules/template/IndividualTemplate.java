@@ -18,7 +18,7 @@ import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.util.*;
 
-import static br.uff.dl.rules.drew.DReWReasoner.PREFIX_SEPARATOR;
+import static br.uff.dl.rules.rules.RuleGenerator.PREFIX_SEPARATOR;
 
 /**
  * Class that typifies the individuals from a specific problem.

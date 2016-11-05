@@ -3,10 +3,9 @@
  */
 package br.uff.dl.rules.test;
 
-import br.uff.dl.rules.cli.DLRulesHillClimbingCLI;
+import br.uff.dl.rules.cli.DLRulesCLI;
 import br.uff.dl.rules.drew.DReWRLCLI;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.evaluation.F1ScoreMeasure;
 import br.uff.dl.rules.evaluation.LaplaceMeasure;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
@@ -14,6 +13,7 @@ import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.rules.AnswerSetRule;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
@@ -93,7 +93,8 @@ public class App {
         }
     }
 
-    private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser.ParseException {
+    private static void loadResults() throws FileNotFoundException, org.semanticweb.drew.dlprogram.parser
+            .ParseException {
         String[] arguments = FileContent.getStringFromFile("/Users/Victor/Desktop/argsResults.txt").split("\n\n");
 
         String dlpContent;
@@ -111,19 +112,23 @@ public class App {
                 individualArgs = string.split(" ");
                 if (individualArgs[individualArgs.length - 1].endsWith(".owl")) {
                     args[2] = individualArgs[individualArgs.length - 1];
-                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs.length - 1));
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs
+                            .length - 1));
                 } else {
                     args[2] = "/Users/Victor/Dropbox/dl.rules/sample.owl";
-                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs.length));
+                    dlpContent = FileContent.getStringFromFile(Arrays.copyOfRange(individualArgs, 3, individualArgs
+                            .length));
                 }
 
                 outputDirectory = individualArgs[0];
                 positiveExamples = individualArgs[1];
                 negativeExamples = individualArgs[2];
 
-                out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4).replace("/", "_") + "results.txt";
+                out = "/Users/Victor/Desktop/out/" + outputDirectory.substring(outputDirectory.indexOf("out/") + 4)
+                        .replace("/", "_") + "results.txt";
                 redirectOutputStream(out);
-                DLRulesTheoryBuilder rs = new DLRulesTheoryBuilder(dlpContent, positiveExamples, negativeExamples, measurer, args, outputDirectory);
+                DLRulesTheoryBuilder rs = new DLRulesTheoryBuilder(dlpContent, positiveExamples, negativeExamples,
+                                                                   measurer, args, outputDirectory);
                 rs.run();
                 System.out.println(rs.toString());
                 System.setOut(stream);
@@ -256,7 +261,8 @@ public class App {
         String[] kb;
         for (int i = 0; i < paths.length; i++) {
             root = new File(paths[i]);
-            subfiles = root.listFiles((File pathname) -> (pathname.isDirectory() && pathname.getName().startsWith("out")));
+            subfiles = root.listFiles((File pathname) -> (pathname.isDirectory() && pathname.getName().startsWith
+                    ("out")));
             String[] arguments = FileContent.getStringFromFile(paths[i] + "args.txt").trim().split("\n\n");
             for (File file : subfiles) {
                 for (String argument : arguments) {
@@ -295,18 +301,44 @@ public class App {
 //        loadResults();
 //        System.out.println("Test");
         //evaluateAll();
-//        testCLI(args);
+        testCLI();
+
+//        String okPreffix = "/Users/Victor/Desktop/ER Right/";
+//        String testPreffix = "/Users/Victor/Desktop/ER Test/";
+//
+//        int okRules = 0;
+//        int wrongRules = 0;
+//        for (int i = 0; i < 281; i++) {
+//            EvaluatedRuleExample ok = new EvaluatedRuleExample(new File(okPreffix, "rule" + i + ".txt"));
+//            EvaluatedRuleExample test = new EvaluatedRuleExample(new File(testPreffix, "rule" + i + ".txt"));
+//
+//            if (ok.getExample().equals(test.getExample()) && ok.getRule().isEquivalent(test.getRule())) {
+////            if (ok.getRule().toString().equals(test.getRule().toString()) && ok.getExample().equals(test.getExample())) {
+//                okRules++;
+//            } else {
+//                wrongRules++;
+//                System.out.println("Wrong:\trule" + i + ".txt");
+//            }
+//        }
+//
+//        System.out.println("Ok Rules:\t\t" + okRules);
+//        System.out.println("Wrong Rules:\t" + wrongRules);
+//        System.out.println("Total:\t\t\t281");
+
         //createFolds();
-        System.out.println("Wrong!");
         //testRun();
         //measureAll();
         //testMeasure("/Users/Victor/Desktop/kb/out_mixxed/pair/refinement/");
         /*
          String[][] baseDirectories = {
-         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep2Train"}, 
-         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep2Train"}, 
-         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/pairTrain", "/Users/Victor/Desktop/cve/cvePairDeep4Train"}, 
-         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/straightTrain", "/Users/Victor/Desktop/cve/cveStraightDeep4Train"}
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/pairTrain",
+         "/Users/Victor/Desktop/cve/cvePairDeep2Train"},
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep2_cv/out_kb/straightTrain",
+         "/Users/Victor/Desktop/cve/cveStraightDeep2Train"},
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/pairTrain",
+         "/Users/Victor/Desktop/cve/cvePairDeep4Train"},
+         {"/Users/Victor/Desktop/results/Poker/kb_separated_deep4_cv/out_kb/straightTrain",
+         "/Users/Victor/Desktop/cve/cveStraightDeep4Train"}
          };
             
          for (String[] directory : baseDirectories) {
@@ -327,42 +359,42 @@ public class App {
     private static void testCLI() throws FileNotFoundException {
         String[] args = {
                 "-rule",
-                "-ref",
-                "-cv",
-                "-norec",
-                "6",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/language.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/misc.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/systems.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/theory.yap",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/sample.owl",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.f",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.n",
+                "-refclass",
+                "PathFindingRefinement",
+                "-dlv",
+                "/opt/local/lib/dlv.i386-apple-darwin.bin",
+                "1",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/imdb/kb.dlp",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/imdb/sample.owl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/imdb/train1.f",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/imdb/train1.n",
                 "-tp",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/template.dlp",
-                "/Users/Victor/Desktop/out/",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/imdb/template_no_const.dlp",
+                "/Users/Victor/Desktop/out/imdbTrain1/",
                 "300",
-                "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/",
-                "test",
-                "5"
+                "1",
+                "0.0",
+                "CompressionMeasure",
+                "LaplaceMeasure"
         };
 
-        String[] parameters = FileContent.getStringFromFile("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
+        DLRulesCLI.main(args);
 
-        for (int i = 0; i < parameters.length; i++) {
-            String[] arguments = parameters[i].split("\n");
-            for (String argument : arguments) {
-                System.out.println(argument);
-            }
-//            DLRulesCLI.main(arguments);
-            String[] param = new String[arguments.length + 1];
-            System.arraycopy(arguments, 0, param, 0, arguments.length);
-            param[arguments.length] = "1";
-            DLRulesHillClimbingCLI.main(param);
-            break;
-        }
+//        String[] parameters = FileContent.getStringFromFile
+// ("/Users/Victor/Desktop/TCC/Yago_Filter4_Few5_Neg4_Emb60/TestKB3/args.txt").split("\n\n");
+//
+//        for (int i = 0; i < parameters.length; i++) {
+//            String[] arguments = parameters[i].split("\n");
+//            for (String argument : arguments) {
+//                System.out.println(argument);
+//            }
+////            DLRulesCLI.main(arguments);
+//            String[] param = new String[arguments.length + 1];
+//            System.arraycopy(arguments, 0, param, 0, arguments.length);
+//            param[arguments.length] = "1";
+//            DLRulesHillClimbingCLI.main(param);
+//            break;
+//        }
     }
 
     public static void callCrossValidation() {
@@ -376,7 +408,8 @@ public class App {
                 rule = ruleDirectory + ruleFile.getName();
                 try {
                     System.out.println("Testing rule:\t" + rule);
-                    crossValidationEvaluation(rule, "/Users/Victor/Desktop/kbs/cora/sameauthor/", 5, outDirectory + rule.substring(0, rule.lastIndexOf(".")) + "_test", 300);
+                    crossValidationEvaluation(rule, "/Users/Victor/Desktop/kbs/cora/sameauthor/", 5, outDirectory +
+                            rule.substring(0, rule.lastIndexOf(".")) + "_test", 300);
 
                 } catch (Exception e) {
 
@@ -385,7 +418,12 @@ public class App {
         }
     }
 
-    public static void crossValidationEvaluation(String ruleFile, String testFilePrefix, int tests, String outFilePrefix, int timeout) throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, TimeoutException {
+    public static void crossValidationEvaluation(String ruleFile,
+                                                 String testFilePrefix,
+                                                 int tests,
+                                                 String outFilePrefix,
+                                                 int timeout) throws IOException, org.semanticweb.drew.dlprogram
+            .parser.ParseException, TimeoutException {
         EvaluatedRuleExample rule = new EvaluatedRuleExample(new File(ruleFile));
 
         Set<String> dlpFilepaths = new LinkedHashSet<>();
@@ -432,7 +470,8 @@ public class App {
 
     }
 
-    public static void testRefinement() throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException, InterruptedException {
+    public static void testRefinement() throws IOException, org.semanticweb.drew.dlprogram.parser.ParseException,
+            InterruptedException {
         Set<String> dlpFilepaths = new LinkedHashSet<>();
         dlpFilepaths.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap");
         dlpFilepaths.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/graphics.yap");
@@ -446,8 +485,10 @@ public class App {
         dlpSamplesFilepath.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/train1.f");
         dlpSamplesFilepath.add("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/train1.n");
 
-        Set<Literal> positiveSamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(dlpSamplesFilepath.get(0)));
-        Set<Literal> negativeSamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(dlpSamplesFilepath.get(1)));
+        Set<Literal> positiveSamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile
+                (dlpSamplesFilepath.get(0)));
+        Set<Literal> negativeSamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile
+                (dlpSamplesFilepath.get(1)));
 
         int timeout = 250;
 
@@ -622,7 +663,8 @@ public class App {
             if (Integer.parseInt(fileName.substring(fileName.indexOf("rule") + 4, fileName.indexOf(".txt"))) < 10) {
                 msg += "\t";
             }
-            msg += "\tMeasure: " + df.format(evaluatedRule.getMeasure()) + "\tExamaple: " + evaluatedRule.getExample().toString();
+            msg += "\tMeasure: " + df.format(evaluatedRule.getMeasure()) + "\tExamaple: " + evaluatedRule.getExample
+                    ().toString();
             sb.append(msg).append("\n");
             System.out.println(msg);
             count++;
@@ -633,7 +675,8 @@ public class App {
             baseFilepath = baseFilepath.substring(outPath.length());
         }
         System.out.println("");
-        FileContent.saveToFile(outPath + "evaluations/" + baseFilepath.replace("/", "_").trim() + "evaluation.txt", sb.toString().trim());
+        FileContent.saveToFile(outPath + "evaluations/" + baseFilepath.replace("/", "_").trim() + "evaluation.txt",
+                               sb.toString().trim());
 
         return avgMeasure / ers.size();
     }
@@ -666,7 +709,8 @@ public class App {
         String samplesContent = FileContent.getStringFromFile(dlpSamplesFilepath.get(0));
         String templateContent = FileContent.getStringFromFile(templateFilepath);
 
-        DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent, System.out);
+        RuleGenerator reasoner = new RuleGenerator(owlFilepath, dlpContent, samplesContent, templateContent, System
+                .out);
         reasoner.init();
 
         int count = 0;
@@ -681,7 +725,8 @@ public class App {
             outPath = defaultFilepath + "rule" + i + ".txt";
 //            redirectOutputStream(outPath);
             PrintStream outStream = new PrintStream(outPath);
-            run = new DLExamplesRules(FileContent.getStringFromFile(dlpFilepaths), reasoner, FileContent.getStringFromFile(dlpSamplesFilepath.get(0)), FileContent.getStringFromFile(dlpSamplesFilepath.get(1)), outStream);
+            run = new DLExamplesRules(FileContent.getStringFromFile(dlpFilepaths), reasoner, FileContent
+                    .getStringFromFile(dlpSamplesFilepath.get(0)), FileContent.getStringFromFile(dlpSamplesFilepath.get(1)), outStream);
             run.setOffset(i);
             run.start();
             try {
@@ -756,8 +801,8 @@ public class App {
         int delay = 250;
         for (int i = 0; i < 78; i++) {
             redirectOutputStream(defaultFilepath + "rule" + i + ".txt");
-            run = new DLExamplesRulesFileOutput(dlpFilepaths, owlFilepath, templateFilepath, dlpSamplesFilepath.get(0),
-                                                dlpSamplesFilepath.get(1), compareFilepaths);
+            run = new DLExamplesRulesFileOutput(dlpFilepaths, owlFilepath, templateFilepath, dlpSamplesFilepath.get
+                    (0), dlpSamplesFilepath.get(1), compareFilepaths);
             run.setOffset(i);
             run.start();
             try {
@@ -832,19 +877,21 @@ public class App {
         return dif;
     }
 
-    public static void testDReWReasoner(int offset) throws ComponentInitException, FileNotFoundException, IOException, ParseException, org.semanticweb.drew.dlprogram.parser.ParseException {
-        DReWReasoner dr;
+    public static void testDReWReasoner(int offset) throws ComponentInitException, FileNotFoundException,
+            IOException, ParseException, org.semanticweb.drew.dlprogram.parser.ParseException {
+        RuleGenerator dr;
         String samples;
         String negativeSamplesContent;
         String owlFilePath = "/Users/Victor/Desktop/results/poker_kb/pair/pair.owl";
         String dlpFilepath = "/Users/Victor/Desktop/results/poker_kb/sample.dlp";
         String samplesFilePath = "/Users/Victor/Desktop/results/poker_kb/pair/train1.f";
-        negativeSamplesContent = FileContent.getStringFromFile("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/train1.n");
+        negativeSamplesContent = FileContent.getStringFromFile("/Users/Victor/Dropbox/dl" + "" + "" + "" +
+                                                                       ".rules/uw-cse-testebinario/fromVSC/train1.n");
         samples = FileContent.getStringFromFile(samplesFilePath);
         String dlpContent = FileContent.getStringFromFile(dlpFilepath);
         String templateContent = FileContent.getStringFromFile("/Users/Victor/Desktop/results/poker_kb/template.dlp");
 
-        dr = new DReWReasoner(owlFilePath, dlpContent, samples, templateContent, System.out);
+        dr = new RuleGenerator(owlFilePath, dlpContent, samples, templateContent, System.out);
         dr.setOffset(offset);
 
         //dr.loadIndividualsAndPredicates(individuals, predicates);
@@ -861,7 +908,8 @@ public class App {
 
         System.out.println(asr.getRulesAsString());
         System.out.println("");
-        System.out.println("Rule's body: " + asr.getAnswerRule().getRules().iterator().next().getBody().size() + " literals.");
+        System.out.println("Rule's body: " + asr.getAnswerRule().getRules().iterator().next().getBody().size() + " "
+                                   + "literals.");
         System.out.println("");
         System.out.println("Comparar a Regra: " + Time.getTime());
         System.out.println("");
@@ -882,7 +930,8 @@ public class App {
                 positive++;
             }
         }
-        System.out.println("Exemplos Positivos Cobertos (train1.f) / Total : " + positive + " / " + dr.getExamples().size());
+        System.out.println("Exemplos Positivos Cobertos (train1.f) / Total : " + positive + " / " + dr.getExamples()
+                .size());
         System.out.println("");
         System.out.println("Verificar exemplos negativos: " + Time.getTime());
         Set<Literal> listSamples = getSamplesLiterals(negativeSamplesContent);
@@ -897,7 +946,8 @@ public class App {
         System.out.println("Exemplos Negativos Cobertos (train1.n) / Total : " + positive + " / " + listSamples.size());
         System.out.println("");
 
-        listSamples = getSamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.f"));
+        listSamples = getSamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Dropbox/dl" + "" + "" + "" +
+                                                                               ".rules/uw-cse-testebinario/fromVSC/test1.f"));
         System.out.println("Verificar exemplos positivos: " + Time.getTime());
         positive = 0;
         for (Literal s : listSamples) {
@@ -910,7 +960,8 @@ public class App {
         System.out.println("Exemplos Positivos Cobertos (test1.f) / Total : " + positive + " / " + listSamples.size());
         System.out.println("");
 
-        listSamples = getSamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/fromVSC/test1.n"));
+        listSamples = getSamplesLiterals(FileContent.getStringFromFile("/Users/Victor/Dropbox/dl" + "" + "" + "" +
+                                                                               ".rules/uw-cse-testebinario/fromVSC/test1.n"));
         System.out.println("Verificar exemplos negativos: " + Time.getTime());
         positive = 0;
         for (Literal s : listSamples) {
@@ -925,7 +976,8 @@ public class App {
         //asr.setRulesToFile("/Users/Victor/Desktop/rules.dlp", false);
     }
 
-    private static Set<Literal> getSamplesLiterals(String content) throws org.semanticweb.drew.dlprogram.parser.ParseException {
+    private static Set<Literal> getSamplesLiterals(String content) throws org.semanticweb.drew.dlprogram.parser
+            .ParseException {
         List<ProgramStatement> programs = getProgramStatements(content);
         Set<Literal> samples = new HashSet<>();
         Clause c;
@@ -941,7 +993,8 @@ public class App {
         return samples;
     }
 
-    private static List<ProgramStatement> getProgramStatements(String content) throws org.semanticweb.drew.dlprogram.parser.ParseException {
+    private static List<ProgramStatement> getProgramStatements(String content) throws org.semanticweb.drew.dlprogram
+            .parser.ParseException {
         DLProgramKB kb = new DLProgramKB();
 
         DLProgram elprogram = null;
@@ -963,29 +1016,39 @@ public class App {
         String[] arg = new String[7];
         arg[0] = "-rl";
         arg[1] = "-ontology";
-        arg[2] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/sample.owl";
+        arg[2] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                "Científica/results/kbs/webkb/courseTA/sample.owl";
         arg[3] = "-dlp";
         arg[4] = "/Users/Victor/Desktop/kb.dlp";
-        arg[4] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/sample.owl";
+        arg[4] = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                "Científica/results/kbs/uw-cse-testebinario/sample.owl";
         arg[5] = "-dlv";
         arg[6] = "/usr/lib/dlv.i386-apple-darwin-iodbc.bin";
 
 //        String[] input = {
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/ai.yap",
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/graphics.yap",
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/language.yap",
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/misc.yap",
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/systems.yap",
-//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/uw-cse-testebinario/theory.yap"
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/ai.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/graphics.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/language.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/misc.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/systems.yap",
+//            "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação
+// Científica/results/kbs/uw-cse-testebinario/theory.yap"
 //        };
-        String examplePath = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.f";
-        String[] input = {
-                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb1.pl",
-                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb2.pl",
-                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb3.pl",
-                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb4.pl",
-                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/train4.n"
-        };
+        String examplePath = "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                "Científica/results/kbs/webkb/courseTA/train4.f";
+        String[] input = {"/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                "Científica/results/kbs/webkb/courseTA/webkb1.pl", "/Users/Victor/Documents/Universidade Federal " +
+                "Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb2.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                        "Científica/results/kbs/webkb/courseTA/webkb3.pl", "/Users/Victor/Documents/Universidade " +
+                "Federal Fluminense/Iniciação Científica/results/kbs/webkb/courseTA/webkb4.pl",
+                "/Users/Victor/Documents/Universidade Federal Fluminense/Iniciação " +
+                        "Científica/results/kbs/webkb/courseTA/train4.n"};
 
         boolean printMySets = true;
         String rules = "courseta(A, C) :- courseta(A, B), sameperson(C, C), student(C).";
@@ -1000,7 +1063,9 @@ public class App {
                 //arg[4] = "/Users/Victor/Dropbox/dl.rules/results-drew-rules/lattesRules-with-rule.dlp";
                 //String samplesFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/f0.f";
                 //String dlpFilePath = "/Users/Victor/Dropbox/dl.rules/uw-cse-testebinario/ai.yap";
-                //String out = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/pair/pair.kb", "/Users/Victor/Desktop/rule.txt", arg[4]);// + "newnode(x1). newnode(x2).";//FileContent.getStringFromFile(samplesFilePath);
+                //String out = FileContent.getStringFromFile("/Users/Victor/Desktop/kb/pair/pair.kb",
+                // "/Users/Victor/Desktop/rule.txt", arg[4]);// + "newnode(x1). newnode(x2).";//FileContent
+                // .getStringFromFile(samplesFilePath);
                 String out = FileContent.getStringFromFile(input);
                 //out += "\nnewnode(x1). newnode(x2).";
                 //arg[4] = "/Users/Victor/Desktop/lattesRules-with-rule.dlp";
@@ -1022,7 +1087,7 @@ public class App {
                      //System.out.println("}\n");
                      */
 
-                    //AnswerRule ar = new AnswerRule(e.getSamples(), e.getExpansionSet());
+                    //AnswerRule ar = new AnswerRule(e.getSamples(), e.getFullExpansionAnswerSet());
                     //System.out.println(l);
                     //ar.init();
                     //System.out.println(ar.getRules().iterator().next().toString());
@@ -1032,7 +1097,8 @@ public class App {
                 measureCovering(d, examplePath, examplePath.replace(".f", ".n"));
 
                 System.out.println("Test:\n");
-                measureCovering(d, examplePath.replace("train", "test"), examplePath.replace("train", "test").replace(".f", ".n"));
+                measureCovering(d, examplePath.replace("train", "test"), examplePath.replace("train", "test").replace
+                        (".f", ".n"));
             } else {
                 System.out.println("DReW's Sets");
                 DReWRLCLI.main(arg);
@@ -1042,7 +1108,10 @@ public class App {
         }
     }
 
-    private static void measureCovering(DReWRLCLILiteral d, String positivePath, String negativePath) throws org.semanticweb.drew.dlprogram.parser.ParseException, FileNotFoundException {
+    private static void measureCovering(DReWRLCLILiteral d,
+                                        String positivePath,
+                                        String negativePath) throws org.semanticweb.drew.dlprogram.parser
+            .ParseException, FileNotFoundException {
         Set<Literal> train = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positivePath));
         int positive, negative, pCovered, nCovered;
         positive = train.size();

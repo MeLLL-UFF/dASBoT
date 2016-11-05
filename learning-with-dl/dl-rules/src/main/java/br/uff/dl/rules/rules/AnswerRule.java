@@ -10,17 +10,6 @@ import br.uff.dl.rules.exception.VariableGenerator;
 import br.uff.dl.rules.template.TermType;
 import br.uff.dl.rules.template.TypeTemplate;
 import br.uff.dl.rules.util.SimpleGenerator;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import org.dllearner.core.Component;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -65,6 +54,8 @@ public class AnswerRule implements Component {
 
     private PrintStream outStream;
 
+    private Map<Term, Set<Term>> typeMap;
+
     /**
      * Constructor without parameters. Needed to load the class from a file
      * (Spring). Just allocates the variables.
@@ -72,6 +63,7 @@ public class AnswerRule implements Component {
     public AnswerRule() {
         this.uncoveredExamples = new ArrayList<>();
         this.coveredExamples = new ArrayList<>();
+        this.typeMap = new HashMap<>();
     }
 
     /**
@@ -100,7 +92,10 @@ public class AnswerRule implements Component {
      * @param answerSet         the expansion answer set.
      * @param transitivityDepth the transitivity depth.
      */
-    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, PrintStream outStream) {
+    public AnswerRule(List<ConcreteLiteral> examples,
+                      List<ConcreteLiteral> answerSet,
+                      int transitivityDepth,
+                      PrintStream outStream) {
         this(examples, answerSet, outStream);
         this.transitivityDepth = transitivityDepth;
     }
@@ -120,10 +115,15 @@ public class AnswerRule implements Component {
      * @param transitivityDepth the transitivity depth.
      * @param template          the type template.
      */
-    public AnswerRule(List<ConcreteLiteral> examples, List<ConcreteLiteral> answerSet, int transitivityDepth, TypeTemplate template, PrintStream outStream) {
+    public AnswerRule(List<ConcreteLiteral> examples,
+                      List<ConcreteLiteral> answerSet,
+                      int transitivityDepth,
+                      TypeTemplate template,
+                      PrintStream outStream) {
         this(examples, answerSet, outStream);
         this.transitivityDepth = transitivityDepth;
         this.template = template;
+        rules = new HashSet<>();
     }
 
     /**
@@ -133,47 +133,61 @@ public class AnswerRule implements Component {
      */
     @Override
     public void init() throws ComponentInitException {
-        rules = new HashSet<>();
-        rules.add(getRule());
+        Rule r = getRule();
+        if (r != null) {
+            rules.add(r);
+        }
     }
 
-    /**
-     * Gets a rule based on a random example.
-     *
-     * @return the rule.
-     */
-    public Rule getRule() {
+    public Rule generateRule() {
         ConcreteLiteral example = pickExampleAtRandom();
 
         outStream.println("Rule based on example: " + example);
         outStream.println("");
 
         Set<? extends ConcreteLiteral> relevants = getRelevant(example);
-
-        VariableGenerator v = new SimpleGenerator();
-
-        Map<Term, String> map = new HashMap<>();
-        Map<Term, Set<Term>> typeMap = new HashMap<>();
-        List<Term> terms;
         Collection<ConcreteLiteral> body = new LinkedHashSet<>();
-        DataLogLiteral l;
 
+        DataLogLiteral l;
         DataLogLiteral s;
         s = new DataLogLiteral(example.getPredicate(), example.getTerms(), example.isNegative());
-        checkForCorrectTypes(example, typeMap);
-        s.setFailed(true);
 
+        checkForCorrectTypes(example, typeMap);
+
+        s.setFailed(true);
         relevants.remove(s);
 
-        Map<String, List<List<TermType>>> constantsMap = template.getConstantMap();
-        Map<String, Set<? extends Constant>> individualGroups = template.getIndividualsGroups();
-        List<TermType> constantList;
-        int index;
         for (ConcreteLiteral con : relevants) {
             if (!checkForCorrectTypes(con, typeMap)) {
                 continue;
             }
 
+            l = new DataLogLiteral(con.getPredicate(), con.getTerms(), con.isNegative());
+            l.setFailed(con.hasFailed());
+
+            body.add(l);
+        }
+
+        s.setFailed(false);
+
+        return new SafeRule(s, body);
+    }
+
+    public Rule varabilizeRule(Rule rule) {
+        Collection<ConcreteLiteral> body = new LinkedHashSet<>();
+        DataLogLiteral s = (DataLogLiteral) rule.getHead();
+
+        VariableGenerator v = new SimpleGenerator();
+        Map<Term, String> map = new HashMap<>();
+
+        DataLogLiteral l;
+
+        List<Term> terms;
+        Map<String, List<List<TermType>>> constantsMap = template.getConstantMap();
+        Map<String, Set<? extends Constant>> individualGroups = template.getIndividualsGroups();
+        List<TermType> constantList;
+        int index;
+        for (ConcreteLiteral con : rule.getBody()) {
             constantList = getTermsWithConstants(constantsMap.get(con.getPredicate()), con, individualGroups);
             terms = new ArrayList<>(con.getArity());
             if (constantList == null) {
@@ -206,18 +220,26 @@ public class AnswerRule implements Component {
         }
 
         terms = new ArrayList<>();
-        for (Term term : example.getTerms()) {
+        for (Term term : s.getTerms()) {
+            if (!map.containsKey(term)) {
+                map.put(term, v.getNextName());
+            }
+
             terms.add(new Variable(map.get(term)));
         }
-        s = new DataLogLiteral(example.getPredicate(), terms, example.isNegative());
+        s = new DataLogLiteral(s.getPredicate(), terms, s.isNegative());
 
-        s.setFailed(false);
+        return new SafeRule(s, body);
+    }
 
-        Rule r;// = new SafeRule(example, relevants);
-
-        r = new SafeRule(s, body);
-
-        return r;
+    /**
+     * Gets a rule based on a random example.
+     *
+     * @return the rule.
+     */
+    public Rule getRule() {
+        Rule r = generateRule();
+        return varabilizeRule(r);
     }
 
     /**
@@ -256,9 +278,13 @@ public class AnswerRule implements Component {
             if (!termTypes.containsKey(term)) {
                 termTypes.put(term, types.get(term));
             } else {
-                termTypes.get(term).retainAll(types.get(term));
+                if (!Collections.disjoint(termTypes.get(term), types.get(term))) {
+                    termTypes.get(term).retainAll(types.get(term));
 
-                if (result && termTypes.get(term).isEmpty()) {
+                    if (result && termTypes.get(term).isEmpty()) {
+                        result = false;
+                    }
+                } else {
                     result = false;
                 }
             }
@@ -275,7 +301,9 @@ public class AnswerRule implements Component {
      * @param individualGroups the groups of individuals.
      * @return The {@link List} with the template if it fits, null otherwise.
      */
-    private List<TermType> getTermsWithConstants(List<List<TermType>> types, ConcreteLiteral lit, Map<String, Set<? extends Constant>> individualGroups) {
+    private List<TermType> getTermsWithConstants(List<List<TermType>> types,
+                                                 ConcreteLiteral lit,
+                                                 Map<String, Set<? extends Constant>> individualGroups) {
         if (types == null) {
             return null;
         }
@@ -297,7 +325,9 @@ public class AnswerRule implements Component {
      * @param individualGroups the group of individuals.
      * @return true if it fits, false otherwise.
      */
-    private boolean checkTypes(List<TermType> type, ConcreteLiteral lit, Map<String, Set<? extends Constant>> individualGroups) {
+    private boolean checkTypes(List<TermType> type,
+                               ConcreteLiteral lit,
+                               Map<String, Set<? extends Constant>> individualGroups) {
         Set<? extends Constant> individuals;
         int index = 0;
         String name = lit.getTerms().get(index).getName();
@@ -328,9 +358,8 @@ public class AnswerRule implements Component {
         Set<Term> terms = new HashSet<>(example.getTerms());
 
         for (ConcreteLiteral pred : answerSet) {
-            if (pred.isNegative() == example.isNegative() && pred.getPredicate().equals(example.getPredicate())
-                    && pred.getTerms().size() == terms.size()
-                    && terms.containsAll(pred.getTerms())) {
+            if (pred.isNegative() == example.isNegative() && pred.getPredicate().equals(example.getPredicate()) &&
+                    pred.getTerms().size() == terms.size() && terms.containsAll(pred.getTerms())) {
 
                 bodyLiterals.add(pred);
             }
@@ -371,6 +400,7 @@ public class AnswerRule implements Component {
             return removeRecursion(example, bodyLiterals);
         }
 
+        bodyLiterals.remove(example);
         return bodyLiterals;
     }
 
@@ -382,7 +412,8 @@ public class AnswerRule implements Component {
      * @param relevants the set of relevant literals.
      * @return the filtered set.
      */
-    private Set<? extends ConcreteLiteral> removeRecursion(ConcreteLiteral head, Set<ConcreteLiteral> relevants) {
+    private static Set<? extends ConcreteLiteral> removeRecursion(ConcreteLiteral head,
+                                                                  Set<ConcreteLiteral> relevants) {
         Iterator<? extends ConcreteLiteral> it = relevants.iterator();
 
         while (it.hasNext()) {

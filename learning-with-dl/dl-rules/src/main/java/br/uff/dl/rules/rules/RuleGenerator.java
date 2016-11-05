@@ -1,15 +1,14 @@
 /*
  * UFF Project Semantic Learning
  */
-package br.uff.dl.rules.drew;
+package br.uff.dl.rules.rules;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.datalog.DataLogPredicate;
 import br.uff.dl.rules.datalog.SimplePredicate;
+import br.uff.dl.rules.drew.DReWRLCLILiteral;
 import br.uff.dl.rules.expansionset.ExampleExpansionAnswerSet;
 import br.uff.dl.rules.expansionset.ExpansionAnswerSet;
-import br.uff.dl.rules.rules.AnswerRule;
-import br.uff.dl.rules.rules.AnswerSetRule;
 import br.uff.dl.rules.template.IndividualTemplate;
 import br.uff.dl.rules.util.DReWDefaultArgs;
 import br.uff.dl.rules.util.FileContent;
@@ -40,8 +39,8 @@ import static br.uff.dl.rules.util.Time.getTime;
  *
  * @author Victor Guimarães
  */
-@ComponentAnn(name = "DReWReasoner", shortName = "drewreas", version = 0.1)
-public class DReWReasoner implements Component {
+@ComponentAnn(name = "RuleGenerator", shortName = "rulegen", version = 0.1)
+public class RuleGenerator implements Component {
 
     public static final String PREFIX_SEPARATOR = "#";
 
@@ -57,21 +56,21 @@ public class DReWReasoner implements Component {
     protected int offset = 0;
     protected List<ConcreteLiteral> examplesForRule;
 
-    protected IndividualTemplate individialTemplate;
+    protected IndividualTemplate individualTemplate;
 
     protected boolean recursiveRuleAllowed = true;
 
     protected int depth;
-    
+
     protected PrintStream outStream;
-    
+
     private String[] args;
 
     /**
      * Constructor without parameters. Needed to load the class by a file
      * (Spring).
      */
-    public DReWReasoner() {
+    public RuleGenerator() {
         args = DReWDefaultArgs.getDefaultArgs();
         this.individuals = new HashSet<>();
         this.predicates = new HashSet<>();
@@ -83,12 +82,16 @@ public class DReWReasoner implements Component {
     /**
      * Constructor with all needed parameters.
      *
-     * @param owlFilePath the path to the owl file.
-     * @param dlpContent the DLP's content.
+     * @param owlFilePath     the path to the owl file.
+     * @param dlpContent      the DLP's content.
      * @param examplesContent the examples's content.
      * @param templateContent the template's content.
      */
-    public DReWReasoner(String owlFilePath, String dlpContent, String examplesContent, String templateContent, PrintStream outStream) {
+    public RuleGenerator(String owlFilePath,
+                         String dlpContent,
+                         String examplesContent,
+                         String templateContent,
+                         PrintStream outStream) {
         this();
         this.args[2] = owlFilePath;
         this.dlpContent = dlpContent;
@@ -96,8 +99,13 @@ public class DReWReasoner implements Component {
         this.templateContent = templateContent;
         this.outStream = outStream;
     }
-    
-    public DReWReasoner(String dlvPath, String owlFilePath, String dlpContent, String examplesContent, String templateContent, PrintStream outStream) {
+
+    public RuleGenerator(String dlvPath,
+                         String owlFilePath,
+                         String dlpContent,
+                         String examplesContent,
+                         String templateContent,
+                         PrintStream outStream) {
         this(owlFilePath, dlpContent, examplesContent, templateContent, outStream);
         this.args[args.length - 1] = dlvPath;
     }
@@ -119,10 +127,10 @@ public class DReWReasoner implements Component {
             drew.go();
 
             templateContent = (templateContent == null ? "" : templateContent);
-            individialTemplate = new IndividualTemplate(templateContent, dlpContent + examplesContent, FileContent.getStringFromFile(getOwlFilePath()));
-            individialTemplate.init();
+            individualTemplate = new IndividualTemplate(templateContent, dlpContent + examplesContent, FileContent
+                    .getStringFromFile(getOwlFilePath()));
+            individualTemplate.init();
         } catch (ParseException | ComponentInitException | FileNotFoundException ex) {
-            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
             throw new ComponentInitException(ex.getMessage());
         }
     }
@@ -132,10 +140,10 @@ public class DReWReasoner implements Component {
      * <br>Call {@link #init()} before.
      * <br>This method gets the previously obtained results from DReW by the
      * {@link #init()} and creates the Expansion Answer Set.
-     * <br>With the Exampasion Answer Set, it creates a rule based on a example
-     * from the examples's content. The example is choosed according with the
+     * <br>With the Expansion Answer Set, it creates a rule based on a example
+     * from the examples's content. The example is selected according with the
      * offset. The offset can be between [0, N) where N is the total number of
-     * examples within the givan content.
+     * examples within the given content.
      */
     public void run() {
         AnswerSetRule aes;
@@ -146,7 +154,7 @@ public class DReWReasoner implements Component {
                 outStream.println("Iniciar Configuração do Template: " + getTime());
 
                 outStream.println("Iniciar Geração do Conjunto Expandido: " + getTime());
-                e = new ExampleExpansionAnswerSet(answerSet, examples, individialTemplate, outStream);
+                e = new ExampleExpansionAnswerSet(answerSet, examples, individualTemplate, outStream);
                 ((ExampleExpansionAnswerSet) e).setOffset(offset);
                 outStream.println("");
                 outStream.println(e.getClass());
@@ -159,7 +167,8 @@ public class DReWReasoner implements Component {
                 outStream.println("");
                 //depth = 1;
                 outStream.println("Gerando regra com profundidade de variáveis: " + depth);
-                AnswerRule ar = new AnswerRule(e.getExamples(), e.getExpansionSet(), depth, individialTemplate, outStream);
+                AnswerRule ar = new AnswerRule(e.getExamples(), e.getFullExpansionAnswerSet(), depth,
+                                               individualTemplate, outStream);
                 ar.setRecursive(recursiveRuleAllowed);
                 ar.init();
                 aes = new AnswerSetRule(e, ar);
@@ -167,7 +176,7 @@ public class DReWReasoner implements Component {
                 examplesForRule = e.getExamples();
             }
         } catch (ComponentInitException ex) {
-            Logger.getLogger(DReWReasoner.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleGenerator.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Print Error:\t9");
         }
     }
@@ -178,12 +187,14 @@ public class DReWReasoner implements Component {
      * class.
      *
      * @param individuals a set of individual to load in.
-     * @param predicates a set of predicates to load in.
+     * @param predicates  a set of predicates to load in.
      * @throws FileNotFoundException in case a file path does not exist.
-     * @throws ParseException in case a file does not accord with the sintax
-     * rules.
+     * @throws ParseException        in case a file does not accord with the sintax
+     *                               rules.
      */
-    public void loadIndividualsAndPredicates(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
+    public void loadIndividualsAndPredicates(Set<Constant> individuals,
+                                             Set<DataLogPredicate> predicates) throws FileNotFoundException,
+            ParseException {
         loadOntology(individuals, predicates);
         loadDLP(individuals, predicates);
         loadExample(individuals, predicates);
@@ -200,7 +211,8 @@ public class DReWReasoner implements Component {
         for (DataLogPredicate dataLogPredicate : predicates) {
             head = dataLogPredicate.getPredicate();
             if (head.startsWith("<") && head.endsWith(">")) {
-                head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head.lastIndexOf(">"));
+                head = head.substring(head.lastIndexOf(PREFIX_SEPARATOR) + PREFIX_SEPARATOR.length(), head
+                        .lastIndexOf(">"));
             }
             dataLogPredicate.setHead(head);
         }
@@ -211,11 +223,12 @@ public class DReWReasoner implements Component {
      * } to load only the individual and predicates from the ontology.
      *
      * @param individuals a set of individual to load in.
-     * @param predicates a set of predicates to load in.
+     * @param predicates  a set of predicates to load in.
      */
     private void loadOntology(Set<Constant> individuals, Set<DataLogPredicate> predicates) {
-        if (individuals == null || predicates == null)
+        if (individuals == null || predicates == null) {
             return;
+        }
 
         File file = new File(getOwlFilePath());
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
@@ -253,9 +266,10 @@ public class DReWReasoner implements Component {
      * } to load only the individual and predicates from the DLP's content.
      *
      * @param individuals a set of individual to load in.
-     * @param predicates a set of predicates to load in.
+     * @param predicates  a set of predicates to load in.
      */
-    private void loadDLP(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
+    private void loadDLP(Set<Constant> individuals,
+                         Set<DataLogPredicate> predicates) throws FileNotFoundException, ParseException {
         List<ProgramStatement> programs = getProgramStatements(dlpContent);
 
         Clause c;
@@ -290,7 +304,7 @@ public class DReWReasoner implements Component {
      * } to load only the individual and predicates from the examples's content.
      *
      * @param individuals a set of individual to load in.
-     * @param predicates a set of predicates to load in.
+     * @param predicates  a set of predicates to load in.
      */
     private void loadExample(Set<Constant> individuals, Set<DataLogPredicate> predicates) throws ParseException {
         loadExamplesLiterals();
@@ -319,7 +333,7 @@ public class DReWReasoner implements Component {
      * } to load only the individual and predicates from the DReW's answer.
      *
      * @param individuals a set of individual to load in.
-     * @param predicates a set of predicates to load in.
+     * @param predicates  a set of predicates to load in.
      */
     private void loadFromAnswerSet(Set<Constant> individuals, Set<DataLogPredicate> predicates) {
 
@@ -350,7 +364,7 @@ public class DReWReasoner implements Component {
      * Load the literals from the examples's content.
      *
      * @throws ParseException in case a file does not accord with the sintax
-     * rules.
+     *                        rules.
      */
     private void loadExamplesLiterals() throws ParseException {
         List<ProgramStatement> programs = getProgramStatements(examplesContent);
@@ -373,7 +387,7 @@ public class DReWReasoner implements Component {
      * @param content the content.
      * @return a list of {@link ProgramStatement}.
      * @throws ParseException in case a file does not accord with the sintax
-     * rules.
+     *                        rules.
      */
     private List<ProgramStatement> getProgramStatements(String content) throws ParseException {
         DLProgramKB kb = new DLProgramKB();
@@ -388,8 +402,9 @@ public class DReWReasoner implements Component {
 
         parser = new DLProgramParser(reader);
 
-        if (ontology != null)
+        if (ontology != null) {
             parser.setOntology(ontology);
+        }
         elprogram = parser.program();
         kb.setProgram(elprogram);
         return elprogram.getStatements();
@@ -547,7 +562,7 @@ public class DReWReasoner implements Component {
      * problem's timeout.
      *
      * @throws DLVInvocationException a possible exception during the DLV
-     * invocation.
+     *                                invocation.
      */
     public void killDLV() throws DLVInvocationException {
         if (drew != null) {
@@ -611,5 +626,9 @@ public class DReWReasoner implements Component {
     public void setOutStream(PrintStream outStream) {
         this.outStream = outStream;
     }
-    
+
+    public void setDLVFilePath(String dlvFilePath) {
+        this.args[args.length - 1] = dlvFilePath;
+    }
+
 }

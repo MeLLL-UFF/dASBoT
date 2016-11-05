@@ -3,8 +3,8 @@
  */
 package br.uff.dl.rules.cli.parallel;
 
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.util.Box;
@@ -89,7 +89,7 @@ public class RuleParallel extends Thread {
             String ruleName;
             int i;
 
-            DReWReasoner reasoner = new DReWReasoner(owlFilepath, dlpContent, positiveTrainExample, templateContent, System.out);
+            RuleGenerator reasoner = new RuleGenerator(owlFilepath, dlpContent, positiveTrainExample, templateContent, System.out);
             reasoner.init();
             PrintStream outStream;
             while (!examples.isEmpty()) {

@@ -5,9 +5,9 @@ package br.uff.dl.rules.cli.parallel;
 
 import br.uff.dl.rules.cli.DLRulesCLI;
 import br.uff.dl.rules.datalog.ConcreteLiteral;
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
 import br.uff.dl.rules.util.Box;
@@ -38,6 +38,8 @@ public class GenerateRuleParallel extends Thread {
     public String outputDirectory;
     public int timeout;
     public RuleMeasurer generateRuleMeasure;
+
+    public RuleGenerator reasoner = new RuleGenerator();
 
     public int depth;
     public boolean recursiveRuleAllowed;
@@ -99,7 +101,13 @@ public class GenerateRuleParallel extends Thread {
             List<ConcreteLiteral> examples;
             ConcreteLiteral example;
             Time.getTime(begin);
-            DReWReasoner reasoner = new DReWReasoner(dlvPath, owlFilepath, dlpContent, positiveTrainExample, templateContent, null);
+//            reasoner = new RuleGenerator();
+            reasoner.setDLVFilePath(dlvPath);
+            reasoner.setOwlFilePath(owlFilepath);
+            reasoner.setDlpContent(dlpContent);
+            reasoner.setExamplesContent(positiveTrainExample);
+            reasoner.setTemplateContent(templateContent);
+
             reasoner.setDepth(depth);
             reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
             reasoner.init();

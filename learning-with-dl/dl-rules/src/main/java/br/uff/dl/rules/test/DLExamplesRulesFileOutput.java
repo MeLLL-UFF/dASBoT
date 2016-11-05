@@ -5,8 +5,8 @@ package br.uff.dl.rules.test;
 
 import br.uff.dl.rules.cli.DLRulesCLI;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.rules.AnswerSetRule;
+import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
 import it.unical.mat.wrapper.DLVInvocationException;
@@ -21,8 +21,8 @@ import java.util.Set;
 import static br.uff.dl.rules.util.Time.getTime;
 
 /**
- * This class was used to generate rules and safe all the process results into
- * text files. Its functions was builded into the {@link DLRulesCLI}, use this
+ * This class was used to generate rules and save all the process results into
+ * text files. Its functions was built into the {@link DLRulesCLI}, use this
  * instead.
  *
  * @deprecated
@@ -41,7 +41,7 @@ public class DLExamplesRulesFileOutput extends Thread {
     private Set<String> compareFilepaths;
 
     //Out parametres
-    private DReWReasoner reasoner;
+    private RuleGenerator reasoner;
     private double duration;
     AnswerSetRule answerSetRule;
 
@@ -118,7 +118,7 @@ public class DLExamplesRulesFileOutput extends Thread {
             templateContent = FileContent.getStringFromFile(templateFilepath);
         }
 
-        reasoner = new DReWReasoner(owlFilepath, dlpContent, samplesContent, templateContent, System.out);
+        reasoner = new RuleGenerator(owlFilepath, dlpContent, samplesContent, templateContent, System.out);
         reasoner.setOffset(offset);
         //Set<Constant> individuals = new HashSet<>();
         //Set<DataLogPredicate> predicates = new HashSet<>();
@@ -248,11 +248,11 @@ public class DLExamplesRulesFileOutput extends Thread {
     }
 
     /**
-     * Getter for the {@link DReWReasoner}.
+     * Getter for the {@link RuleGenerator}.
      *
-     * @return the {@link DReWReasoner}.
+     * @return the {@link RuleGenerator}.
      */
-    public DReWReasoner getReasoner() {
+    public RuleGenerator getReasoner() {
         return reasoner;
     }
 

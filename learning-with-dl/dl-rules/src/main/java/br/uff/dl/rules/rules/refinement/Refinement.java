@@ -4,9 +4,12 @@
 package br.uff.dl.rules.rules.refinement;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
+import br.uff.dl.rules.datalog.DataLogPredicate;
+import br.uff.dl.rules.datalog.SimplePredicate;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.rules.Rule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
+import org.semanticweb.drew.dlprogram.model.Constant;
 import org.semanticweb.drew.dlprogram.model.Literal;
 import org.semanticweb.drew.dlprogram.model.Term;
 
@@ -214,6 +217,20 @@ public abstract class Refinement extends Thread {
      * @return a set with all the rule's terms.
      */
     public static Set<Term> getAllTermsFromRule(Rule r) {
+        Set<Term> answer = getAllTermsFromRulesBody(r);
+        answer.addAll(r.getHead().getTerms());
+
+        return answer;
+    }
+
+    /**
+     * Getter for all the terms from a rule's body. A Term is any constant or variable
+     * that appear on the rule.
+     *
+     * @param r the rule.
+     * @return a set with all the of the rule's body terms.
+     */
+    public static Set<Term> getAllTermsFromRulesBody(Rule r) {
         Set<Term> answer = new HashSet<>();
         answer.addAll(r.getHead().getTerms());
 
@@ -226,5 +243,39 @@ public abstract class Refinement extends Thread {
 
         return answer;
     }
-    
+
+    public static Set<Constant> getAllConstantsFromRulesBody(Rule r) {
+        Set<Constant> answer = new HashSet<>();
+
+        for (Term t : r.getHead().getTerms()) {
+            if (t instanceof Constant) {
+                answer.add((Constant) t);
+            }
+        }
+
+        if (r.getBody() == null || r.getBody().isEmpty())
+            return answer;
+
+        for (ConcreteLiteral literal : r.getBody()) {
+            for (Term t : literal.getTerms()) {
+                if (t instanceof Constant) {
+                    answer.add((Constant) t);
+                }
+            }
+        }
+
+        return answer;
+    }
+
+    public static Set<? extends DataLogPredicate> getAllPredicatesFromRule(Rule r) {
+        Set<SimplePredicate> predicates = new HashSet<>(r.getBody().size() + 1);
+        predicates.add(new SimplePredicate(r.getHead().getPredicate(), r.getHead().getTerms().size()));
+
+        for (ConcreteLiteral literal : r.getBody()) {
+            predicates.add(new SimplePredicate(literal.getPredicate(), literal.getTerms().size()));
+        }
+
+        return predicates;
+    }
+
 }

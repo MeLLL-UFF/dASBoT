@@ -4,12 +4,13 @@
 package br.uff.dl.rules.cli;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.evaluation.CompressionMeasure;
 import br.uff.dl.rules.evaluation.LaplaceMeasure;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.DLExamplesRules;
+import br.uff.dl.rules.rules.NeighborhoodRuleGenerator;
+import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRuleExample;
@@ -41,6 +42,8 @@ public class DLRulesCLI {
 
     public static final String RULE_MEASURE_PACKAGE_NAME = "br.uff.dl.rules.evaluation";
     public static final String DLV_FILE_SUFIX = "--rl.dlv";
+
+    public RuleGenerator reasoner = new RuleGenerator();
 
     protected String owlFilepath;
     protected String outputDirectory;
@@ -398,7 +401,12 @@ public class DLRulesCLI {
             List<ConcreteLiteral> examples;
             ConcreteLiteral example;
             Time.getTime(begin);
-            DReWReasoner reasoner = new DReWReasoner(dlvPath, owlFilepath, dlpContent, positiveTrainExample, templateContent, null);
+//            RuleGenerator reasoner = new RuleGenerator();
+            reasoner.setDLVFilePath(dlvPath);
+            reasoner.setOwlFilePath(owlFilepath);
+            reasoner.setDlpContent(dlpContent);
+            reasoner.setExamplesContent(positiveTrainExample);
+            reasoner.setTemplateContent(templateContent);
             reasoner.setDepth(depth);
             reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
             reasoner.init();

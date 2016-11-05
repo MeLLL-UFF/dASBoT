@@ -67,7 +67,7 @@ public class Permute implements Runnable {
     protected List<List<Term>> permuteIndividuals(final List<List<Term>> append, final Collection<? extends Constant> individuals, int listSize) {
         List<Term> l;
         int size = listSize - (append != null ? append.get(0).size() : listSize);
-
+        //List<List<Term>> resp = copyList(append);
         List<List<Term>> resp = new ArrayList<>(append);
 
         for (int i = 0; i < size; i++) {

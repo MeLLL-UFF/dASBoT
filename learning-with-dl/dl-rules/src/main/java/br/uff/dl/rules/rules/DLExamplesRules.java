@@ -5,7 +5,6 @@ package br.uff.dl.rules.rules;
 
 import br.uff.dl.rules.datalog.ConcreteLiteral;
 import br.uff.dl.rules.drew.DReWRLCLILiteral;
-import br.uff.dl.rules.drew.DReWReasoner;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
 import br.uff.dl.rules.util.Box;
 import br.uff.dl.rules.util.FileContent;
@@ -37,7 +36,7 @@ public class DLExamplesRules extends Thread {
     protected String dlpNegativesExamples;
 
     //Output parametres
-    protected DReWReasoner reasoner;
+    protected RuleGenerator reasoner;
     protected double duration;
     protected AnswerSetRule answerSetRule;
     protected EvaluatedRule evaluatedRule;
@@ -66,7 +65,7 @@ public class DLExamplesRules extends Thread {
      * @param dlpNegativesExamples the negative examples.
      * @throws FileNotFoundException in case a file does not exists.
      */
-    public DLExamplesRules(String dlpContent, DReWReasoner reasoner, String dlpPositivesExamples, String dlpNegativesExamples, PrintStream outStream) throws FileNotFoundException {
+    public DLExamplesRules(String dlpContent, RuleGenerator reasoner, String dlpPositivesExamples, String dlpNegativesExamples, PrintStream outStream) throws FileNotFoundException {
         this.dlpContent = dlpContent;
         this.reasoner = reasoner;
 
@@ -89,7 +88,7 @@ public class DLExamplesRules extends Thread {
         try {
             runDLRulesReasoner(offset);
         } catch (ComponentInitException | IOException | ParseException ex) {
-            //Logger.getLogger(DLExamplesRules.class.getName()).log(Level.SEVERE, null, ex);
+
         }
 
         end = getTime(e);
@@ -123,6 +122,9 @@ public class DLExamplesRules extends Thread {
             return;
 
         answerSetRule = reasoner.getAnswerSetRules().get(reasoner.getAnswerSetRules().size() - 1);
+
+        if (answerSetRule.getAnswerRule().getRules() == null || answerSetRule.getAnswerRule().getRules().isEmpty())
+            return;
 
         outStream.println(answerSetRule.getRulesAsString());
         outStream.println("");
