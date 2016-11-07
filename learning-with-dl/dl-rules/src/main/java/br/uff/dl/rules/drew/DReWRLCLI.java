@@ -172,7 +172,7 @@ public class DReWRLCLI extends CommandLine {
         }
 
         if (dlvPath == null && !rewriting_only) {
-            System.err.println("Please specify the path of dlv reasoner");
+            System.err.println("Please specify the path of dlv ruleGenerator");
             return false;
         }
 

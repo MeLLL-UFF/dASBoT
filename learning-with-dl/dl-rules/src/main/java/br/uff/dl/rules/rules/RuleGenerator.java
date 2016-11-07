@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import static br.uff.dl.rules.util.Time.getTime;
 
 /**
- * Class to do all the reasoner to generate the rules. <br>
+ * Class to do all the ruleGenerator to generate the rules. <br>
  * Run the DReW, creates the Expansion Answer Set and generates the rule based
  * on a example.
  *

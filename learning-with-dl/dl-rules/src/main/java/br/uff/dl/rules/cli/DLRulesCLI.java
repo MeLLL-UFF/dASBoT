@@ -9,7 +9,6 @@ import br.uff.dl.rules.evaluation.LaplaceMeasure;
 import br.uff.dl.rules.evaluation.RuleMeasurer;
 import br.uff.dl.rules.exception.TimeoutException;
 import br.uff.dl.rules.rules.DLExamplesRules;
-import br.uff.dl.rules.rules.NeighborhoodRuleGenerator;
 import br.uff.dl.rules.rules.RuleGenerator;
 import br.uff.dl.rules.rules.evaluation.DescendingMeasurableComparator;
 import br.uff.dl.rules.rules.evaluation.EvaluatedRule;
@@ -42,8 +41,6 @@ public class DLRulesCLI {
 
     public static final String RULE_MEASURE_PACKAGE_NAME = "br.uff.dl.rules.evaluation";
     public static final String DLV_FILE_SUFIX = "--rl.dlv";
-
-    public RuleGenerator reasoner = new RuleGenerator();
 
     protected String owlFilepath;
     protected String outputDirectory;
@@ -78,6 +75,7 @@ public class DLRulesCLI {
     protected String[] drewArgs = DReWDefaultArgs.getDefaultArgs();
     protected String[] initArgs;
 
+    protected RuleGenerator ruleGenerator = new RuleGenerator();
     protected RuleMeasurer generateRuleMeasure;
     protected RuleMeasurer refinementRuleMeasure;
 
@@ -401,17 +399,17 @@ public class DLRulesCLI {
             List<ConcreteLiteral> examples;
             ConcreteLiteral example;
             Time.getTime(begin);
-//            RuleGenerator reasoner = new RuleGenerator();
-            reasoner.setDLVFilePath(dlvPath);
-            reasoner.setOwlFilePath(owlFilepath);
-            reasoner.setDlpContent(dlpContent);
-            reasoner.setExamplesContent(positiveTrainExample);
-            reasoner.setTemplateContent(templateContent);
-            reasoner.setDepth(depth);
-            reasoner.setRecursiveRuleAllowed(recursiveRuleAllowed);
-            reasoner.init();
+//            RuleGenerator ruleGenerator = new RuleGenerator();
+            ruleGenerator.setDLVFilePath(dlvPath);
+            ruleGenerator.setOwlFilePath(owlFilepath);
+            ruleGenerator.setDlpContent(dlpContent);
+            ruleGenerator.setExamplesContent(positiveTrainExample);
+            ruleGenerator.setTemplateContent(templateContent);
+            ruleGenerator.setDepth(depth);
+            ruleGenerator.setRecursiveRuleAllowed(recursiveRuleAllowed);
+            ruleGenerator.init();
 
-            size = reasoner.getExamples().size();
+            size = ruleGenerator.getExamples().size();
 
             List<EvaluatedRuleExample> evaluatedRuleExamples = new ArrayList<>();
             PrintStream outStream = null;
@@ -420,8 +418,8 @@ public class DLRulesCLI {
                 try {
 //                    redirectOutputStream(outputDirectory + ruleName);
                     outStream = new PrintStream(outputDirectory + ruleName);
-                    reasoner.setOutStream(outStream);
-                    run = new DLExamplesRules(dlpContent, reasoner, positiveTrainExample, negativeTrainExample, outStream);
+                    ruleGenerator.setOutStream(outStream);
+                    run = new DLExamplesRules(dlpContent, ruleGenerator, positiveTrainExample, negativeTrainExample, outStream);
                     run.setOffset(i);
                     run.start();
                     run.join(timeout * 1000);
@@ -1029,6 +1027,14 @@ public class DLRulesCLI {
 
     public String[] getInitArgs() {
         return initArgs;
+    }
+
+    public RuleGenerator getRuleGenerator() {
+        return ruleGenerator;
+    }
+
+    public void setRuleGenerator(RuleGenerator ruleGenerator) {
+        this.ruleGenerator = ruleGenerator;
     }
 
     @Override

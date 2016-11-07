@@ -60,7 +60,7 @@ public class DLExamplesRules extends Thread {
      * Constructor with all needed parameters.
      *
      * @param dlpContent the DLP's content.
-     * @param reasoner a DReW's reasoner to obtain its output.
+     * @param reasoner a DReW's ruleGenerator to obtain its output.
      * @param dlpPositivesExamples the posivite examples.
      * @param dlpNegativesExamples the negative examples.
      * @throws FileNotFoundException in case a file does not exists.

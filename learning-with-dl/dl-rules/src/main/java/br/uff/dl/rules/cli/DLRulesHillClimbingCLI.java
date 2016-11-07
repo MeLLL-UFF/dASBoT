@@ -48,6 +48,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     private double theoryThreshold = 0.0;
     private RuleMeasurer theoryMeasurer = new F1ScoreMeasure();
     private Set<Rule> theoryRules = new LinkedHashSet<>();
+    private boolean separatedRuleEvaluation = false;
 
     /*
      sideWayMoves = (!queue.isEmpty() ? Integer.parseInt(queue.remove()) : -1);
@@ -67,17 +68,17 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * Main function, used to start the program.
      *
      * @param args the parameters needed for the program execution.<br>-rule to
-     * generate the rules (optional),<br>-ref to refine the rules
-     * (optional),<br>-cv to cross validate the rules (optional),<br>an integer
-     * number of bk files (omitted = 1),<br>a set of paths for the bk files,
-     * according with the number of files previous setted,<br>-tp to use
-     * template (file to type the individuos according with its relationships)
-     * (optional),<br>if -tp was used, the path of the template file,<br>an
-     * output directory for the program's output,<br>a timeout for the rule's
-     * inferences,<br>the cross validation directory with the folds,<br>the
-     * fold's prefix name,<br>the number of folds,
-     * <br>the number of threads that should be created simultaneously (usually,
-     * the number of available cores).
+     *             generate the rules (optional),<br>-ref to refine the rules
+     *             (optional),<br>-cv to cross validate the rules (optional),<br>an integer
+     *             number of bk files (omitted = 1),<br>a set of paths for the bk files,
+     *             according with the number of files previous setted,<br>-tp to use
+     *             template (file to type the individuos according with its relationships)
+     *             (optional),<br>if -tp was used, the path of the template file,<br>an
+     *             output directory for the program's output,<br>a timeout for the rule's
+     *             inferences,<br>the cross validation directory with the folds,<br>the
+     *             fold's prefix name,<br>the number of folds,
+     *             <br>the number of threads that should be created simultaneously (usually,
+     *             the number of available cores).
      * @throws FileNotFoundException in case of a file path does not exist.
      */
     public static void main(String[] args) throws FileNotFoundException {
@@ -94,21 +95,31 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
     /**
      * The constructor of the class with the needed parameters.
      *
-     * @param dlpFilepaths a set of paths for the bk files.
-     * @param owlFilepath a path for an owl file (future use).
+     * @param dlpFilepaths          a set of paths for the bk files.
+     * @param owlFilepath           a path for an owl file (future use).
      * @param positiveTrainFilepath a set of positive examples.
      * @param negativeTrainFilepath a set of negative examples.
-     * @param outputDirectory an output directory for the program's output.
-     * @param timeout a timeout for the rule's inferences.
-     * @param templateFilepath if -tp was used, the path of the template file.
-     * @param cvDirectory the cross validation directory with the folds.
-     * @param cvPrefix the fold's prefix name.
-     * @param cvNumberOfFolds the number of folds.
-     * @throws FileNotFoundException in case of any file path does not exist.
+     * @param outputDirectory       an output directory for the program's output.
+     * @param timeout               a timeout for the rule's inferences.
+     * @param templateFilepath      if -tp was used, the path of the template file.
+     * @param cvDirectory           the cross validation directory with the folds.
+     * @param cvPrefix              the fold's prefix name.
+     * @param cvNumberOfFolds       the number of folds.
+     * @throws FileNotFoundException                                in case of any file path does not exist.
      * @throws org.semanticweb.drew.dlprogram.parser.ParseException
      */
-    public DLRulesHillClimbingCLI(Set<String> dlpFilepaths, String owlFilepath, String positiveTrainFilepath, String negativeTrainFilepath, String outputDirectory, int timeout, String templateFilepath, String cvDirectory, String cvPrefix, int cvNumberOfFolds) throws FileNotFoundException, ParseException {
-        super(dlpFilepaths, owlFilepath, positiveTrainFilepath, negativeTrainFilepath, outputDirectory, timeout, templateFilepath, cvDirectory, cvPrefix, cvNumberOfFolds);
+    public DLRulesHillClimbingCLI(Set<String> dlpFilepaths,
+                                  String owlFilepath,
+                                  String positiveTrainFilepath,
+                                  String negativeTrainFilepath,
+                                  String outputDirectory,
+                                  int timeout,
+                                  String templateFilepath,
+                                  String cvDirectory,
+                                  String cvPrefix,
+                                  int cvNumberOfFolds) throws FileNotFoundException, ParseException {
+        super(dlpFilepaths, owlFilepath, positiveTrainFilepath, negativeTrainFilepath, outputDirectory, timeout,
+              templateFilepath, cvDirectory, cvPrefix, cvNumberOfFolds);
         sideWayMoves = -1;
     }
 
@@ -133,7 +144,8 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             Set<ConcreteLiteral> positiveCoveredExamples = new LinkedHashSet<>();
             positiveExamples = FileContent.getExamplesLiterals(positiveTrainExample);
             negativeExamples = FileContent.getExamplesLiterals(negativeTrainExample);
-            EvaluatedRule er = new EvaluatedRule(null, positiveExamples.size(), negativeExamples.size(), 0, 0, ruleMeasure);
+            EvaluatedRule er = new EvaluatedRule(null, positiveExamples.size(), negativeExamples.size(), 0, 0,
+                                                 ruleMeasure);
             measure = er.getMeasure();
             EvaluatedRuleExample serializeRule = null;
             //double threshold = 0.01;
@@ -200,13 +212,15 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     outputFile = new File(outPath + ".txt");
 
                     int refinedRuleIndex = keys.size() - 1;
-                    serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)), genericRuleExample.getExample(), refinementRuleMeasure);
+                    serializeRule = new EvaluatedRuleExample(rules.get(keys.get(refinedRuleIndex)),
+                                                             genericRuleExample.getExample(), refinementRuleMeasure);
                     double localMeasure = serializeRule.getMeasure();
                     if (generic) {
                         EvaluatedRuleExample otherRule;
                         double otherMeasure;
                         for (int i = refinedRuleIndex - 1; i > -1; i--) {
-                            otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample.getExample(), refinementRuleMeasure);
+                            otherRule = new EvaluatedRuleExample(rules.get(keys.get(i)), genericRuleExample
+                                    .getExample(), refinementRuleMeasure);
                             otherMeasure = otherRule.getMeasure();
                             if (otherMeasure == localMeasure) {
                                 serializeRule = otherRule;
@@ -243,7 +257,9 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
                     measure = aux;
                     sideMoves = 0;
                     if (serializeRule.getRule() != null) {
-                        fullDLPContent.append(serializeRule.getRule().toString()).append("\n");
+                        if (!separatedRuleEvaluation) {
+                            fullDLPContent.append(serializeRule.getRule().toString()).append("\n");
+                        }
                         theoryRules.add(serializeRule.getRule());
                     }
                 } else {
@@ -273,10 +289,13 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      * @param rule the current rule.
      * @return the measure of the set of rules so far.
      * @throws TimeoutException case not infer the rule, returns the same
-     * measure.
+     *                          measure.
      */
-    private double evaluateRule(EvaluatedRuleExample rule, Set<ConcreteLiteral> positiveCoveredExamples) throws TimeoutException, ParseException, FileNotFoundException {
-//        RuleEvaluator re = new RuleEvaluator(rule.getRule(), drewArgs, fullDLPContent.toString(), positiveTrain, negativeTrain);
+    private double evaluateRule(EvaluatedRuleExample rule,
+                                Set<ConcreteLiteral> positiveCoveredExamples) throws TimeoutException,
+            ParseException, FileNotFoundException {
+//        RuleEvaluator re = new RuleEvaluator(rule.getRule(), drewArgs, fullDLPContent.toString(), positiveTrain,
+// negativeTrain);
 //        EvaluatedRule er = RuleEvaluator.evaluateRuleWithTimeout(re, timeout);
 //      return re;
 
@@ -291,8 +310,10 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
             lits.addAll(set);
         }
 
-        Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(positiveTrainFilePath));
-        Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile(negativeTrainFilePath));
+        Set<Literal> posExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile
+                (positiveTrainFilePath));
+        Set<Literal> negExamples = FileContent.getExamplesLiterals(FileContent.getStringFromFile
+                (negativeTrainFilePath));
 
         int positives = positiveTrain.size();
         Set<ConcreteLiteral> covered = DataLogLiteral.getSetOfLiterals(compareAnswerSetWithExample(lits, posExamples));
@@ -303,7 +324,8 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
 
         positiveCoveredExamples.addAll(covered);
 
-        EvaluatedRule er = new EvaluatedRule(null, positives, negatives, positivesCovered, negativesCovered, theoryMeasurer);
+        EvaluatedRule er = new EvaluatedRule(null, positives, negatives, positivesCovered, negativesCovered,
+                                             theoryMeasurer);
 
         return er.getMeasure();
     }
@@ -317,8 +339,7 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
      */
     @SuppressWarnings("Convert2Lambda")
     private List<EvaluatedRuleExample> getERESorted() throws IOException {
-        @SuppressWarnings("Convert2Lambda")
-        File[] erRules = (new File(outER)).listFiles(new FilenameFilter() {
+        @SuppressWarnings("Convert2Lambda") File[] erRules = (new File(outER)).listFiles(new FilenameFilter() {
 
             @Override
             public boolean accept(File dir, String name) {
@@ -381,4 +402,11 @@ public class DLRulesHillClimbingCLI extends DLRulesCLI {
         this.theoryMeasurer = theoryMeasurer;
     }
 
+    public boolean isSeparatedRuleEvaluation() {
+        return separatedRuleEvaluation;
+    }
+
+    public void setSeparatedRuleEvaluation(boolean separatedRuleEvaluation) {
+        this.separatedRuleEvaluation = separatedRuleEvaluation;
+    }
 }

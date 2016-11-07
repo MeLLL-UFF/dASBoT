@@ -101,7 +101,7 @@ public class GenerateRuleParallel extends Thread {
             List<ConcreteLiteral> examples;
             ConcreteLiteral example;
             Time.getTime(begin);
-//            reasoner = new RuleGenerator();
+//            ruleGenerator = new RuleGenerator();
             reasoner.setDLVFilePath(dlvPath);
             reasoner.setOwlFilePath(owlFilepath);
             reasoner.setDlpContent(dlpContent);

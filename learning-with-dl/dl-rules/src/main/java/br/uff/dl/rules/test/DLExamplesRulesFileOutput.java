@@ -123,7 +123,7 @@ public class DLExamplesRulesFileOutput extends Thread {
         //Set<Constant> individuals = new HashSet<>();
         //Set<DataLogPredicate> predicates = new HashSet<>();
 
-        //reasoner.loadIndividualsAndPredicates(individuals, predicates);
+        //ruleGenerator.loadIndividualsAndPredicates(individuals, predicates);
         reasoner.init();
         reasoner.run();
 
