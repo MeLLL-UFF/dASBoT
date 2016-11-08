@@ -1033,8 +1033,8 @@ public class DLRulesCLI {
         return ruleGenerator;
     }
 
-    public void setRuleGenerator(RuleGenerator ruleGenerator) {
-        this.ruleGenerator = ruleGenerator;
+    public void setRuleGenerator(RuleGenerator ruleGenerator) throws IllegalAccessException, InstantiationException {
+        this.ruleGenerator = ruleGenerator.getClass().newInstance();
     }
 
     @Override
